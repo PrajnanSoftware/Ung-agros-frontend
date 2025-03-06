@@ -1,0 +1,160 @@
+import React, { useEffect, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import logo from "../assets/logo (2).png";
+import { CgProfile } from "react-icons/cg";
+import { IoCartOutline } from "react-icons/io5";
+import { HiOutlineMenu, HiX } from "react-icons/hi";
+import SearchSuggestionComponent from './SearchSuggetionComponent';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCart } from '../redux/slice/cartSlice';
+import { getCategory } from '../redux/slice/categorySlice';
+
+const handleLoginSignUpClick = () => {
+
+}
+
+const handleCartClick = () => {
+
+}
+
+
+
+const HeaderComponent = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [search_result ,setSearchResult] = useState ([]);
+  const [isCategoryOpen, setCategoryOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { error, loading, isAuthenticated, success, user } = useSelector((state) => state.user);
+  const { cart } = useSelector((state) => state.cart);
+  const { category } = useSelector((state) => state.category)
+
+  useEffect(() => {
+    dispatch(getCategory());
+    dispatch(getCart());
+  }, [])
+
+  const onSearchInputChange = (e) => {
+    const search_query = e.target.value.toLowerCase();
+    if(search_query == '')
+    {
+      setSearchResult([]);
+    }
+    else{
+      var data = [
+        { id: 1, name: "name test1" },
+        { id: 2, name: "name test2" },
+        { id: 3, name: "a test1" },
+        { id: 4, name: "b test4" },
+        { id: 5, name: "z test5" },
+      ];
+    
+      const filtered_data = data.filter(item => 
+        item.name.toLowerCase().includes(search_query)
+      );
+    
+      setSearchResult(filtered_data);
+    }
+    
+  }
+  
+  const toggleCategoryState = (e) => {
+    setCategoryOpen((prev) => !prev);
+  }
+
+  const closeAllPopups = (e) => {
+    setMenuOpen(false);
+    setCategoryOpen(false);
+  }
+
+  return (
+    <div className='h-32 lg:h-16 flex flex-wrap lg:flex-nowrap bg-primary items-center justify-between'>
+
+      <div className='flex-1 basis-1/4 lg:basis-0 min-w-[90px] lg:hidden pl-4'>
+        { menuOpen ? (
+          <HiX className=' text-3xl cursor-pointer text-white' onClick={() => setMenuOpen(false)} />
+        ) : (
+          <HiOutlineMenu className='text-3xl cursor-pointer text-white' onClick={() => setMenuOpen(true)} />
+        )}
+      </div>
+
+      {/* Logo */}
+      <div className='flex-1 basis-2/4 lg:basis-0 min-w-[90px] py-2 pl-6'>
+        <img src={logo} alt="Unq Agro" className='m-auto  bg-white h-14 w-14 rounded-full'/>
+      </div>
+
+      {/* Navigation Link */}
+      <div className={`lg:flex lg:flex-grow gap-4 lg:pl-6 lg:items-end lg:pr-10 h-full lg:h-auto items-center lg:justify-center z-10 fixed lg:static top-0 left-0 w-full lg:w-auto bg-primary lg:bg-transparent flex-col lg:flex-row lg:flex-nowrap transition-all duration-300 ${menuOpen ? "flex" : "hidden" }`} role="navigation"
+  aria-expanded={menuOpen}>
+    {menuOpen && <div className='w-full '>
+    <HiX className='text-3xl cursor-pointer text-white ml-auto mt-4 mr-4' onClick={() => setMenuOpen(false)} />
+    </div>}
+    <NavLink to={`/`} className={({ isActive }) => isActive ? "text-secondary font-bold border-b-4 border-secondary mx-2" : "text-background"} onClick={closeAllPopups} >Home</NavLink>
+    
+    
+    <div className='relative text-center'>
+      <button type='button' id='category-button' onClick={toggleCategoryState}>Categories</button>
+
+      <div className={`${isCategoryOpen ? 'block': 'hidden'}  lg:absolute lg:-left-2 lg:z-100 mt-4 lg:origin-center bg-primary text-nowrap text-start ${isCategoryOpen ? "opacity-100 scale-100": "opacity-0 scale-95 pointer-events-none"}`} role='category' >
+        {
+          category.map((item, index) => {
+            // TODO: When clicked on NavLink redirects to search page 
+            return <NavLink to={`/${item.name}`} role='categoryitem' id={`category-item-${index}`} className={({ isActive }) => isActive ? "block px-2 text-secondary font-bold border-b-4 border-secondary mx-2" : "block px-2 text-background"} onClick={closeAllPopups} >{item.name}</NavLink>
+          })
+        }
+      </div>
+    </div>
+
+
+    <NavLink to={`/contact-us`} className={({ isActive }) => isActive ? "text-secondary font-bold border-b-4 border-secondary mx-2" : "text-background"} onClick={closeAllPopups} >Contact Us</NavLink>
+    <NavLink to={`/about-us`} className={({ isActive }) => isActive ? "text-secondary font-bold border-b-4 border-secondary mx-2" : "text-background"} onClick={closeAllPopups} >About Us</NavLink>
+    </div>
+
+      <hr className='w-full flex-1 basis-full order-1 mx-2 lg:hidden'/>
+
+      {/* Searchbox */}
+      <form  action={"/search-result"} className="relative flex-1 basis-full lg:basis-auto order-1 lg:order-none min-w-[120px] lg:mt-0 pb-1 px-2">
+        <div className={` ${search_result.length > 0 ? 'bg-white rounded-t-[20px] ' : ''}`}>
+        <input type="text" onChange={onSearchInputChange} name="search"  autoComplete="off" id="search" placeholder='Search Products...' 
+            className={`w-full px-4 py-1 rounded-full border border-gray-300 focus:outline-none
+            ${search_result.length > 0 ? 'rounded-b-[0px] rounded-t-[20px]' : ''} `} />
+        <button type="submit" className="absolute right-4 top-1 text-gray-500">🔍</button>
+        <SearchSuggestionComponent result={search_result}/>
+        </div>
+      </form>
+
+      {/* Cart and Profile Icons */
+        // TODO: add navigation to Cart and Profile page 
+      }
+      <div className='flex gap-4 flex-1 basis-1/4 lg:basis-0 min-w-[90px] justify-end items-center py-2 pr-4'>
+        <div className='relative group z-10'>
+          <NavLink to={`/cart`}>
+            <IoCartOutline className='text-3xl cursor-pointer' />
+          </NavLink>
+          <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+              Cart
+          </span>
+          <p className='absolute bg-red-600 px-1 text-xs rounded-full -top-1 -right-1'>{cart.length}</p>
+        </div>
+        <div className='relative group z-10'>
+          { isAuthenticated ? 
+            <div className='px-3 py-1 rounded-full bg-white font-bold'>
+              {(user.email).charAt(0).toUpperCase()}
+              
+            </div>
+          : <CgProfile className='text-3xl cursor-pointer' /> }
+          {console.log(isAuthenticated)}
+          <span className="absolute left-1/2 -translate-x-1/2 -bottom-6 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+              Account
+          </span>
+        </div>
+        
+        
+      </div>
+      
+    </div>
+  )
+}
+
+export default HeaderComponent

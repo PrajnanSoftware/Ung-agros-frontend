@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Navbar */
+
+/* Categories dropdown */
+/* .categoriesOption {
+  display: none;
+  position: absolute;
+  z-index: 1;
+}
+.categories:hover .categoriesOption {
+  background-color: red;
+  display: block;
+
+} */
+
+@keyframes marquee {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-150%);
+    }
+  }
+  
+  .animate-marquee {
+    display: flex;
+    animation: marquee 20s linear infinite;
+  }
+
