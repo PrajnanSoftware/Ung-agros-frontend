@@ -14,6 +14,9 @@ import SignUpPage from "./pages/SignUpPage";
 import CartPage from "./pages/CartPage";
 import { useDispatch } from "react-redux";
 import { initializeAuth } from "./redux/slice/userSlice";
+import CheckoutPage from "./pages/CheckoutPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentFailurePage from "./pages/PaymentFailurePage";
 
 
 
@@ -34,14 +37,17 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingHome />}/>
           <Route path="/my-orders" element={<OrdersPage />}/>
-          <Route path="/order-details" element={<OrderDetailsPage />}/>
+          <Route path="/order/:id" element={<OrderDetailsPage />}/>
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/signup" element={<SignUpPage />}/>
           <Route path="/search-result" element={<ProductSearchPage />}/>
-          <Route path="/product-detail" element={<ProductDetailsPage />}/>
+          <Route path="/product/:id" element={<ProductDetailsPage />}/>
           <Route path="/cart" element={<CartPage />}/>
           <Route path="/contact-us" element={<ContactUsPage />}/>
           <Route path="/about-us" element={<AboutPage />}/>
+          <Route path="/checkout" element={<CheckoutPage />}/>
+          <Route path="/payment-success" element={<PaymentSuccessPage />} />
+          <Route path="/payment-failure" element={<PaymentFailurePage />}/>
           <Route path="*" element={<NotFoundComponent/>}/>
         </Routes>
         <FooterComponent />

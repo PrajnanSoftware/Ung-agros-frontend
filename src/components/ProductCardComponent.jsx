@@ -1,4 +1,6 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
+import { addOrUpdateItemToCart } from '../redux/slice/cartSlice';
 
 
 function onViewDetail(id){
@@ -8,23 +10,32 @@ function onViewDetail(id){
 function onBuyNow(id){
   window.location.href= "/purchase-confirmation?product_id="+id;
  }
-const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowBtn = false, viewDetailBgColor, buyNowBgColor }) => {
-    
+
+
+
+const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowBtn = false, viewDetailBgColor, buyNowBgColor, small = false }) => {
+  
+  const dispath = useDispatch()
+
+  const handleAddToCartButton = (e) => {
+    e.stopPropagation();
+    dispath(addOrUpdateItemToCart({productId: product._id, quantity: 1}))
+  }
   return (
-    <div className='group relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden min-w-[280px] max-w-[320px] min-h-[400px] max-h-[480px] flex flex-col border-2 border-accent'>
+    <div className={`group relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex justify-stretch flex-col border-2 border-accent ${!small ? "min-w-[280px] max-w-[320px] min-h-[400px] max-h-[480px]" : "flex-1"}`}>
         {/* Product image */}
         <div className='relative min-h-[192px] max-h-[240px] overflow-hidden'>
-            <img src={product.image} alt={product.name} className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' />
+            <img src={`/banner2.jpg`} alt={product.name} className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' />
         </div>
 
         {/* Product details */}
-        <div className='p-4 flex flex-col'>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+        <div className='px-4 flex flex-col'>
+            <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
                 {product.name}
             </h3>
 
             {/* Price */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-2">
             <span className="text-xl font-bold text-indigo-600">
                 ${product.price.toFixed(2)}
             </span>
@@ -58,21 +69,21 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
         </div>
 
   {/* View detail Button */}
-  {showViewDetailBtn &&( 
+  {/* {showViewDetailBtn &&( 
      <button onClick= {()=>{onViewDetail(product.id)}} className={`mx-4 my-2  bg-${viewDetailBgColor ? `${viewDetailBgColor+"-500"}` : 'primary'} bg-opacity-90 text-white py-2 px-4 rounded-md hover:bg-opacity-100 transition-colors flex items-center justify-center gap-2`}> 
     View Details
     </button>
-  )}
+  )} */}
 
     {/* buy now Button */}
-     {(showBuyNowBtn && (
+     {/* {(showBuyNowBtn && (
       <button onClick= {()=>{onBuyNow(product.id)}} className={`mx-4 my-2  bg-${buyNowBgColor ? `${buyNowBgColor+"-500"}` : 'primary'}  bg-opacity-90 text-white py-2 px-4 rounded-md hover:bg-opacity-100 transition-colors flex items-center justify-center gap-2`}>
     Buy Now
-    </button>))}
+    </button>))} */}
 
  
         {/* Add to Cart Button */}
-        <button className="mx-4 my-2 bg-primary bg-opacity-90 text-white py-2 px-4 rounded-md hover:bg-opacity-100 transition-colors flex items-center justify-center gap-2">
+        <button className="m-2 bg-primary bg-opacity-90 text-white py-2 px-4 rounded-md hover:bg-opacity-100 transition-colors flex items-center justify-center gap-2" onClick={handleAddToCartButton}>
           <svg
             className="w-5 h-5"
             fill="none"

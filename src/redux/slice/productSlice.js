@@ -7,6 +7,7 @@ export const getProducts = createAsyncThunk(
     'product/getProducts',
     async (_, { rejectWithValue }) => {
         try {
+            console.log("Getting Products")
             const response = await axiosInstance.get('/product');
             return response.data;
         } catch (error) {
@@ -52,7 +53,7 @@ export const deleteProduct = createAsyncThunk(
 );
 
 const productSlice = createSlice({
-    name: 'product',
+    name: 'products',
     initialState: {
         products: [],
         productsLoading: false,

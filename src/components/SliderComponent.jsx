@@ -2,9 +2,12 @@ import React, { useState } from 'react'
 import { useEffect } from 'react';
 import { useRef } from 'react';
 
-const SliderComponent = ({ products }) => {
+const SliderComponent = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef(null);
+  const products = [
+    '/banner1.jpg', '/banner2.jpg'
+  ];
 
   const nextSlide = (isAuto = false) => {
     setCurrentIndex((prevIndex) => 
@@ -55,7 +58,7 @@ const SliderComponent = ({ products }) => {
                 >
                     <div
                         className='w-full h-full bg-cover bg-center'
-                        style={{backgroundImage: `url(${product.image})`}}
+                        style={{backgroundImage: `url(${product})`}}
                     >
                         {/* Display info inside the image */}
                         {/* <div className='flex items-center justify-center h-full bg-black bg-opacity-30'>

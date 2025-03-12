@@ -94,13 +94,13 @@ const HeaderComponent = () => {
     
     
     <div className='relative text-center'>
-      <button type='button' id='category-button' onClick={toggleCategoryState}>Categories</button>
+      <button type='button' id='category-button' className={` ${isCategoryOpen ? "text-secondary font-bold mx-2" : "text-background"}`} onClick={toggleCategoryState}>Categories</button>
 
       <div className={`${isCategoryOpen ? 'block': 'hidden'}  lg:absolute lg:-left-2 lg:z-100 mt-4 lg:origin-center bg-primary text-nowrap text-start ${isCategoryOpen ? "opacity-100 scale-100": "opacity-0 scale-95 pointer-events-none"}`} role='category' >
         {
           category.map((item, index) => {
             // TODO: When clicked on NavLink redirects to search page 
-            return <NavLink to={`/${item.name}`} role='categoryitem' id={`category-item-${index}`} className={({ isActive }) => isActive ? "block px-2 text-secondary font-bold border-b-4 border-secondary mx-2" : "block px-2 text-background"} onClick={closeAllPopups} >{item.name}</NavLink>
+            return <NavLink key={index} to={`/${item.name}`} role='categoryitem' id={`category-item-${index}`} className={({ isActive }) => isActive ? "block px-2 text-secondary font-bold border-b-4 border-secondary mx-2" : "block px-2 text-background"} onClick={closeAllPopups} >{item.name}</NavLink>
           })
         }
       </div>

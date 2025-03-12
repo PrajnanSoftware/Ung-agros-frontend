@@ -54,6 +54,7 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState: {
         cart: [],
+        checkoutData: null,
         cartLoading: false,
         cartError: null,
         cartAddError: null,
@@ -101,6 +102,18 @@ const cartSlice = createSlice({
             .addCase(deleteItemFromCart.rejected, (state, action) => {
                 state.cartLoading = false;
                 state.cartRemoveError = action.payload;
+            })
+            .addCase(checkoutCart.pending, (state) => {
+                state.cartLoading = true;
+                state.cartCheckoutError = null;
+            })
+            .addCase(checkoutCart.fulfilled, (state, action) => {
+                state.cartLoading = false;
+                state.checkoutData = action.payload.newOrder;
+            })
+            .addCase(checkoutCart.rejected, (state, action) => {
+                state.cartLoading = false;
+                state.cartCheckoutError = action.payload;
             });
     }
 });
