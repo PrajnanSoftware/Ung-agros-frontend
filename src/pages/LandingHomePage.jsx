@@ -1,42 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SliderComponent from '../components/SliderComponent'
 import ProductCardComponent from '../components/ProductCardComponent'
 import SmallProductCardComponent from '../components/SmallProductCardComponent'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { getProducts } from '../redux/slice/productSlice'
+// TODO: InProgress
 
-const products = [
-  {
-    id: 1,
-    name: 'Summer Collection',
-    description: 'New arrivals for summer season',
-    price: 49.99,
-    image: '/banner1.jpg',
-    category: 'Electronics',
-    rating: 4.5,
-    reviews: 234,
-    discount: 15
-  },
-  {
-    id: 2,
-    name: 'Winter Special',
-    description: 'Stay warm in style',
-    price: 89.99,
-    image: '/banner2.jpg',
-    category: 'Electronics',
-    rating: 4.5,
-    reviews: 234,
-    discount: 15
-  },
-]
-const categories = [
-  'COIR PRODUCTS',
-  'GARDEN TOOLS',
-  'HDPE GROW BAGS',
-  'PLASTIC POTS',
-  'SEEDLING TRAYS',
-  'SOIL MIX AND FERTILIZERS',
-];
+// const categories = [
+//   'COIR PRODUCTS',
+//   'GARDEN TOOLS',
+//   'HDPE GROW BAGS',
+//   'PLASTIC POTS',
+//   'SEEDLING TRAYS',
+//   'SOIL MIX AND FERTILIZERS',
+// ];
 
 const LandingHomePage = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { products = [] } = useSelector((state) => state.product);
+  const { category = [] } = useSelector((state) => state.category );
 
   const [updates, setUpdates] = useState([
     "🌾 New Organic Seeds Available!",
@@ -45,6 +30,15 @@ const LandingHomePage = () => {
     "📢 New Pheromone Traps Collection!",
     "🌍 Eco-Friendly Farming Products Now Available!"
   ]);
+
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [])
+
+  const handleClickNavigation = (product) => {
+    console.log(product)
+    navigate(`product/${product._id}`)
+  }
 
   return (
     <div>
@@ -72,30 +66,34 @@ const LandingHomePage = () => {
           <div className='mt-4 mb-8'>
             <h2 className='text-2xl font-bold w-fit m-auto py-4'>TOP SELLING PRODUCTS</h2>
           </div>
-          <div className='p-6 flex gap-6 overflow-auto '>
-            {[...products, ...products, ...products].map((product, index) => (
-              <ProductCardComponent key={index} product={product} />
-            ))}
+          <div className='p-6 flex gap-6 overflow-x-auto'>
+            {products.length > 0 ? ( products.map((product, index) => (
+              <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
+                <ProductCardComponent key={index} product={product} />
+              </div>
+            ))) : (<p className="text-center text-gray-600 w-full">No products available.</p>)}
           </div>
         </div>
 
         {/* Category */}
-        <div className=''>
+        <div className='w-full'>
           <div className='mt-4 mb-8 '>
             <h2 className='text-2xl font-bold w-fit m-auto py-4'>CATEGORIES</h2>
           </div>
 
-          <div className='flex gap-6 justify-start px-6 overflow-x-scroll scroll-smooth hide-scrollbar'>
-            {[...categories, ...categories].map((category, index) => (
-              <div key={index} className='flex flex-col items-center'>
+          <div className='flex gap-6 justify-start px-6 overflow-x-auto scroll-smooth snap-x snap-mandatory m-auto'>
+            { category.length > 0 ? (category.map((cat, index) => (
+              <div key={index} className='flex flex-col items-center snap-start'>
                 <div className='relative h-24 w-24 rounded-full border-4 border-accent overflow-hidden'>
-                  <img src={products[1].image} alt={products[1].name} className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' />
+                  {/* <img src={p[1].image} alt={p[1].name} className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' /> */}
                 </div>
                 <h6 className="mt-4 text-sm text-center font-semibold text-gray-800">
-                  {category}
+                  {cat.name}
                 </h6>
               </div>
-            ))}
+            ))): (
+              <p className="text-center text-gray-600">No categories available.</p>
+            )}
           </div>
         </div>
 
@@ -104,9 +102,12 @@ const LandingHomePage = () => {
           <div className='mt-4 mb-8'>
             <h2 className='text-2xl font-bold w-fit m-auto py-4'>OUR PRODUCTS</h2>
           </div>
-          <div className='grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 p-2 lg:p-6 justify-items-center'>
-            {[...products, ...products, ...products].map((product, index) => (
-              <SmallProductCardComponent key={index} product={product} />
+          <div className='grid grid-cols-2 lg:grid-cols-4 md:gap-6 gap-1 p-2 lg:p-6 justify-items-center'>
+            {products.map((product, index) => (
+              <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
+                <ProductCardComponent key={index} product={product} small={true} />
+              </div>
+              // <SmallProductCardComponent key={index} product={product} />
             ))}
           </div>
         </div>
