@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
+import { axiosInstance } from '../utils/axiosInstance';
 
 const ordersData = [
   {
@@ -40,23 +41,36 @@ const ordersData = [
 ];
 
 const OrdersPage = () => {
+  const [orders, setOrders] = useState([]);
   const navigate = useNavigate(); // Using useNavigate hook for navigation
 
+  useEffect(() => {
+    const getMyOrders = async () => {
+        const response = await axiosInstance.get('/order');
+        console.log(response.data);
+        if (response.data.status === "success") {
+          setOrders(response.data?.orders)
+        }
+    };
+    getMyOrders();
+  }, []); 
+
   // Handle click event to navigate to the order details page with the order ID and order type as query parameters
-  const handleOrderClick = (orderId, orderType) => {
-    navigate(`/order-details?o_i=${orderId}&order_type=${orderType}`); // Pass order_type in the query params
+  const handleOrderClick = (order) => {
+    navigate(`/order-details?o_i=${order._id}`, { state: { order }}); // Pass order_type in the query params
   };
 
   const MAX_ITEMS_DISPLAY = 2; // Maximum number of items to display before "Show More"
 
   // Function to display cart order items with "Show More"
   const renderOrderItems = (orderItems) => {
+    console.log("Order Items: ", orderItems)
     const [showMore, setShowMore] = useState(false);
-
+    
     if (orderItems.length <= MAX_ITEMS_DISPLAY || showMore) {
       return (
         <>
-          {orderItems.join(', ')}
+          {orderItems?.map(item => item.product.name).join(', ')}
           {orderItems.length > MAX_ITEMS_DISPLAY && (
             <button
               className="text-blue-500 text-sm ml-1"
@@ -94,23 +108,24 @@ const OrdersPage = () => {
       <h2 className="text-xl font-semibold mb-4">My Orders</h2>
 
       {/* Orders List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {ordersData.map((order) => (
+      <div className="flex flex-col gap-6">
+        {orders.map((order) => (
           <div
-            key={order.id}
-            className="bg-white shadow-md rounded-lg p-4 flex flex-col md:flex-col cursor-pointer"
-            onClick={() => handleOrderClick(order.id, order.order_type)} // Pass order_type to navigation
+            key={order._id}
+            className="bg-white shadow-md rounded-lg p-4 border cursor-pointer"
+            onClick={() => handleOrderClick(order)} // Pass order_type to navigation
           >
             {/* Mobile View - Small Image on Left */}
-            <div className="flex md:flex-col items-center md:items-start">
+            <div className="flex items-center gap-4">
               {/* Image - Use cart icon for cart orders, product image for regular orders */}
-              <div className="flex-shrink-0 w-20 h-20 md:w-full md:h-40 overflow-hidden rounded-lg mb-4 md:mb-6">
-                {order.order_type === 'cart' ? (
+              <div className="flex-shrink-0 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-lg mb-4 md:mb-6">
+                {/* TODO: Order.items.length > 1 */}
+                {order?.items?.length > 1 ? (
                   <FaShoppingCart className="w-full h-full text-gray-600" /> // Show cart icon
                 ) : (
                   <img
-                    src={order.image}
-                    alt={order.name}
+                    src={order?.items?.product?.image[0]}
+                    alt={order?.items?.product?.name}
                     className="w-full h-full object-cover"
                   />
                 )}
@@ -120,42 +135,41 @@ const OrdersPage = () => {
               <div className="ml-4 flex flex-col space-y-2">
                 {/* Heading for cart order with Show More functionality */}
                 <h3 className="font-semibold text-lg">
-                  {order.order_type === 'cart' ? (
-                    renderOrderItems(order.order_items) // Show order items for cart orders
+                  {order.items.length > 1 ? (
+                    // renderOrderItems(order.items) // Show order items for cart orders
+                    <div className="truncate w-60 overflow-hidden whitespace-nowrap" title={order.items.map(item => item.product.name).join(", ")}>
+                      {order.items.map(item => item.product.name).join(", ")}
+                    </div>
                   ) : (
-                    order.name // Show order name for regular orders
+                    order?.items[0]?.product?.name // Show order name for regular orders
                   )}
                 </h3>
-                <p className="text-sm text-gray-600">Ordered: {order.orderedDate}</p>
+                <p className="text-sm text-gray-600">Ordered: {new Date(order.createdAt).toLocaleString()}</p>
 
                 {/* Quantity or Item Count based on order type */}
-                {order.order_type === 'cart' ? (
-                  <p className="text-sm text-gray-600">Items: {order.itemCount}</p>
+                {order.items.length > 1 ? (
+                  <p className="text-sm text-gray-600">Items: {order.items.length}</p>
                 ) : (
-                  <p className="text-sm text-gray-600">Quantity: {order.quantity}</p>
+                  <p className="text-sm text-gray-600">Quantity: {order.items[0].quantity}</p>
                 )}
 
-                {/* Expected Delivery Date (if exists) */}
+                {/* Expected Delivery Date (if exists)
                 {order.expectedDelivery && (
                   <p className="text-sm text-gray-600">
                     Expected Delivery: {order.expectedDelivery}
                   </p>
-                )}
+                )} */}
 
                 {/* Order Status */}
                 <p
-                  className={`text-sm font-semibold ${
-                    order.expectedDelivery
-                      ? 'text-green-600'
-                      : 'text-blue-600'
-                  }`}
+                  className={`text-sm font-semibold text-blue-600`}
                 >
-                  {order.expectedDelivery ? order.status : 'Order Placed'}
+                  {order.orderStatus}
                 </p>
 
                 {/* Total Cost */}
                 <p className="text-sm text-gray-800 font-semibold">
-                  Total Cost: ${(order.price * (order.quantity || order.itemCount)).toFixed(2)}
+                  Total Cost: ${order.totalPrice}
                 </p>
               </div>
             </div>

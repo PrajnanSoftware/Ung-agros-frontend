@@ -22,6 +22,7 @@ const fetchOrderDetails = async (orderId, orderType) => {
 };
 
 const OrderDetailsPage = () => {
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,26 +31,27 @@ const OrderDetailsPage = () => {
 
   // Extract query params from the URL
   const searchParams = new URLSearchParams(location.search);
+  const { order } = location.state || {};
   const orderId = searchParams.get('o_i'); // order_id
-  const orderType = searchParams.get('order_type'); // order_type (regular or cart)
 
   // Fetch order details when the component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      const details = await fetchOrderDetails(orderId, orderType);
-      setOrderDetails(details);
-      setLoading(false);
-    };
-    fetchData();
-  }, [orderId, orderType]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const details = await fetchOrderDetails(orderId, orderType);
+  //     setOrderDetails(details);
+  //     setLoading(false);
+  //   };
+  //   fetchData();
+  // }, [orderId, orderType]);
 
-  if (loading) {
-    return <div>Loading...</div>;
+
+  if (!order) {
+    return <p>No order details available.</p>;
   }
 
   // Handle product click and redirect to product_details page
   const handleProductClick = (productId) => {
-    navigate(`/product-detail?product_id=${productId}`);
+    navigate(`/product/${productId}`);
   };
 
   return (
@@ -62,46 +64,46 @@ const OrderDetailsPage = () => {
         
           {/* Order Details Section */}
           <p className="text-gray-600 mb-2">
-            <strong>Order ID:</strong> {orderDetails.orderId}
+            <strong>Order ID:</strong> {order._id}
           </p>
             {/* Order Date */}
             <p className="text-gray-600 mb-2">
-            <strong>Order Date:</strong> {orderDetails.orderDate || 'Not available'}
+            <strong>Order Date:</strong> {new Date(order.createdAt).toLocaleString()}
           </p>
 
-          <p className="text-gray-600 mb-2">
+          {/* <p className="text-gray-600 mb-2">
             <strong>Expected Delivery:</strong> {orderDetails.expectedDelivery || 'Not available'}
-          </p>
+          </p> */}
           <p className="text-gray-600 mb-2">
-            <strong>Delivery:</strong> <span className='text-green-500' > in progress</span>
+            <strong>Order Status:</strong> <span className='text-blue-500' >{order.orderStatus}</span>
           </p>
 
           {/* Invoice Number - Shows in red if not generated */}
-          <p className={`text-gray-600 mb-2 ${!orderDetails.invoiceNumber ? 'text-red-600' : ''}`}>
+          <p className={`text-gray-600 mb-2 `}>
             <strong>Invoice Number:</strong>{' '}
-            {orderDetails.invoiceNumber ? orderDetails.invoiceNumber : 'Invoice not generated'}
+            {order.billDetails.invoiceNumber}
           </p>
-
-          {/* Receipt - Show in red if not generated */}
+{/* 
+          Receipt - Show in red if not generated
           <p className={`text-gray-600 mb-4 ${!orderDetails.receipt ? 'text-red-600' : ''}`}>
             <strong>Receipt:</strong> {orderDetails.receipt ? orderDetails.receipt : 'Receipt not generated'}
-          </p>
+          </p> */}
 
           {/* Download Buttons */}
           <div className="flex space-x-4">
             {/* Download Invoice Button - Hide if not generated */}
-            {orderDetails.invoiceNumber && (
+            {order.billDetails.invoiceNumber && (
               <button className="bg-blue-500 text-white px-4 py-2 rounded">
                 Download Invoice
               </button>
             )}
 
-            {/* Download Receipt Button - Hide if not generated */}
+            {/* Download Receipt Button - Hide if not generated
             {orderDetails.receipt && (
               <button className="bg-blue-500 text-white px-4 py-2 rounded">
                 Download Receipt
               </button>
-            )}
+            )} */}
           </div>
           
         </div>
@@ -109,50 +111,33 @@ const OrderDetailsPage = () => {
         {/* Right Column - Product Details */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-xl font-semibold mb-4">
-            {orderType === 'cart' ? 'Cart Products' : 'Product Details'}
+            {'Product Details'}
           </h3>
 
           {/* Product List for Cart Orders */}
-          {orderType === 'cart' ? (
+
             <div className="space-y-4">
-              {orderDetails.products.map((product) => (
+              {order.items.map((item) => (
                 <div
-                  key={product.productId}
+                  key={item.product._id}
                   className="flex  items-center bg-gray-100 p-4 rounded-lg cursor-pointer"
-                  onClick={() => handleProductClick(product.productId)}
+                  onClick={() => handleProductClick(item.product._id)}
                 >
                   {/* Ensure image shows up */}
                   <img
-                    src={product.imageUrl}
-                    alt={product.name}
+                    src={item.product.image[0]}
+                    alt={item.product.name}
                     className="w-16 h-16 object-cover rounded-lg" // Added more styling to ensure the image shows up correctly
                   />
                   <div className="ml-4">
-                    <p className="font-medium">{product.name}</p>
-                    <p>Quantity: {product.quantity}</p>
-                    <p>Price per unit: ${product.price.toFixed(2)}</p>
+                    <p className="font-medium">{item.product.name}</p>
+                    <p>Quantity: {item.quantity}</p>
+                    <p>Price per unit: ${item.price}</p>
+                    <p>Price: ${item.totalProductPrice}</p>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            // Product Details for Regular Orders
-            <div
-              className="flex items-center bg-gray-100 p-4 rounded-lg cursor-pointer"
-              onClick={() => handleProductClick(orderDetails.products[0].productId)}
-            >
-              <img
-                src={orderDetails.products[0].imageUrl}
-                alt={orderDetails.products[0].name}
-                className="w-16 h-16 object-cover rounded-lg" // Added styling here as well
-              />
-              <div className="ml-4">
-                <p className="font-medium">{orderDetails.products[0].name}</p>
-                <p>Quantity: {orderDetails.products[0].quantity}</p>
-                <p>Price per unit: ${orderDetails.products[0].price.toFixed(2)}</p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

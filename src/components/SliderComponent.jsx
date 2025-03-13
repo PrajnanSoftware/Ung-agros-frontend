@@ -53,7 +53,7 @@ const SliderComponent = () => {
         <div className='relative h-full'>
             {products.map((product, index) => (
                 <div 
-                    key={product.id}
+                    key={index}
                     className={`absolute inset-0 transition-opacity duration-300 ${ index == currentIndex ? 'opacity-100' : 'opacity-0'}`}
                 >
                     <div
