@@ -87,8 +87,8 @@
             <div className='flex gap-6 justify-start px-6 overflow-x-auto scroll-smooth snap-x snap-mandatory m-auto'>
               { category.length > 0 ? (category.map((cat, index) => (
                 <div key={index} className='flex flex-col items-center snap-start'>
-                  <div className='relative h-24 w-24 rounded-full border-4 border-accent overflow-hidden'>
-                    {/* <img src={p[1].image} alt={p[1].name} className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105' /> */}
+                  <div className='relative h-24 w-24 rounded-full border-4 border-accent overflow-hidden text-center hover:shadow-lg'>
+                    <img src={cat?.image} alt={cat.name} className='w-full h-full object-cover transition-transform duration-300 hover:scale-110' />
                   </div>
                   <h6 className="mt-4 text-sm text-center font-semibold text-gray-800">
                     {cat.name}
