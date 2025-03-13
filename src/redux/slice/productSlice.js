@@ -5,10 +5,38 @@ import Category from "../../../../ecom-backend/src/models/categoryModel";
 
 export const getProducts = createAsyncThunk(
     'product/getProducts',
+    async ({ name, category, minPrice, maxPrice, page = 1, limit = 10 }, { rejectWithValue }) => {
+        try {
+            console.log("Getting Products")
+            const response = await axiosInstance.get('/product', {
+                params: { name, category, minPrice, maxPrice, page, limit }
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data)
+        }
+    }
+);
+
+export const getTopSellingProducts = createAsyncThunk(
+    'product/top-selling',
     async (_, { rejectWithValue }) => {
         try {
             console.log("Getting Products")
-            const response = await axiosInstance.get('/product');
+            const response = await axiosInstance.get('/product/top-selling');
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data)
+        }
+    }
+);
+
+export const getNewProducts = createAsyncThunk(
+    'product/new',
+    async (_, { rejectWithValue }) => {
+        try {
+            console.log("Getting Products")
+            const response = await axiosInstance.get('/product/new');
             return response.data;
         } catch (error) {
             return rejectWithValue(error.response?.data)
@@ -56,8 +84,17 @@ const productSlice = createSlice({
     name: 'products',
     initialState: {
         products: [],
+        totalPages: 0,
+        currentPage: 0,
+        totalProducts: 0,
+        topSellingProducts: [],
+        newProducts: [],
         productsLoading: false,
+        topSellingProductLoading: false,
+        newProductsLoading: false,
         productError: null,
+        newProductError: null,
+        topSellingProductError: null,
         productAddError: null,
         productUpdateError: null,
         productDeleteError: null,
@@ -71,11 +108,42 @@ const productSlice = createSlice({
             })
             .addCase(getProducts.fulfilled, (state, action) => {
                 state.productsLoading = false;
-                state.products = action.payload.data;
+                if (action.payload.currentPage === 1) {
+                    state.products = action.payload.data; 
+                } else {
+                    state.products = [...state.products, ...action.payload.data]; 
+                }
+                state.totalPages = action.payload.totalPages;
+                state.currentPage = action.payload.currentPage;
+                state.totalProducts = action.payload.totalProducts;
             })
             .addCase(getProducts.rejected, (state, action) => {
                 state.productsLoading = false;
                 state.productError = action.payload;
+            })
+            .addCase(getTopSellingProducts.pending, (state) => {
+                state.topSellingProductLoading = true;
+                state.topSellingProductError = null;
+            })
+            .addCase(getTopSellingProducts.fulfilled, (state, action) => {
+                state.topSellingProductLoading = false;
+                state.topSellingProducts = action.payload.data;
+            })
+            .addCase(getTopSellingProducts.rejected, (state, action) => {
+                state.topSellingProductLoading = false;
+                state.topSellingProductError = action.payload;
+            })
+            .addCase(getNewProducts.pending, (state) => {
+                state.newProductsLoading = true;
+                state.newProductError = null;
+            })
+            .addCase(getNewProducts.fulfilled, (state, action) => {
+                state.newProductsLoading = false;
+                state.newProducts = action.payload.data;
+            })
+            .addCase(getNewProducts.rejected, (state, action) => {
+                state.newProductsLoading = false;
+                state.newProductError = action.payload;
             })
             .addCase(addProduct.pending, (state) => {
                 state.productsLoading = true;
@@ -95,7 +163,7 @@ const productSlice = createSlice({
             })
             .addCase(updateProduct.fulfilled, (state, action) => {
                 state.productsLoading = false;
-                const index = state.products.findIndex(action.payload.data.id);
+                const index = state.products.findIndex((p) => p.id === action.payload.data.id);
                 if (index !== -1) {
                     state.products[index] = action.payload.data;
                 }
@@ -111,7 +179,7 @@ const productSlice = createSlice({
             .addCase(deleteProduct.fulfilled, (state, action) => {
                 state.productsLoading = false;
                 state.products = state.products.filter(
-                    (category) => category.id !== action.payload.data.id
+                    (product) => product.id !== action.payload.data.id
                 );
             })
             .addCase(deleteProduct.rejected, (state, action) => {

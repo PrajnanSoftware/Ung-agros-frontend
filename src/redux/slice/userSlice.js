@@ -61,6 +61,17 @@ export const getUserProfile = createAsyncThunk(
     }
 )
 // TODO: 2. Update user profile
+export const updateUser = createAsyncThunk(
+    'users/update',
+    async (updateData, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.put('/users/profile', updateData);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+)
 // TODO: 3. Reset Password
 
 const userSlice = createSlice({
@@ -120,6 +131,19 @@ const userSlice = createSlice({
                 state.isAuthenticated = true;
             })
             .addCase(loginUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.data.user)
+                state.user = action.payload.data.user;
+            })
+            .addCase(updateUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

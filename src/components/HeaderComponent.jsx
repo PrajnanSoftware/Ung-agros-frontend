@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from "../assets/logo (2).png";
 import { CgProfile } from "react-icons/cg";
@@ -8,6 +8,11 @@ import SearchSuggestionComponent from './SearchSuggetionComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCart } from '../redux/slice/cartSlice';
 import { getCategory } from '../redux/slice/categorySlice';
+import { axiosInstance } from '../utils/axiosInstance';
+import { debounce } from 'lodash';
+import { FaSearch } from "react-icons/fa";
+import { getProducts } from '../redux/slice/productSlice';
+import ProfileSliderComponent from './ProfileSliderComponent';
 
 const handleLoginSignUpClick = () => {
 
@@ -21,8 +26,11 @@ const handleCartClick = () => {
 
 const HeaderComponent = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [search_query, setSearchQuery] = useState("");
   const [search_result ,setSearchResult] = useState ([]);
   const [isCategoryOpen, setCategoryOpen] = useState(false);
+  const [isProfileOpen, setProfileOpen] = useState(false);
+  const searchInputRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,32 +41,64 @@ const HeaderComponent = () => {
   useEffect(() => {
     dispatch(getCategory());
     dispatch(getCart());
-  }, [])
+  }, [dispatch]);
 
-  const onSearchInputChange = (e) => {
-    const search_query = e.target.value.toLowerCase();
-    if(search_query == '')
-    {
+  const fetchSuggestions = useCallback( async (query) => {
+    if (!query) {
+      setSearchResult([]);
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.get(`/product/suggestions?query=${query}`);
+      setSearchResult(response.data.data);
+    } catch (error) {
       setSearchResult([]);
     }
-    else{
-      var data = [
-        { id: 1, name: "name test1" },
-        { id: 2, name: "name test2" },
-        { id: 3, name: "a test1" },
-        { id: 4, name: "b test4" },
-        { id: 5, name: "z test5" },
-      ];
+  }, [])
+
+  const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), [fetchSuggestions]);
+
+  const onSearchInputChange = (e) => {
     
-      const filtered_data = data.filter(item => 
-        item.name.toLowerCase().includes(search_query)
-      );
-    
-      setSearchResult(filtered_data);
-    }
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+    debouncedFetchSuggestions(query);
     
   }
+
+  const onSearchSelection = (name) => {
+    setSearchResult([]);
+    setSearchQuery(name.toLowerCase());
+    fetchSuggestions(name.toLowerCase());
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!search_query.trim()) return;
+    setSearchResult([]);
+    // dispatch(getProducts({name:search_query, page:1, limit:10}));
+    try {
+      navigate(`/search-result?query=${search_query}`);
+    } catch (error) {
+      console.error("Search failed", error);
+    }
+  };
   
+  const handleProfileToggle = (e) => {
+    setProfileOpen((prev) => {
+      if (!prev) {
+        document.body.style.overflow = "hidden"; 
+      } else {
+        document.body.style.overflow = ""; 
+      }
+      return !prev
+    });
+  }
+
   const toggleCategoryState = (e) => {
     setCategoryOpen((prev) => !prev);
   }
@@ -69,7 +109,7 @@ const HeaderComponent = () => {
   }
 
   return (
-    <div className='h-32 lg:h-16 flex flex-wrap lg:flex-nowrap bg-primary items-center justify-between'>
+    <div className='h-32 lg:h-16 flex flex-wrap lg:flex-nowrap bg-primary items-center justify-between z-10'>
 
       <div className='flex-1 basis-1/4 lg:basis-0 min-w-[90px] lg:hidden pl-4'>
         { menuOpen ? (
@@ -100,7 +140,7 @@ const HeaderComponent = () => {
         {
           category.map((item, index) => {
             // TODO: When clicked on NavLink redirects to search page 
-            return <NavLink key={index} to={`/${item.name}`} role='categoryitem' id={`category-item-${index}`} className={({ isActive }) => isActive ? "block px-2 text-secondary font-bold border-b-4 border-secondary mx-2" : "block px-2 text-background"} onClick={closeAllPopups} >{item.name}</NavLink>
+            return <NavLink key={index} to={`/search-result/${item._id}`} role='categoryitem' id={`category-item-${index}`} className={({ isActive }) => isActive ? "block px-2 text-secondary font-bold border-b-4 border-secondary mx-2" : "block px-2 text-background"} onClick={closeAllPopups} >{item.name}</NavLink>
           })
         }
       </div>
@@ -116,11 +156,11 @@ const HeaderComponent = () => {
       {/* Searchbox */}
       <form  action={"/search-result"} className="relative flex-1 basis-full lg:basis-auto order-1 lg:order-none min-w-[120px] lg:mt-0 pb-1 px-2">
         <div className={` ${search_result.length > 0 ? 'bg-white rounded-t-[20px] ' : ''}`}>
-        <input type="text" onChange={onSearchInputChange} name="search"  autoComplete="off" id="search" placeholder='Search Products...' 
+        <input type="text" onChange={onSearchInputChange} name="search"  autoComplete="off" id="search" value={search_query} placeholder='Search Products...' ref={searchInputRef}
             className={`w-full px-4 py-1 rounded-full border border-gray-300 focus:outline-none
             ${search_result.length > 0 ? 'rounded-b-[0px] rounded-t-[20px]' : ''} `} />
-        <button type="submit" className="absolute right-4 top-1 text-gray-500">🔍</button>
-        <SearchSuggestionComponent result={search_result}/>
+              <button type="submit" className="absolute right-5 top-2 text-gray-500 " onClick={handleSearch}><FaSearch /></button>
+        <SearchSuggestionComponent result={search_result} onSearchSelection={onSearchSelection} />
         </div>
       </form>
 
@@ -139,20 +179,17 @@ const HeaderComponent = () => {
         </div>
         <div className='relative group z-10'>
           { isAuthenticated ? 
-            <div className='px-3 py-1 rounded-full bg-white font-bold'>
+            <div className='px-3 py-1 rounded-full bg-white font-bold' onClick={handleProfileToggle}>
               {(user.email).charAt(0).toUpperCase()}
-              
             </div>
-          : <CgProfile className='text-3xl cursor-pointer' /> }
+          : <CgProfile className='text-3xl cursor-pointer' onClick={() => navigate('/login')}/> }
           {console.log(isAuthenticated)}
           <span className="absolute left-1/2 -translate-x-1/2 -bottom-6 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
               Account
           </span>
         </div>
-        
-        
       </div>
-      
+      { isProfileOpen && <ProfileSliderComponent handleToggle={handleProfileToggle} />}
     </div>
   )
 }

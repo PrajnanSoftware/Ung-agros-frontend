@@ -17,6 +17,7 @@ import { initializeAuth } from "./redux/slice/userSlice";
 import CheckoutPage from "./pages/CheckoutPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentFailurePage from "./pages/PaymentFailurePage";
+import ProfilePage from "./pages/ProfilePage";
 
 
 
@@ -37,10 +38,12 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingHome />}/>
           <Route path="/my-orders" element={<OrdersPage />}/>
-          <Route path="/order/:id" element={<OrderDetailsPage />}/>
+          <Route path="/order-details" element={<OrderDetailsPage />}/>
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/signup" element={<SignUpPage />}/>
+          <Route path="/profile" element={<ProfilePage />}/>
           <Route path="/search-result" element={<ProductSearchPage />}/>
+          <Route path="/search-result/:category" element={<ProductSearchPage />}/>
           <Route path="/product/:id" element={<ProductDetailsPage />}/>
           <Route path="/cart" element={<CartPage />}/>
           <Route path="/contact-us" element={<ContactUsPage />}/>
