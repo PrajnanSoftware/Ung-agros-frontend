@@ -38,7 +38,7 @@
 
     const handleClickNavigation = (product) => {
       console.log(product)
-      navigate(`product/${product._id}`)
+      navigate(`product/${product._id}/${product.category}`)
     }
 
     return (

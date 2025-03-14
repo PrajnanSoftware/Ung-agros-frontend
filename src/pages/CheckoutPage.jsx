@@ -118,7 +118,7 @@ const CheckoutPage = () => {
         <div className='flex flex-col lg:flex-row'>
             <div className='flex-auto'>
                 <h3 className='text-xl font-semibold'>Order Summary</h3>
-                <div className='h-96 overflow-y-auto'>
+                <div className='max-h-[calc(100vh-100px)] overflow-y-auto'>
                     {checkoutData.items.map((item, index) => {
                         const cartItem = cart.find((c) => c.product._id === item.product);
                         console.log("Hi", cartItem);

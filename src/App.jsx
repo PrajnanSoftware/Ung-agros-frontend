@@ -18,6 +18,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentFailurePage from "./pages/PaymentFailurePage";
 import ProfilePage from "./pages/ProfilePage";
+import AddressPage from "./pages/AddressPage";
 
 
 
@@ -42,9 +43,10 @@ function App() {
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/signup" element={<SignUpPage />}/>
           <Route path="/profile" element={<ProfilePage />}/>
+          <Route path="/address" element={<AddressPage />}/>
           <Route path="/search-result" element={<ProductSearchPage />}/>
           <Route path="/search-result/:category" element={<ProductSearchPage />}/>
-          <Route path="/product/:id" element={<ProductDetailsPage />}/>
+          <Route path="/product/:id/:category" element={<ProductDetailsPage />}/>
           <Route path="/cart" element={<CartPage />}/>
           <Route path="/contact-us" element={<ContactUsPage />}/>
           <Route path="/about-us" element={<AboutPage />}/>

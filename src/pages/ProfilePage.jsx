@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { HiPencil, HiCheck, HiX } from 'react-icons/hi'; // Icons for edit/cancel
-import { clearError, updateUser } from '../redux/slice/userSlice';
+import { clearError, getUserAddress, updateUser, updateUserAddress } from '../redux/slice/userSlice';
+import { countBy } from 'lodash';
+import AddressFormComponent from '../components/AddressFormComponent';
+import ModalComponent from '../components/ModalComponent';
 
 
 const ProfilePage = () => {
     const dispatch = useDispatch();
-    const { user, loading, error } = useSelector((state) => state.user);
+    const { user, loading, error, userAddress, addressError } = useSelector((state) => state.user);
     const [editMode, setEditMode] = useState(false);
+    const [openAddressForm, setOpenAddressForm] = useState(false);
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         phone: ''
     });
+
+    
 
     const [ emailSent, setEmailSent] = useState(false);
     const [phoneOtp, setPhoneOtp] = useState('');
@@ -57,20 +64,29 @@ const ProfilePage = () => {
         }
     };
 
+        useEffect(() => {
+            dispatch(getUserAddress());
+        }, [dispatch]); 
+
 
     useEffect(() => {
         if (user) {
-            setFormData({
-                name: user.name || '',
-                email: user.email || '',
-                phone: user.phone || '',
-            });
+            setFormData(prevFormData => ({
+                ...prevFormData, 
+                name: user.name || prevFormData.name || '',
+                email: user.email || prevFormData.email || '',
+                phone: user.phone || prevFormData.phone || '',
+            }));
         }
-    }, [user, editMode]);
+    }, [user]);
+
+    
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
+    const handleAddressToggle = () => setOpenAddressForm(prev => !prev) 
 
     const handleSave = async () => {
         // if (!verified && formData.phone !== user.phone) {
@@ -81,100 +97,142 @@ const ProfilePage = () => {
             // const response = await axiosInstance.put('/user/profile', formData);
             const response = await dispatch(updateUser(formData)).unwrap();
             setEditMode(false);
-            alert('Profile updated successfully.');
+            console.log('Profile updated successfully.');
         } catch (error) {
             console.error('Update failed:', error.response?.data);
         }
     };
 
+    
+
     return (
-        <div className="max-w-lg mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-700 text-center">My Profile</h2>
+        <div className='my-10'>
+            <div className={`max-w-lg mx-auto mt-10 bg-white rounded-lg p-6 ${editMode ? 'border-2 shadow-2xl' : 'border shadow-lg'}`}>
+                <h2 className="text-2xl font-semibold text-gray-700 text-center">My Profile</h2>
+                <div className='relative'>
+                    {/* Profile Info */}
+                    <div className="mt-6">
+                        <div className="flex items-center justify-between border-b pb-2 mb-4">
+                            <span className="text-gray-600">Name:</span>
+                            {editMode ? (
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="border rounded px-2 py-1 w-2/3"
+                                />
+                            ) : (
+                                <span className="text-gray-800 font-medium">{formData.name}</span>
+                            )}
+                        </div>
 
-            {/* Profile Info */}
-            <div className="mt-6">
-                <div className="flex items-center justify-between border-b pb-2 mb-4">
-                    <span className="text-gray-600">Name:</span>
-                    {editMode ? (
-                        <input
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            className="border rounded px-2 py-1 w-2/3"
-                        />
-                    ) : (
-                        <span className="text-gray-800 font-medium">{formData.name}</span>
-                    )}
-                </div>
-
-                <div className="flex items-center justify-between border-b pb-2 mb-4">
-                    <span className="text-gray-600">Email:</span>
-                    {editMode ? (
-                        <>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="border rounded px-2 py-1 w-2/3"
-                            />
-                            <button onClick={requestEmailVerification} className="bg-blue-500 text-white px-3 py-1 rounded text-sm ml-2">Verify</button>
-                        </>
-                    ) : (
-                        <span className="text-gray-800 font-medium">{formData.email}</span>
-                    )}
-                </div>
-
-                <div className="flex items-center justify-between border-b pb-2 mb-4">
-                    <span className="text-gray-600">Phone:</span>
-                    {editMode ? (
-                        <>
-                            <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="border rounded px-2 py-1 w-2/3" />
-                            {otpSent ? (
+                        <div className="flex items-center justify-between border-b pb-2 mb-4">
+                            <span className="text-gray-600">Email:</span>
+                            {editMode ? (
                                 <>
-                                    <input type="text" placeholder="Enter OTP" value={phoneOTP} onChange={(e) => setPhoneOTP(e.target.value)} className="border rounded px-2 py-1 w-1/3 ml-2" />
-                                    <button onClick={verifyOTP} className="bg-green-500 text-white px-3 py-1 rounded text-sm ml-2">Verify</button>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className="border rounded px-2 py-1 w-2/3"
+                                    />
+                                    <button onClick={requestEmailVerification} className="bg-blue-500 text-white px-3 py-1 rounded text-sm ml-2">Verify</button>
                                 </>
                             ) : (
-                                <button onClick={requestPhoneOTP} className="bg-blue-500 text-white px-3 py-1 rounded text-sm ml-2">Send OTP</button>
+                                <span className="text-gray-800 font-medium">{formData.email}</span>
                             )}
-                        </>
-                    ) : (
-                        <span className="text-gray-800 font-medium">{formData.phone || 'N/A'}</span>
-                    )}
-                </div>
+                        </div>
 
+                        <div className="flex items-center justify-between border-b pb-2 mb-4">
+                            <span className="text-gray-600">Phone:</span>
+                            {editMode ? (
+                                <>
+                                    <input type="text" name="phone" value={formData.phone} onChange={handleChange} className="border rounded px-2 py-1 w-2/3" />
+                                    {otpSent ? (
+                                        <>
+                                            <input type="text" placeholder="Enter OTP" value={phoneOTP} onChange={(e) => setPhoneOTP(e.target.value)} className="border rounded px-2 py-1 w-1/3 ml-2" />
+                                            <button onClick={verifyOTP} className="bg-green-500 text-white px-3 py-1 rounded text-sm ml-2">Verify</button>
+                                        </>
+                                    ) : (
+                                        <button onClick={requestPhoneOTP} className="bg-blue-500 text-white px-3 py-1 rounded text-sm ml-2">Send OTP</button>
+                                    )}
+                                </>
+                            ) : (
+                                <span className="text-gray-800 font-medium">{formData.phone || 'N/A'}</span>
+                            )}
+                        </div>
+
+                    </div>
+                    { error && <p className='text-red-600'>Email Already linked to another account or Something went wrong, Please try again later.</p>}
+                    {/* Edit / Save Buttons */}
+                    <div className="flex justify-center space-x-4 mt-6">
+                        {editMode ? (
+                            <>
+                                <button
+                                    onClick={handleSave}
+                                    className="bg-green-500 text-white px-4 py-2 rounded flex items-center"
+                                >
+                                    {loading ? (<>Loading...</>):  (<><HiCheck className="mr-2" /> Save</>)}
+                                
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        dispatch(clearError())
+                                        setEditMode(false)
+                                    }}
+                                    className="bg-red-500 text-white px-4 py-2 rounded flex items-center"
+                                >
+                                    <HiX className="mr-2" /> Cancel
+                                </button>
+                            </>
+                        ) : (
+                            <button
+                                onClick={() => setEditMode(true)}
+                                className="absolute -top-12 right-0 bg-blue-500 text-white px-2 text-center py-2 rounded-full flex items-center"
+                            >
+                                <HiPencil className="" />
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
-            { error && <p className='text-red-600'>Email Already linked to another account or Something went wrong, Please try again later.</p>}
-            {/* Edit / Save Buttons */}
-            <div className="flex justify-center space-x-4 mt-6">
-                {editMode ? (
+            <div className={`relative max-w-lg mx-auto mt-10 bg-white rounded-lg p-6 border shadow-lg`}>
+                <h3 className='text-xl font-semibold text-gray-700'>Address</h3>
+
+                {userAddress ? (
                     <>
                         <button
-                            onClick={handleSave}
-                            className="bg-green-500 text-white px-4 py-2 rounded flex items-center"
+                            onClick={handleAddressToggle}
+                            className="absolute top-6 right-6 bg-blue-500 text-white px-2 text-center py-2 rounded-full flex items-center"
                         >
-                            {loading ? (<>Loading...</>):  (<><HiCheck className="mr-2" /> Save</>)}
-                           
+                            <HiPencil />
                         </button>
-                        <button
-                            onClick={() => {
-                                dispatch(clearError())
-                                setEditMode(false)
-                            }}
-                            className="bg-red-500 text-white px-4 py-2 rounded flex items-center"
-                        >
-                            <HiX className="mr-2" /> Cancel
-                        </button>
+
+                        <div>
+                            {`${userAddress.fullName}`},
+                            <br />
+                            {`${userAddress.phoneNumber}`}
+                            <br />
+                            {`${userAddress.buildingName}, ${userAddress.street}, ${userAddress?.landmark}, ${userAddress.city}, ${userAddress.state}, ${userAddress.country} - ${userAddress.zipCode}`}
+                        
+                        </div>
+                        <ModalComponent isOpen={openAddressForm} handleClose={handleAddressToggle}>
+                            <AddressFormComponent address={userAddress} togglePopup={handleAddressToggle}/>
+                        </ModalComponent>
                     </>
                 ) : (
-                    <button
-                        onClick={() => setEditMode(true)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+                    !openAddressForm ? <button
+                        onClick={() => setOpenAddressForm(true)}
+                        className="bg-blue-500 text-white px-2 text-center py-2 rounded flex items-center"
                     >
-                        <HiPencil className="mr-2" /> Edit Profile
-                    </button>
+                        Add address
+                    </button> : 
+                    <ModalComponent isOpen={openAddressForm} handleClose={handleAddressToggle}>
+                        <AddressFormComponent togglePopup={handleAddressToggle}/>
+                    </ModalComponent>
+
                 )}
             </div>
         </div>

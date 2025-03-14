@@ -72,14 +72,54 @@ export const updateUser = createAsyncThunk(
         }
     }
 )
+
+export const getUserAddress = createAsyncThunk(
+    'user/getAddress',
+    async (_, {rejectWithValue}) => {
+        try {
+            const response = await axiosInstance.get('/address');
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+)
+
+export const updateUserAddress = createAsyncThunk(
+    'user/updateAddress',
+    async ({id, addressData}, { rejectWithValue }) => {
+        try {
+            console.log("Updating Address")
+            const response = await axiosInstance.put(`/address/${id}`, addressData);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+)
+
+export const addNewAddress = createAsyncThunk(
+    'user/newAddress',
+    async (addressData, { rejectWithValue }) => {
+        try {
+            console.log("Add new address")
+            const response = await axiosInstance.post(`/address`, addressData);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+)
 // TODO: 3. Reset Password
 
 const userSlice = createSlice({
     name: 'user',
     initialState: {
         user: null,
+        userAddress: null,
         loading: false,
         error: null,
+        userAddressError: null,
         success: false,
         isAuthenticated: false,
         initialized: false
@@ -87,6 +127,9 @@ const userSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
+        },
+        clearAddressError: (state) => {
+            state.userAddressError = null;
         },
     },
 
@@ -147,6 +190,45 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            // Address
+            .addCase(getUserAddress.pending, (state) => {
+                state.loading = true;
+                state.userAddressError = null;
+            })
+            .addCase(getUserAddress.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.data)
+                state.userAddress = action.payload.data;
+            })
+            .addCase(getUserAddress.rejected, (state, action) => {
+                state.loading = false;
+                state.userAddressError = action.payload;
+            })
+            .addCase(updateUserAddress.pending, (state) => {
+                state.loading = true;
+                state.userAddressError = null;
+            })
+            .addCase(updateUserAddress.fulfilled, (state, action) => {
+                state.loading = false;
+                console.log(action.payload.data)
+                state.userAddress = action.payload.data.address;
+            })
+            .addCase(updateUserAddress.rejected, (state, action) => {
+                state.loading = false;
+                state.userAddressError = action.payload;
+            })
+            .addCase(addNewAddress.pending, (state) => {
+                state.loading = true;
+                state.userAddressError = null;
+            })
+            .addCase(addNewAddress.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userAddress = action.payload.address;
+            })
+            .addCase(addNewAddress.rejected, (state, action) => {
+                state.loading = false;
+                state.userAddressError = action.payload;
+            })
             // Logout
             .addCase(logout.pending, (state) => {
                 state.loading = true;
@@ -156,6 +238,9 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.user = null;
                 state.isAuthenticated = false;
+                state.userAddressError = null;
+                state.userAddress = null;
+                state.error = null;
             })
             .addCase(logout.rejected, (state, action) => {
                 state.loading = false;
@@ -178,5 +263,5 @@ const userSlice = createSlice({
     }
 }) 
 
-export const { clearError } = userSlice.actions;
+export const { clearError, clearAddressError } = userSlice.actions;
 export default userSlice.reducer;

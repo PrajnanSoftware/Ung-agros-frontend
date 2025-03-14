@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../utils/axiosInstance";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import Category from "../../../../ecom-backend/src/models/categoryModel";
 
 export const getProducts = createAsyncThunk(
@@ -17,6 +17,32 @@ export const getProducts = createAsyncThunk(
         }
     }
 );
+
+export const findProductById = createAsyncThunk(
+    'product/findByid',
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(`/product/findById/${id}`);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data)
+        }
+    }
+)
+
+export const findProductSuggestion = createAsyncThunk(
+    'product/suggestion',
+    async ({category, page=1, limit=10}, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.get(`/product`,{
+                params: { category, page, limit }
+            });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data)
+        }
+    }
+)
 
 export const getTopSellingProducts = createAsyncThunk(
     'product/top-selling',
@@ -84,11 +110,17 @@ const productSlice = createSlice({
     name: 'products',
     initialState: {
         products: [],
+        productDetail: null,
+        productDetailLoading: false,
+        productDetailError: null,
         totalPages: 0,
         currentPage: 0,
         totalProducts: 0,
         topSellingProducts: [],
         newProducts: [],
+        productSuggestion: [],
+        productSuggestionLoading: false,
+        productSuggestionError: false,
         productsLoading: false,
         topSellingProductLoading: false,
         newProductsLoading: false,
@@ -145,6 +177,34 @@ const productSlice = createSlice({
                 state.newProductsLoading = false;
                 state.newProductError = action.payload;
             })
+
+            .addCase(findProductById.pending, (state) => {
+                state.productDetailLoading = true;
+                state.productDetailError = null;
+                state.productDetail = null;
+            })
+            .addCase(findProductById.fulfilled, (state, action) => {
+                state.productDetailLoading = false;
+                state.productDetail = action.payload.data;
+            })
+            .addCase(findProductById.rejected, (state, action) => {
+                state.productDetailLoading = false;
+                state.productDetailError = action.payload;
+            })
+
+            .addCase(findProductSuggestion.pending, (state) => {
+                state.productSuggestionLoading = true;
+                state.productSuggestionError = null;
+            })
+            .addCase(findProductSuggestion.fulfilled, (state, action) => {
+                state.productSuggestionLoading = false;
+                state.productSuggestion = action.payload.data;
+            })
+            .addCase(findProductSuggestion.rejected, (state, action) => {
+                state.productSuggestionLoading = false;
+                state.productSuggestionError = action.payload;
+            })
+
             .addCase(addProduct.pending, (state) => {
                 state.productsLoading = true;
                 state.productAddError = null;

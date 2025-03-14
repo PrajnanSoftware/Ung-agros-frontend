@@ -16,9 +16,9 @@ const ProfileSliderComponent = ({handleToggle}) => {
     };
 
     const handleLogout = () => {
-        // dispatch(logout()); 
-        // navigate('/login'); 
-        // handleToggle(); 
+        dispatch(logout()); 
+        handleToggle(); 
+        navigate('/login'); 
       };
 
   return (
@@ -38,7 +38,6 @@ const ProfileSliderComponent = ({handleToggle}) => {
                 >
                     Profile
                 </button>
-
                 <button
                     className="w-full text-left text-lg font-semibold text-gray-700 hover:text-primary hover:bg-gray-100 px-4 py-2 rounded"
                     onClick={() => handleNavigation('/my-orders')}

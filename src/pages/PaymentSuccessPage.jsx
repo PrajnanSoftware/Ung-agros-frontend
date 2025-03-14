@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { TiTick } from "react-icons/ti";
 
 const PaymentSuccessPage = () => {
@@ -25,8 +25,8 @@ const PaymentSuccessPage = () => {
   return (
     <div className='h-screen w-full flex flex-col items-center justify-center'>
         <TiTick className='text-green-600  text-4xl mb-2'/>
-        <h1 className="text-2xl font-bold text-green-600">Payment Successful</h1>
-        <p className="mt-2">Redirecting to Home in {countdown} seconds...</p>
+        <h1 className="text-2xl font-bold text-green-600">Order Successful</h1>
+        <p className="mt-2">Redirecting to Home in {countdown} seconds... <Link to={'/'} className='underline text-blue-700'>Home</Link> </p>
     </div>
   )
 }
