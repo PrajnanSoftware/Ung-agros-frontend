@@ -3,16 +3,19 @@ import CartItemsComponent from '../components/CartItemsComponent'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { checkoutCart } from '../redux/slice/cartSlice';
-import { getAddress } from '../api/addressApi';
 import { axiosInstance } from '../utils/axiosInstance';
+import { getUserAddress } from '../redux/slice/userSlice';
+import ModalComponent from '../components/ModalComponent';
+import AddressFormComponent from '../components/AddressFormComponent';
 
 const CartPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { cart, cartLoading, cartCheckoutError } = useSelector((state) => state.cart);
+    const { user, userAddress, loading, userAddressError } = useSelector((state) => state.user);
+    const [openAddressForm, setOpenAddressForm] = useState(false);
     const [total, setTotal] = useState(0);
     const [charges, setCharges] = useState(0);
-    const [address, setAddress] = useState();
     const [ addressError, setAddressError ] = useState(null);
     const [ addressLoading, setAddressLoading] = useState(false);
 
@@ -25,26 +28,15 @@ const CartPage = () => {
             setTotal(0)
         }
     }, [cart])
-
-    useEffect( () => {
-        const fetchAddress = async () => {
-            try {
-                setAddressLoading(true);
-                const response = await axiosInstance.get('/address');
-                if(response.data.status !== "success") {
-                    throw new Error("Failed to fetch Address");
-                }
-                console.log(response);
-                const addressData = response.data;
-                setAddress(addressData.data);
-            } catch (error) {
-                setAddressError(error);
-            } finally {
-                setAddressLoading(false);
-            }
+    
+    useEffect(() => {
+        if (user) {
+            dispatch(getUserAddress());
+        } else {
+            navigate('/login')
         }
-        fetchAddress()
-    }, []);
+    }, [dispatch]);
+
 
     // useEffect(() => {
     //     if (!cartCheckoutError && !cartLoading && cart.length > 0) {
@@ -53,13 +45,17 @@ const CartPage = () => {
     // }, [cartCheckoutError, cartLoading, cart, navigate]);
     // TODO: Handle Checkout 
     const handleCheckout = () => {
-        dispatch(checkoutCart());
-        navigate('/checkout');
+        if (userAddress) {
+            dispatch(checkoutCart());
+            navigate('/checkout');
+        }
         
     }
 
-    if (addressLoading) return <p>Loading...</p>;
-    if (addressError) return <p>Error: {addressError.message}</p>;
+    const handleAddressToggle = () => setOpenAddressForm(prev => !prev) 
+
+    // if (loading) return <p>Loading...</p>;
+    // if (userAddressError || cartCheckoutError) return <p>Error: {addressError.message}</p>;
 
   return (
     <div className='p-10 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20'>
@@ -67,23 +63,29 @@ const CartPage = () => {
             <h3 className='text-2xl font-bold'>My Cart</h3>
             <hr className='my-4'/>
             {
-                address ? (
+                userAddress ? (
                     <div className='flex justify-between items-center border p-2 rounded-md'>
                         <div>
-                        <p>Deliver to: <span>{address.name}</span></p>
-                        <p>{`${address.buildingName}, ${address.streat}, ${address.landmark}, ${address.city}, ${address.state}, ${address.country}, ${address.zipCode}`}</p>
+                        <p>Deliver to: <span>{userAddress.fullName}</span></p>
+                        <p>{`${userAddress?.buildingName}, ${userAddress?.street}, ${userAddress?.landmark}, ${userAddress?.city}, ${userAddress?.state}, ${userAddress?.country}, ${userAddress?.zipCode}`}</p>
                         </div>
-                        <button className='bg-blue-500  h-fit px-2 rounded-md'>Edit</button>
+                        <button className='bg-blue-500  h-fit px-2 rounded-md' onClick={handleAddressToggle}>Edit</button>
+                        <ModalComponent isOpen={openAddressForm} handleClose={handleAddressToggle}>
+                            <AddressFormComponent address={userAddress} togglePopup={handleAddressToggle}/>
+                        </ModalComponent>
                     </div>
-                ) : (<div>
-                    {/* <p>Please select address</p> */}
-                    <button className='bg-blue-500 px-2 py-1 rounded-md text-white'>+ Add a new Address*</button>
+                ) : (<div className='flex justify-between my-2'>
+                    <p>No Address Selected, Please Add address</p>
+                    <button className='bg-blue-500 px-2 py-1 rounded-md text-white' onClick={handleAddressToggle}>+ Add a new Address*</button>
+                    <ModalComponent isOpen={openAddressForm} handleClose={handleAddressToggle}>
+                        <AddressFormComponent togglePopup={handleAddressToggle}/>
+                    </ModalComponent>
                 </div>)
             }
             <h4 className='font-semibold'>Products</h4>
             {
                 cart.length == 0 ? <div className='text-center py-4'>No Cart Items</div> :
-                <div className='h-96 overflow-y-auto'>
+                <div className='max-h-[calc(100vh - 100px)] overflow-y-auto'>
                 {
                     cart.map((item, index) => {
                         return <CartItemsComponent key={index} productId={item.product._id} name={item.product.name} imgUrl={item && item[0]} price={item.product.sellingPrice} quantity={item.quantity} avlQty={item.product.quantity}/>
@@ -108,7 +110,7 @@ const CartPage = () => {
                 <p>${total+charges}</p>
             </div>
             <div>
-                <button className={`bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 ? "opacity-60 cursor-not-allowed " : ""}`} disabled={cart.length === 0 || cartLoading } onClick={handleCheckout}>
+                <button className={`bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || cartLoading || !userAddress ? "opacity-60 cursor-not-allowed " : ""}`} disabled={cart.length === 0 || cartLoading || !userAddress} onClick={handleCheckout}>
                     {cartLoading ? "Loading..." : "Checkout" }
                 </button>
             </div>

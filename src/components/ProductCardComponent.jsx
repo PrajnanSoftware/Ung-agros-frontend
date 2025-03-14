@@ -1,6 +1,7 @@
 import React from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addOrUpdateItemToCart } from '../redux/slice/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 function onViewDetail(id){
@@ -15,11 +16,17 @@ function onBuyNow(id){
 
 const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowBtn = false, viewDetailBgColor, buyNowBgColor, small = false }) => {
   
-  const dispath = useDispatch()
+  const { user } = useSelector((state) => state.user);
+  const dispath = useDispatch();
+  const navigate = useNavigate();
 
   const handleAddToCartButton = (e) => {
     e.stopPropagation();
-    dispath(addOrUpdateItemToCart({productId: product._id, quantity: 1}))
+    if (user) {
+      dispath(addOrUpdateItemToCart({productId: product._id, quantity: 1}))
+    } else {
+      navigate('/login');
+    }
   }
   return (
     <div className={`group relative bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden flex justify-stretch flex-col border-2 border-accent ${!small ? "min-w-[280px] max-w-[320px] min-h-[400px] max-h-[480px]" : "flex-1"}`}>

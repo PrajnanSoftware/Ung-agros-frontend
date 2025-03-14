@@ -50,8 +50,8 @@ const OrderDetailsPage = () => {
   }
 
   // Handle product click and redirect to product_details page
-  const handleProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+  const handleProductClick = (productId, category) => {
+    navigate(`/product/${productId}/${category}`);
   };
 
   return (
@@ -121,7 +121,7 @@ const OrderDetailsPage = () => {
                 <div
                   key={item.product._id}
                   className="flex  items-center bg-gray-100 p-4 rounded-lg cursor-pointer"
-                  onClick={() => handleProductClick(item.product._id)}
+                  onClick={() => handleProductClick(item.product._id, item.product.category)}
                 >
                   {/* Ensure image shows up */}
                   <img

@@ -31,7 +31,7 @@ const CartItemsComponent = ({productId, name, imgUrl, price, quantity, avlQty })
 
   return (
     <div className='relative flex gap-4 items-center border p-2 rounded-lg m-2 pr-8'>
-        <div className='absolute top-1 right-1' onClick={handleRemoveItem}>
+        <div className='absolute top-1 right-1 hover:cursor-pointer hover:bg-red-600 rounded-full' onClick={handleRemoveItem}>
             <MdOutlineDeleteForever className='text-2xl text-dark' />
         </div>
         <img src={imgUrl ? imgUrl : '/no-image.jpg'} alt="itemname" width={100} height={150}/>
