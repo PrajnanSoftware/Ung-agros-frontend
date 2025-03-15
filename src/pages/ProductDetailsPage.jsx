@@ -154,7 +154,7 @@ export default function ProductDetailsPage() {
           <div className="text-[16px] text-gray-600 mb-4">
             {show_more
               ? productDetail.description
-              : `${productDetail.description.substring(0, 150)}...`}{" "}
+              : `${productDetail.description.substring(0, 200)}...`}{" "}
             <button
               onClick={() => setShowMore(!show_more)}
               className="text-blue-500 ml-2 underline"

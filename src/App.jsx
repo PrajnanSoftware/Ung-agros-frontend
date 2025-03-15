@@ -19,6 +19,8 @@ import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentFailurePage from "./pages/PaymentFailurePage";
 import ProfilePage from "./pages/ProfilePage";
 import AddressPage from "./pages/AddressPage";
+import VerifyOtpPage from "./pages/verifyOtpPage";
+
 
 
 
@@ -42,6 +44,7 @@ function App() {
           <Route path="/order-details" element={<OrderDetailsPage />}/>
           <Route path="/login" element={<LoginPage />}/>
           <Route path="/signup" element={<SignUpPage />}/>
+          <Route path="/verify-otp" element={<VerifyOtpPage />}/>
           <Route path="/profile" element={<ProfilePage />}/>
           <Route path="/address" element={<AddressPage />}/>
           <Route path="/search-result" element={<ProductSearchPage />}/>
