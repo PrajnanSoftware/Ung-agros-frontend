@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; // For navigation and retrieving query params
+import BillTemplateComponent from '../components/BillTemplateComponent';
 
 // Mock API to fetch order and product details
 const fetchOrderDetails = async (orderId, orderType) => {
@@ -92,10 +93,29 @@ const OrderDetailsPage = () => {
           {/* Download Buttons */}
           <div className="flex space-x-4">
             {/* Download Invoice Button - Hide if not generated */}
-            {order.billDetails.invoiceNumber && (
-              <button className="bg-blue-500 text-white px-4 py-2 rounded">
-                Download Invoice
-              </button>
+            {order.orderStatus === "Delivered" && (
+              <>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                  Download Invoice
+                </button>
+                <BillTemplateComponent  
+                  customer_name={order.shippingAddress.fullName}
+                  bill_date={new Date(order.createdAt).toLocaleString()}
+                  invoice_no={order.billDetails.invoiceNumber}
+                  gst_no={'add gst number here'}
+                  // address={''}
+                  order_id={order._id}
+                  order_date={new Date(order.createdAt).toLocaleString()}
+                  // shipped_date={''}
+                  shipped_from={"Company Address"}
+                  delivered_address={'Customer Address'}
+                  products={order.items}
+                  sub_total={order.billDetails.subTotal}
+                  cgst={order.billDetails.cgst}
+                  sgst={order.billDetails.sgst}
+                  grand_total={order.billDetails.gst}
+                />
+              </>
             )}
 
             {/* Download Receipt Button - Hide if not generated

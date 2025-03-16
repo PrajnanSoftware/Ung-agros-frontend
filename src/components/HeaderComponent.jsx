@@ -14,13 +14,6 @@ import { FaSearch } from "react-icons/fa";
 import { getProducts } from '../redux/slice/productSlice';
 import ProfileSliderComponent from './ProfileSliderComponent';
 
-const handleLoginSignUpClick = () => {
-
-}
-
-const handleCartClick = () => {
-
-}
 
 
 
@@ -121,7 +114,7 @@ const HeaderComponent = () => {
 
       {/* Logo */}
       <div className='flex-1 basis-2/4 lg:basis-0 min-w-[90px] py-2 pl-6'>
-        <img src={logo} alt="Unq Agro" className='m-auto  bg-white h-14 w-14 rounded-full'/>
+        <img src={logo} alt="Unq Agro" className='m-auto  bg-white h-14 w-14 rounded-full hover:cursor-pointer' onClick={() => navigate('/')}/>
       </div>
 
       {/* Navigation Link */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { axiosInstance } from '../utils/axiosInstance';
 
 const ContactUsFormComponent = () => {
     const [formData, setFormData] = useState({
@@ -34,17 +35,20 @@ const ContactUsFormComponent = () => {
     
         setIsSubmitting(true);
         try {
-          // Simulate API call
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          setSubmitSuccess(true);
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            subject: '',
-            message: '',
-            inquiryType: 'general'
-          });
+          const response = await axiosInstance.post('/users/contact', formData);
+
+          if (response.data.success) {
+            setSubmitSuccess(true);
+            setFormData({
+              name: "",
+              email: "",
+              phone: "",
+              subject: "",
+              message: "",
+              inquiryType: "general",
+            });
+          }
+
           setTimeout(() => setSubmitSuccess(false), 3000);
         } catch (error) {
           console.error('Submission error:', error);

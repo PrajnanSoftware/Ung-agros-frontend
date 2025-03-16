@@ -3,42 +3,6 @@ import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of us
 import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
 import { axiosInstance } from '../utils/axiosInstance';
 
-const ordersData = [
-  {
-    id: 1,
-    name: 'Product 1',
-    image: '/product/1.png',
-    orderedDate: '2025-02-14',
-    expectedDelivery: '2025-02-20',
-    status: 'In Progress',
-    price: 29.99,
-    quantity: 2,
-    order_type: 'regular', // Regular order
-  },
-  {
-    id: 2,
-    name: 'Cart Order',
-    image: null, // No product image for cart orders
-    orderedDate: '2025-02-10',
-    expectedDelivery: '2025-02-18',
-    status: 'Shipped',
-    price: 49.99,
-    itemCount: 3, // For cart orders, use item count instead of quantity
-    order_type: 'cart', // Cart order
-    order_items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6'], // List of items in cart
-  },
-  {
-    id: 3,
-    name: 'Product 3',
-    image: '/product/3.png',
-    orderedDate: '2025-02-11',
-    expectedDelivery: null, // Delivery process not started yet
-    status: 'Order Placed',
-    price: 19.99,
-    quantity: 3,
-    order_type: 'regular', // Regular order
-  },
-];
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -60,47 +24,58 @@ const OrdersPage = () => {
     navigate(`/order-details?o_i=${order._id}`, { state: { order }}); // Pass order_type in the query params
   };
 
-  const MAX_ITEMS_DISPLAY = 2; // Maximum number of items to display before "Show More"
+  if (orders.length === 0) {
+    return (
+      <div className='p-10'>
+        <h2 className="text-xl font-semibold mb-4">My Orders</h2>
+        <div className='w-full min-h-[calc(100vh-200px)] flex items-center justify-center'>
+          <p className='text-xl'>No Orders data</p>
+        </div>
+      </div>
+    )
+  }
+
+  // const MAX_ITEMS_DISPLAY = 2; // Maximum number of items to display before "Show More"
 
   // Function to display cart order items with "Show More"
-  const renderOrderItems = (orderItems) => {
-    console.log("Order Items: ", orderItems)
-    const [showMore, setShowMore] = useState(false);
+  // const renderOrderItems = (orderItems) => {
+  //   console.log("Order Items: ", orderItems)
+  //   const [showMore, setShowMore] = useState(false);
     
-    if (orderItems.length <= MAX_ITEMS_DISPLAY || showMore) {
-      return (
-        <>
-          {orderItems?.map(item => item.product.name).join(', ')}
-          {orderItems.length > MAX_ITEMS_DISPLAY && (
-            <button
-              className="text-blue-500 text-sm ml-1"
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent click event from triggering the parent onClick
-                setShowMore(false);
-              }}
-            >
-              Show Less
-            </button>
-          )}
-        </>
-      );
-    }
+  //   if (orderItems.length <= MAX_ITEMS_DISPLAY || showMore) {
+  //     return (
+  //       <>
+  //         {orderItems?.map(item => item.product.name).join(', ')}
+  //         {orderItems.length > MAX_ITEMS_DISPLAY && (
+  //           <button
+  //             className="text-blue-500 text-sm ml-1"
+  //             onClick={(e) => {
+  //               e.stopPropagation(); // Prevent click event from triggering the parent onClick
+  //               setShowMore(false);
+  //             }}
+  //           >
+  //             Show Less
+  //           </button>
+  //         )}
+  //       </>
+  //     );
+  //   }
 
-    return (
-      <>
-        {orderItems.slice(0, MAX_ITEMS_DISPLAY).join(', ')}
-        <button
-          className="text-blue-500 text-sm ml-1"
-          onClick={(e) => {
-            e.stopPropagation(); // Prevent click event from triggering the parent onClick
-            setShowMore(true);
-          }}
-        >
-          Show More
-        </button>
-      </>
-    );
-  };
+  //   return (
+  //     <>
+  //       {orderItems.slice(0, MAX_ITEMS_DISPLAY).join(', ')}
+  //       <button
+  //         className="text-blue-500 text-sm ml-1"
+  //         onClick={(e) => {
+  //           e.stopPropagation(); // Prevent click event from triggering the parent onClick
+  //           setShowMore(true);
+  //         }}
+  //       >
+  //         Show More
+  //       </button>
+  //     </>
+  //   );
+  // };
 
   return (
     <div className="container mx-auto p-4">
