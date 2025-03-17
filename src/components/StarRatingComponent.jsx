@@ -1,6 +1,6 @@
 import React from "react";
 import { Star as StarOutline } from "lucide-react";
-import '../assets/css/StarRating.css'
+import '../assets/css/starRating.css'
 
 export default function StarRating({ rating }) {
   const full_stars = Math.floor(rating); // Full stars count
