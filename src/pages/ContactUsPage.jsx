@@ -10,7 +10,7 @@ const ContactUsPage = () => {
         </div>
         <div className='py-2'>
 
-            <div className='flex  flex-col md:flex-row mt-4 mb-10'>
+            <div className='flex  flex-col lg:flex-row mt-4 mb-10'>
                 <div className='flex flex-col flex-1'>
                     <div className='flex-1'>
                         <h3 className='text-2xl font-semibold'>🌱 Let’s Grow Together!</h3>
@@ -33,10 +33,10 @@ const ContactUsPage = () => {
                     <ul className='px-8 py-4'>
                         <li className='font-semibold'>Customer Support:</li>
                         <p><span className='pl-4 font-medium'>☎️ Call: </span>+91-XXXXXX1234 (Mon-Sat, 10 AM – 6 PM IST)</p>
-                        <p><span className='pl-4 font-medium'>📧 Email: </span>support@ungagro.com</p>
+                        <p><span className='pl-4 font-medium'>📧 Email: </span>support@ungagros.com</p>
                         
                         <li className='font-semibold'>Business Inquiries:</li>
-                        <p><span className='pl-4 font-medium'>📩 Email: </span>partner@ungagro.com</p>
+                        <p><span className='pl-4 font-medium'>📩 Email: </span>partner@ungagros.com</p>
                         
                     </ul>
                 </div>

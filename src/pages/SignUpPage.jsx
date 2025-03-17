@@ -186,7 +186,7 @@ const SignUpPage = () => {
                 </form>
             </div>
             <div className='text-center p-4'>
-                <p>Already have an acoount? <a href="/login">Login</a></p>
+                <p>Already have an acoount? <span className='hover:cursor-pointer' onClick={() => navigate('/login')}>Login</span></p>
             </div>
         </div>
     </div>
