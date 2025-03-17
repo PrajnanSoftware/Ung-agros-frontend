@@ -19,7 +19,7 @@ import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PaymentFailurePage from "./pages/PaymentFailurePage";
 import ProfilePage from "./pages/ProfilePage";
 import AddressPage from "./pages/AddressPage";
-import VerifyOtpPage from "./pages/verifyOtpPage";
+import VerifyOtpPage from "./pages/VerifyOtpPage";
 
 
 
