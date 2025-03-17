@@ -3,6 +3,7 @@ import { HiX } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../redux/slice/userSlice';
+import { getCart } from '../redux/slice/cartSlice';
 
 const ProfileSliderComponent = ({handleToggle}) => {
     const { error, loading, isAuthenticated, success, user } = useSelector((state) => state.user);
@@ -15,8 +16,9 @@ const ProfileSliderComponent = ({handleToggle}) => {
       handleToggle();
     };
 
-    const handleLogout = () => {
-        dispatch(logout()); 
+    const handleLogout = async () => {
+        await dispatch(logout()).unwrap();
+        dispatch(getCart());
         handleToggle(); 
         navigate('/login'); 
       };
