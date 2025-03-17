@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../utils/axiosInstance";
-import axios, { Axios } from "axios";
-import Category from "../../../../ecom-backend/src/models/categoryModel";
 
 export const getProducts = createAsyncThunk(
     'product/getProducts',
