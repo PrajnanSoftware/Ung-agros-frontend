@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import '../assets/css/SearchSuggetion.css';
+import '../assets/css/searchSuggetion.css';
 
 
 export default function SearchSuggestionComponent({ result, onSearchSelection }) {
