@@ -4,7 +4,8 @@
   import SmallProductCardComponent from '../components/SmallProductCardComponent'
   import { useDispatch, useSelector } from 'react-redux'
   import { useNavigate } from 'react-router-dom'
-  import { getNewProducts, getProducts, getTopSellingProducts } from '../redux/slice/productSlice'
+  import { getNewProducts, getProducts, getTopSellingProducts } from '../redux/slice/productSlice';
+  import { toast } from 'react-toastify';
   // TODO: InProgress
 
   // const categories = [
@@ -21,7 +22,7 @@
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { topSellingProducts = [], newProducts = [], topSellingProductLoading, newProductsLoading } = useSelector((state) => state.product);
-    const { category = [] } = useSelector((state) => state.category );
+    const { category = [], categoryLoading } = useSelector((state) => state.category );
 
     const [updates, setUpdates] = useState([
       "🌾 New Organic Seeds Available!",
@@ -69,7 +70,9 @@
             </div>
             <div className='p-6 flex gap-6 overflow-x-auto'>
               { topSellingProductLoading ? (
-                    <p className="text-center text-gray-600 w-full">Loading...</p>
+                <div className="flex justify-center items-center">
+                  <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
                 ) : (topSellingProducts.length > 0 ? ( topSellingProducts.map((product, index) => (
                 <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
                   <ProductCardComponent product={product} />
@@ -85,10 +88,14 @@
             </div>
 
             <div className='flex gap-6 justify-start px-6 overflow-x-auto scroll-smooth snap-x snap-mandatory m-auto'>
-              { category.length > 0 ? (category.map((cat, index) => (
+              { categoryLoading ? (
+                <div className="flex justify-center items-center">
+                  <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (category.length > 0 ? (category.map((cat, index) => (
                 <div key={index} className='flex flex-col items-center snap-start'>
                   <div className='relative h-24 w-24 rounded-full border-4 border-accent overflow-hidden text-center hover:shadow-lg'>
-                    <img src={cat?.image} alt={cat.name} className='w-full h-full object-cover transition-transform duration-300 hover:scale-110' />
+                    {cat.image ? (<img src={cat?.image} alt={cat.name} className='w-full h-full object-cover transition-transform duration-300 hover:scale-110' />) : (<img src={'/no-image.jpg'} alt={cat.name} className='w-full h-full object-cover transition-transform duration-300 hover:scale-110' />)}
                   </div>
                   <h6 className="mt-4 text-sm text-center font-semibold text-gray-800">
                     {cat.name}
@@ -96,7 +103,7 @@
                 </div>
               ))): (
                 <p className="text-center text-gray-600">No categories available.</p>
-              )}
+              ))}
             </div>
           </div>
 
@@ -107,7 +114,9 @@
             </div>
             <div className='grid grid-cols-2 lg:grid-cols-4 md:gap-6 gap-1 p-2 lg:p-6 justify-items-center'>
               { newProductsLoading ? (
-                <p className="text-center text-gray-600 w-full">Loading...</p>
+                <div className="flex justify-center items-center">
+                  <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
               ) : (
               newProducts.map((product, index) => (
                 <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>

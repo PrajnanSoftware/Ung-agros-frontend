@@ -163,7 +163,7 @@ const HeaderComponent = () => {
       <div className='flex gap-4 flex-1 basis-1/4 lg:basis-0 min-w-[90px] justify-end items-center py-2 pr-4'>
         <div className='relative group z-10'>
           <NavLink to={`/cart`}>
-            <IoCartOutline className='text-3xl cursor-pointer' />
+            <IoCartOutline className='text-3xl cursor-pointer text-white' />
           </NavLink>
           <span className="absolute left-1/2 -translate-x-1/2 -bottom-8 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
               Cart

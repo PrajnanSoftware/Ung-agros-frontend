@@ -7,9 +7,10 @@ import axios from 'axios';
 import PaymentSuccessPage from './PaymentSuccessPage';
 import PaymentFailurePage from './PaymentFailurePage';
 import { getCart } from '../redux/slice/cartSlice';
+import { toast } from 'react-toastify';
 
 const CheckoutPage = () => {
-    const { checkoutData, cart } = useSelector((state) => state.cart);
+    const { checkoutData, cart, cartLoading } = useSelector((state) => state.cart);
     const {isAuthenticated, user } = useSelector((state) => state.user);
     
     const navigate = useNavigate();
@@ -19,15 +20,18 @@ const CheckoutPage = () => {
     const [cgst, setCgst] = useState(0); 
     const [total, setTotal] = useState(0);
 
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
+
         console.log("use effect")
         if (checkoutData) {
             console.log("setting total")
             const amountAfterTax = checkoutData.totalPrice;
             setAmount(amountAfterTax)
-            setCgst(((amountAfterTax/100)*3).toFixed(2));
-            setSgst(((amountAfterTax/100)*2).toFixed(2));
-            setTotal(amountAfterTax+parseFloat(((amountAfterTax/100)*3).toFixed(2))+parseFloat(((amountAfterTax/100)*2).toFixed(2)));
+            setCgst(((amountAfterTax/100)*9).toFixed(2));
+            setSgst(((amountAfterTax/100)*9).toFixed(2));
+            setTotal((amountAfterTax+parseFloat(((amountAfterTax/100)*9).toFixed(2))+parseFloat(((amountAfterTax/100)*9).toFixed(2))).toFixed(2));
         }
     }, [checkoutData]);
 
@@ -43,6 +47,7 @@ const CheckoutPage = () => {
 
     const handlePayment = async (e) => {
         try {
+            setLoading(true);
             const isLoaded = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
             if (!isLoaded) return console.log("Razorpay SDK failed to load");
             
@@ -62,6 +67,7 @@ const CheckoutPage = () => {
                     console.log(verifyRes);
                     if (verifyRes.data.success) {
                         console.log("Payment Successful");
+                        toast.success('Payment successful');
                         const order = await axiosInstance.post('/order', 
                             {
                                 items: checkoutData.items,
@@ -81,12 +87,15 @@ const CheckoutPage = () => {
                                 }
                             });
                     if (order.data.status === 'success') {
+                        toast.success('Order successful');
                         navigate('/payment-success');
                         dispatch(getCart());
                     } else {
+                        toast.error('Payment failed');
                         navigate('/payment-failure');
                     }
                     } else {
+                        toast.error('Order failed');
                         navigate('/payment-failure');
                     }
                 },
@@ -103,17 +112,25 @@ const CheckoutPage = () => {
             const razor = new window.Razorpay(options);
             razor.open();
         } catch (error) {
+            setLoading(false)
             console.error("Error:", error);   
+        } finally {
+            setLoading(false)
         }
     }
 
+    if (cartLoading) {
+        return <div className="flex justify-center items-center min-h-screen">
+            <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+    }
     if (!checkoutData) 
-        return <div className='h-96'>
-             <div className='text-center'>Something went wrong. <br /> Navigate to <a href="/cart">Cart</a></div>;  
+        return <div className='min-h-[calc(100vh-200px)] flex items-center justify-center'>
+             <div className='text-center flex flex-col'><h3>Something went wrong.</h3>  <p>Back to <a href="/cart" className='text-blue-700 underline'>Cart</a></p></div>;  
         </div>
 
   return (
-    <div>
+    <div className='p-4'>
         <h1 className='text-2xl font-bold'>Checkout</h1>
         <div className='flex flex-col lg:flex-row'>
             <div className='flex-auto'>
@@ -158,7 +175,15 @@ const CheckoutPage = () => {
                     <p>${total}</p>
                 </div>
                 <div>
-                    <button className={`bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || !checkoutData ? "opacity-60 cursor-not-allowed " : ""}`} disabled={!checkoutData || cart.length === 0} onClick={handlePayment}> Pay ${total} </button>
+                    <button className={`w-full p-2 rounded-lg my-2 ${cart.length === 0 || !checkoutData || loading ? "opacity-60 cursor-not-allowed bg-gray-400" : "bg-primary hover:bg-primary-dark"}`} disabled={!checkoutData || cart.length === 0 || loading} onClick={handlePayment}>
+                        {
+                            loading ? (
+                                <div className="flex justify-center items-center">
+                                    <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            ) : `Pay ${total}` 
+                        } 
+                    </button>
                 </div>
             </div>
         </div>

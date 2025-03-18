@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import logo from '../assets/logo (2).png';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearError, loginUser } from '../redux/slice/userSlice';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -20,9 +22,15 @@ const LoginPage = () => {
         dispatch(clearError());
     }, [dispatch]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        dispatch(loginUser({ email, password }));
+    const handleSubmit = async (e) => {
+        try {
+            
+            e.preventDefault();
+            await dispatch(loginUser({ email, password })).unwrap();
+            toast.success('Login successful')
+        } catch (error) {
+            toast.error('Something went wrong. try again')
+        }
     };
 
   return (
@@ -54,8 +62,12 @@ const LoginPage = () => {
                         />
                     </div>
                     <button type="submit" 
-                        className={`w-full py-3 px-6 text-white font-semibold rounded-lg transition-colors bg-primary`}>
-                            { loading ? 'Loading...' : 'Login'}
+                        className={`w-full py-3 px-6 text-white font-semibold rounded-lg transition-colors  ${loading ? 'bg-gray-400' : 'bg-primary hover:bg-primary-dark'}`} disabled={loading}>
+                            { loading ? (
+                                <div className="flex justify-center items-center">
+                                    <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            ) : 'Login'}
                     </button>
                 </form>
             </div>

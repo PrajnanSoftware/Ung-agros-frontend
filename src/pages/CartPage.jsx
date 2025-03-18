@@ -11,7 +11,7 @@ import AddressFormComponent from '../components/AddressFormComponent';
 const CartPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { cart, cartLoading, cartCheckoutError } = useSelector((state) => state.cart);
+    const { cart, cartLoading, cartCheckoutError, cartError } = useSelector((state) => state.cart);
     const { user, userAddress, loading, userAddressError } = useSelector((state) => state.user);
     const [openAddressForm, setOpenAddressForm] = useState(false);
     const [total, setTotal] = useState(0);
@@ -54,8 +54,15 @@ const CartPage = () => {
 
     const handleAddressToggle = () => setOpenAddressForm(prev => !prev) 
 
-    // if (loading) return <p>Loading...</p>;
-    // if (userAddressError || cartCheckoutError) return <p>Error: {addressError.message}</p>;
+    if (cartLoading) 
+        return (<div className="flex justify-center items-center min-h-screen">
+            <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>);
+
+    if (cartError) 
+        return (<div className='min-h-[calc(100vh-200px)] flex justify-center items-center'>
+            <p>Something went wrong</p>
+        </div>);
 
   return (
     <div className='p-10 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20'>
