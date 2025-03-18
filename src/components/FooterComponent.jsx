@@ -20,7 +20,7 @@ const FooterComponent = () => {
             {/* About Section */}
             <div className='lg:w-1/4 text-left'>
                 <h3 className='border-b-2 pb-2 font-bold'>ABOUT US</h3>
-                <img src={logo} alt="Unq Agro" className='mt-2 m-auto bg-white h-14 w-14 rounded-full'/>
+                <img src={logo} alt="Ung Agro" className='mt-2 m-auto bg-white h-14 w-14 rounded-full'/>
                 <p>We specialize in high-quality Agricultural Manual Tools and Machineries, Pheromone Traps, Home Garden products, and a variety of plants to support farmers, gardeners, and agriculture enthusiasts.</p>
             </div>
 
@@ -58,7 +58,7 @@ const FooterComponent = () => {
                     </div>
                     <div className='flex justify-start items-center gap-2'>
                         <GrMapLocation className='text-2xl' />
-                        <p className='px-2'>Unq Agro, <br />#32, 1st Main, 2nd Cross, <br /> Muneshwara Layout, <br />Laggere Bengaluru -560058,<br /> Karnataka, India</p>
+                        <p className='px-2'>Ung Agro, <br />#32, 1st Main, 2nd Cross, <br /> Muneshwara Layout, <br />Laggere Bengaluru -560058,<br /> Karnataka, India</p>
                     </div>
                 </div>
 
@@ -77,7 +77,7 @@ const FooterComponent = () => {
         {/* Copyright Section */}
         <div className='text-center p-2 bg-secondary text-white mt-6'>
             <FaRegCopyright className='inline mr-2' /> 
-            <p className='inline'>unq agros 2025, All rights reserved. Developed by <a href="https://www.prajnansoftwares.com/aboutus" target='_blank'>Prajnan Softwares</a></p>
+            <p className='inline'>ung agros 2025, All rights reserved. Developed by <a href="https://www.prajnansoftwares.com/aboutus" target='_blank'>Prajnan Softwares</a></p>
         </div>
     </div>
   )
