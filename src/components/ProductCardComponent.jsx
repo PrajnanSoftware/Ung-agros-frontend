@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrUpdateItemToCart } from '../redux/slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +18,15 @@ function onBuyNow(id){
 const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowBtn = false, viewDetailBgColor, buyNowBgColor, small = false }) => {
   
   const { user } = useSelector((state) => state.user);
+  const { cartLoading } = useSelector((state) => state.cart);
+  const [loading, setLoading ] = useState(false); 
   const dispath = useDispatch();
   const navigate = useNavigate();
 
   const handleAddToCartButton = async (e) => {
     try {
       e.stopPropagation();
+      setLoading(true);
       if (user) {
         await dispath(addOrUpdateItemToCart({productId: product._id, quantity: 1})).unwrap();
         toast.success(`${product.name} added to cart.`);
@@ -33,6 +36,8 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
       }
     } catch (error) {
       toast.error("Something went wrong, try again");
+    } finally {
+      setLoading(false)
     }
   }
   return (
@@ -80,7 +85,14 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          Add to Cart
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            `Add to Cart`
+          )
+          }
         </button>
         ) : (
           <button className="mt-4 w-full bg-red-400 text-white py-2 rounded-md cursor-not-allowed text-sm sm:text-base" disabled={true}>

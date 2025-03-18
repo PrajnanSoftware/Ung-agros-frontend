@@ -7,55 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { findProductById, findProductSuggestion, getProducts } from "../redux/slice/productSlice";
 import { addOrUpdateItemToCart } from "../redux/slice/cartSlice";
-
-// Sample product data (main product)
-// const product = {
-//   id: 1,
-//   name: "Grass Cutter",
-//   model: "GC XYZ123",
-//   originCountry: "USA",
-//   manufactureDate: "2025-01-01",
-//   originalPrice: 50,
-//   discount: 10,
-//   details: `This is a wonderful product that has a lot of great features. 
-//             It’s designed to meet the needs of a wide variety of customers. 
-//             With its sleek design and powerful features, it is one of the top-rated products in its category. 
-//             Perfect for professionals and enthusiasts alike.`,
-//   rating: 3.9,
-//   images: ["1.png", "2.png", "3.png", "4.png", "5.png"],
-// };
-
-
-// const recommended_product = [
-//   {
-//     id: 2,
-//     name: "Product A",
-//     price: 40,
-//     discount: 5,
-//     rating: 4.2,
-//     image: "/product/1.png",
-//     reviews:23
-//   },
-//   {
-//     id: 3,
-//     name: "Product B",
-//     price: 60,
-//     discount: 15,
-//     rating: 4.7,
-//     image: "/product/3.png",
-//     reviews:455
-//   },
-//   {
-//     id: 4,
-//     name: "Product C",
-//     price: 30,
-//     discount: 0,
-//     rating: 4.0,
-//     image: "/product/2.png",
-//     reviews:453
-//   },
-// ];
-
+import { MdCurrencyRupee } from "react-icons/md";
 
 const calculateDiscountedPrice = (price, discount) => {
   return (price - (price * discount) / 100).toFixed(2);
@@ -86,7 +38,8 @@ export default function ProductDetailsPage() {
     dispatch(findProductSuggestion(category))
     console.log(productDetail)
     const timer = setInterval(() => {
-      setCurrentImage((prevImage) => (prevImage + 1) % productDetail.image.length);
+      console.log(productDetail)
+      setCurrentImage((prevImage) => (prevImage + 1) % productDetail?.image?.length);
     }, 30000);
     return () => clearInterval(timer);
   }, []);
@@ -100,11 +53,23 @@ export default function ProductDetailsPage() {
       }
     }
 
-    if (productDetailLoading) return <h2 className="text-center">Loading...</h2>;
-    if (productDetailError) return <h2 className="text-center text-red-500">Something went wrong, Try again later.</h2>;
-  if (!productDetail) {
-    return <h2 className="text-center text-red-500">Product not found</h2>;
-  }
+    if (productDetailLoading) 
+      return <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+
+    if (productDetailError) 
+      return <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+        <h2 className="text-center text-red-500">Something went wrong, Try again later.</h2>;
+      </div>
+    
+    if (!productDetail) {
+      return <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+        <h2 className="text-center text-red-500">Product not found</h2>;
+      </div>
+    }
 
   return (
     <div >
@@ -112,9 +77,9 @@ export default function ProductDetailsPage() {
         <div className="w-full lg:w-[50vw] mb-4 lg:mb-0 lg:mr-8 lg:ml-auto relative">
           <div className="relative w-full h-[60vh] lg:h-[50vh] overflow-hidden rounded-lg">
             <img
-              src={`/product/${current_image}.png`}
+              src={productDetail.image[current_image]}
               alt={productDetail.name}
-              className="w-full h-full object-cover transition-all duration-500"
+              className="w-full h-full object-contain transition-all duration-500"
             />
           </div>
 
@@ -133,11 +98,12 @@ export default function ProductDetailsPage() {
         <div className="w-full lg:w-[50%] lg:ml-8 lg:flex lg:flex-col lg:items-start">
           <h2 className="text-[20px] font-bold mb-2">{productDetail.name}</h2>
           <div className="flex items-center mb-2">
-            <span className="text-gray-500 line-through text-[18px] mr-2">
-              ${productDetail.price}
+            
+            <span className="text-lg font-semibold text-green-600 flex items-center">
+              <MdCurrencyRupee /> {productDetail.sellingPrice}
             </span>
-            <span className="text-[18px] font-semibold text-green-600">
-              ${productDetail.sellingPrice}
+            <span className="text-gray-500 line-through text-sm mr-2 flex items-center ml-2">
+              <MdCurrencyRupee /> {productDetail.price}
             </span>
             <span className="ml-2 text-xs font-medium text-red-500">
               ({(((productDetail.price - productDetail.sellingPrice)/ productDetail.price) * 100).toFixed(2)}% OFF)
@@ -195,7 +161,7 @@ export default function ProductDetailsPage() {
             </button> */}
           </div>
 
-          <div className="flex flex-col  mt-6">
+          {/* <div className="flex flex-col  mt-6">
             <button
               onClick={() => setShowDetails(!show_details)}
               className="flex  text-blue-500 text-[16px] underline"
@@ -220,7 +186,7 @@ export default function ProductDetailsPage() {
                 
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 

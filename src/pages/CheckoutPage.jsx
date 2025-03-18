@@ -8,6 +8,7 @@ import PaymentSuccessPage from './PaymentSuccessPage';
 import PaymentFailurePage from './PaymentFailurePage';
 import { getCart } from '../redux/slice/cartSlice';
 import { toast } from 'react-toastify';
+import { MdCurrencyRupee } from 'react-icons/md';
 
 const CheckoutPage = () => {
     const { checkoutData, cart, cartLoading } = useSelector((state) => state.cart);
@@ -151,7 +152,7 @@ const CheckoutPage = () => {
                                                 <p className='px-2'>{item.quantity}</p>
                                             </div>
                                             <div className='order-1 lg:order-none text-right'>
-                                                <p>${item.totalProductPrice}</p>
+                                                <p className='flex items-center'><MdCurrencyRupee />{item.totalProductPrice}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -165,14 +166,14 @@ const CheckoutPage = () => {
                 <hr className='my-4'/>
                 <div className='grid grid-cols-3 gap-x-10 gap-y-2 text-nowrap px-4'>
                     <p className='col-span-2'>Subtotal</p>
-                    <p>${amount}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{amount}</p>
                     <p className='col-span-2'>CGST</p>
-                    <p>${cgst}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{cgst}</p>
                     <p className='col-span-2'>SGST</p>
-                    <p>${sgst}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{sgst}</p>
                     <hr className='my-4 col-span-2'/>
                     <h4 className='col-span-2'>Total</h4>
-                    <p>${total}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{total}</p>
                 </div>
                 <div>
                     <button className={`w-full p-2 rounded-lg my-2 ${cart.length === 0 || !checkoutData || loading ? "opacity-60 cursor-not-allowed bg-gray-400" : "bg-primary hover:bg-primary-dark"}`} disabled={!checkoutData || cart.length === 0 || loading} onClick={handlePayment}>
@@ -181,7 +182,7 @@ const CheckoutPage = () => {
                                 <div className="flex justify-center items-center">
                                     <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                 </div>
-                            ) : `Pay ${total}` 
+                            ) :(<p className='flex items-center justify-center'>Pay <span className='flex items-center justify-center ml-2'><MdCurrencyRupee />{total}</span></p>)
                         } 
                     </button>
                 </div>

@@ -9,14 +9,33 @@ import { FaInstagram } from "react-icons/fa";
 import { AiOutlineYoutube } from "react-icons/ai";
 import { FaRegCopyright } from "react-icons/fa";
 import logo from "../assets/logo (2).png";  
+import { LiaShippingFastSolid } from "react-icons/lia";
+import { BiBadgeCheck } from "react-icons/bi";
+import { RiSecurePaymentLine } from "react-icons/ri";
+import { MdOutlineSentimentVerySatisfied } from "react-icons/md";
 
 const FooterComponent = () => {
   return (
-    <div className='bg-primary text-white p-4 text-sm'>
-        <div>
-            
+    <div className='bg-primary text-white  text-sm'>
+        <div className='bg-secondary w-full flex justify-around p-2 text-base gap-2'>
+            <div className='flex flex-col md:flex-row justify-around w-full gap-2'>
+                <div className='flex items-center gap-2'>
+                    <LiaShippingFastSolid className='text-3xl'/> Fast & Secured Delivery
+                </div>
+                <div className='flex items-center gap-2'>
+                    <BiBadgeCheck className='text-3xl' /> Genuine & Authentic
+                </div>
+            </div>
+            <div className='flex flex-col md:flex-row justify-around w-full gap-2'>
+                <div className='flex items-center gap-2'>
+                    <RiSecurePaymentLine className='text-3xl' /> 100% Safe & Secure Payment
+                </div>
+                <div className='flex items-center gap-2'>
+                    <MdOutlineSentimentVerySatisfied className='text-3xl' /> Satisfied
+                </div>
+            </div>
         </div>
-        <div className=' flex flex-col lg:flex-row justify-between gap-6'>
+        <div className=' flex flex-col lg:flex-row p-4 justify-between gap-6'>
             {/* About Section */}
             <div className='lg:w-1/4 text-left'>
                 <h3 className='border-b-2 pb-2 font-bold'>ABOUT US</h3>

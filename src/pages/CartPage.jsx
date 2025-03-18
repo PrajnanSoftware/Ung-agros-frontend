@@ -7,6 +7,7 @@ import { axiosInstance } from '../utils/axiosInstance';
 import { getUserAddress } from '../redux/slice/userSlice';
 import ModalComponent from '../components/ModalComponent';
 import AddressFormComponent from '../components/AddressFormComponent';
+import { MdCurrencyRupee } from 'react-icons/md'; 
 
 const CartPage = () => {
     const dispatch = useDispatch();
@@ -15,17 +16,17 @@ const CartPage = () => {
     const { user, userAddress, loading, userAddressError } = useSelector((state) => state.user);
     const [openAddressForm, setOpenAddressForm] = useState(false);
     const [total, setTotal] = useState(0);
-    const [charges, setCharges] = useState(0);
+    const [saving, setSaving] = useState(0);
     const [ addressError, setAddressError ] = useState(null);
     const [ addressLoading, setAddressLoading] = useState(false);
 
     useEffect( () => {
         if (cart.length !== 0) {
             setTotal(cart.reduce((acc, item) => acc + item.product.sellingPrice * item.quantity, 0));
-            setCharges((total/100) * 2);
+            setSaving(cart.reduce((acc, item) => acc + ((item.product.price * item.quantity) - (item.product.sellingPrice * item.quantity)), 0));
         } else {
-            setCharges(0);;
-            setTotal(0)
+            setSaving(0);
+            setTotal(0);
         }
     }, [cart])
     
@@ -109,12 +110,12 @@ const CartPage = () => {
             <hr className='my-4'/>
             <div className='grid grid-cols-2 gap-x-52 lg:gap-x-60 gap-y-2 text-nowrap '>
                 <p>Subtotal</p>
-                <p>${total}</p>
-                <p>Extra Charges</p>
-                <p>${charges}</p>
+                <p className='flex items-center'><MdCurrencyRupee /> {total}</p>
+                <p>Savings</p> 
+                <p className='flex items-center text-sm text-primary'><MdCurrencyRupee /> {saving}</p>
                 <hr className='my-4 col-span-2'/>
                 <h4>Total</h4>
-                <p>${total+charges}</p>
+                <p className='flex items-center'><MdCurrencyRupee /> {total}</p>
             </div>
             <div>
                 <button className={`bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || cartLoading || !userAddress ? "opacity-60 cursor-not-allowed " : ""}`} disabled={cart.length === 0 || cartLoading || !userAddress} onClick={handleCheckout}>

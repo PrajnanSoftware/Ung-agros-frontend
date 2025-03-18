@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import logo from "../assets/logo (2).png";
 import { CgProfile } from "react-icons/cg";
 import { IoCartOutline } from "react-icons/io5";
@@ -17,13 +17,16 @@ import ProfileSliderComponent from './ProfileSliderComponent';
 
 
 
+
 const HeaderComponent = () => {
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [search_query, setSearchQuery] = useState("");
   const [search_result ,setSearchResult] = useState ([]);
   const [isCategoryOpen, setCategoryOpen] = useState(false);
   const [isProfileOpen, setProfileOpen] = useState(false);
-  const searchInputRef = useRef(null);
+  
+  const searchSuggestionRef = useRef(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,9 +35,28 @@ const HeaderComponent = () => {
   const { category } = useSelector((state) => state.category)
 
   useEffect(() => {
+    if (location.pathname !== "/search-result") {
+      setSearchQuery("");
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
     dispatch(getCategory());
     dispatch(getCart());
   }, [dispatch]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchSuggestionRef.current && !searchSuggestionRef.current.contains(event.target)) {
+        setSearchResult([]);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const fetchSuggestions = useCallback( async (query) => {
     if (!query) {
@@ -50,6 +72,8 @@ const HeaderComponent = () => {
     }
   }, [])
 
+
+
   const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 300), [fetchSuggestions]);
 
   const onSearchInputChange = (e) => {
@@ -63,10 +87,10 @@ const HeaderComponent = () => {
   const onSearchSelection = (name) => {
     setSearchResult([]);
     setSearchQuery(name.toLowerCase());
-    fetchSuggestions(name.toLowerCase());
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
+    navigate(`/search-result?query=${name.toLowerCase()}`);
+    // if (searchInputRef.current) {
+    //   searchInputRef.current.focus();
+    // }
   }
 
   const handleSearch = (e) => {
@@ -148,12 +172,12 @@ const HeaderComponent = () => {
 
       {/* Searchbox */}
       <form  action={"/search-result"} className="relative flex-1 basis-full lg:basis-auto order-1 lg:order-none min-w-[120px] lg:mt-0 pb-1 px-2">
-        <div className={` ${search_result.length > 0 ? 'bg-white rounded-t-[20px] ' : ''}`}>
-        <input type="text" onChange={onSearchInputChange} name="search"  autoComplete="off" id="search" value={search_query} placeholder='Search Products...' ref={searchInputRef}
-            className={`w-full px-4 py-1 rounded-full border border-gray-300 focus:outline-none
-            ${search_result.length > 0 ? 'rounded-b-[0px] rounded-t-[20px]' : ''} `} />
-              <button type="submit" className="absolute right-5 top-2 text-gray-500 " onClick={handleSearch}><FaSearch /></button>
-        <SearchSuggestionComponent result={search_result} onSearchSelection={onSearchSelection} />
+        <div className={` ${search_result.length > 0 ? 'bg-white rounded-t-[20px] ' : ''}`} ref={searchSuggestionRef} >
+          <input type="text" onChange={onSearchInputChange} name="search"  autoComplete="off" id="search" value={search_query} placeholder='Search Products...' 
+              className={`w-full px-4 py-1 rounded-full border border-gray-300 focus:outline-none
+              ${search_result.length > 0 ? 'rounded-b-[0px] rounded-t-[20px]' : ''} `} />
+                <button type="submit" className="absolute right-5 top-2 text-gray-500 " onClick={handleSearch}><FaSearch /></button>
+                <SearchSuggestionComponent result={search_result} onSearchSelection={onSearchSelection} />
         </div>
       </form>
 
