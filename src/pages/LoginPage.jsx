@@ -14,7 +14,6 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (isAuthenticated) {
-            toast.success('Login successful')
             navigate('/');
         }
     }, [isAuthenticated, navigate]);
