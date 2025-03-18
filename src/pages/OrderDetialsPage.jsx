@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; // For navigation and retrieving query params
 import BillTemplateComponent from '../components/BillTemplateComponent';
+import { MdCurrencyRupee } from 'react-icons/md';
 
 // Mock API to fetch order and product details
 const fetchOrderDetails = async (orderId, orderType) => {
@@ -152,8 +153,8 @@ const OrderDetailsPage = () => {
                   <div className="ml-4">
                     <p className="font-medium">{item.product.name}</p>
                     <p>Quantity: {item.quantity}</p>
-                    <p>Price per unit: ${item.price}</p>
-                    <p>Price: ${item.totalProductPrice}</p>
+                    <p className='flex items-center'>Price per unit: <MdCurrencyRupee />{item.price}</p>
+                    <p className='flex items-center'>Price: <MdCurrencyRupee />{item.totalProductPrice}</p>
                   </div>
                 </div>
               ))}

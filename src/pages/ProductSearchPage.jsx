@@ -74,6 +74,16 @@ const ProductSearchPage = () => {
     }
   };
 
+  if (productsLoading) {
+    return (
+      <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    )
+  }
+
   if (products.length === 0) {
     return (
 
@@ -85,13 +95,13 @@ const ProductSearchPage = () => {
   return (
     <div className="container mx-auto p-4">
 
-      <div>
+      <div className='my-2'>
         <p>Showing {products.length} of {totalProducts} products</p>
       </div>
 
 
       {/* Product Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 lg:gap-4 ">
         { products.map((product, index) => (
           <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
             <ProductCardComponent product={product} small={true} />

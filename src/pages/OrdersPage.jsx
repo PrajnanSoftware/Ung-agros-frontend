@@ -2,27 +2,49 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
 import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
 import { axiosInstance } from '../utils/axiosInstance';
-
+import { MdCurrencyRupee } from 'react-icons/md';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate(); // Using useNavigate hook for navigation
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const getMyOrders = async () => {
-        const response = await axiosInstance.get('/order');
-        console.log(response.data);
-        if (response.data.status === "success") {
-          setOrders(response.data?.orders)
-        }
-    };
-    getMyOrders();
+   
+      const getMyOrders = async () => {
+        try {
+          setLoading(true)
+          const response = await axiosInstance.get('/order');
+          console.log(response.data);
+          if (response.data.status === "success") {
+            setOrders(response.data?.orders)
+          }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading( false );
+      }};
+      getMyOrders();
+      
+    
   }, []); 
 
   // Handle click event to navigate to the order details page with the order ID and order type as query parameters
   const handleOrderClick = (order) => {
     navigate(`/order-details?o_i=${order._id}`, { state: { order }}); // Pass order_type in the query params
   };
+// console.log("HiHello",loading)
+  if (loading) {
+      return (
+          <div className="p-10">
+            {/* <h2 className="text-xl font-semibold mb-4">My Orders</h2> */}
+            <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+              <div className="flex justify-center items-center min-h-screen">
+                <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            </div>
+          </div>)
+  }
 
   if (orders.length === 0) {
     return (
@@ -93,7 +115,7 @@ const OrdersPage = () => {
             {/* Mobile View - Small Image on Left */}
             <div className="flex items-center gap-4">
               {/* Image - Use cart icon for cart orders, product image for regular orders */}
-              <div className="flex-shrink-0 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-lg mb-4 md:mb-6">
+              <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-lg mb-4 md:mb-6">
                 {/* TODO: Order.items.length > 1 */}
                 {order?.items?.length > 1 ? (
                   <FaShoppingCart className="w-full h-full text-gray-600" /> // Show cart icon
@@ -119,7 +141,7 @@ const OrdersPage = () => {
                     order?.items[0]?.product?.name // Show order name for regular orders
                   )}
                 </h3>
-                <p className="text-sm text-gray-600">Ordered: {new Date(order.createdAt).toLocaleString()}</p>
+                <p className="text-sm text-gray-600 text-wrap">Ordered: {new Date(order.createdAt).toLocaleString()}</p>
 
                 {/* Quantity or Item Count based on order type */}
                 {order.items.length > 1 ? (
@@ -143,8 +165,8 @@ const OrdersPage = () => {
                 </p>
 
                 {/* Total Cost */}
-                <p className="text-sm text-gray-800 font-semibold">
-                  Total Cost: ${order.totalPrice}
+                <p className="text-sm text-gray-800 font-semibold flex items-center">
+                  Total Cost: <MdCurrencyRupee />{order.totalPrice}
                 </p>
               </div>
             </div>

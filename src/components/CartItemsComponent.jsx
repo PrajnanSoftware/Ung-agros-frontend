@@ -2,7 +2,7 @@ import React from 'react';
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrUpdateItemToCart, deleteItemFromCart } from '../redux/slice/cartSlice';
-
+import { MdCurrencyRupee } from 'react-icons/md';
 
 
 const CartItemsComponent = ({productId, name, imgUrl, price, quantity, avlQty }) => {
@@ -47,7 +47,7 @@ const CartItemsComponent = ({productId, name, imgUrl, price, quantity, avlQty })
                 </div>
                 {/* { cartAddError && <p className='order-1'>{cartAddError.error.message}</p>} */}
                 <div className='order-1 lg:order-none text-right'>
-                    <p>${quantity * price}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{quantity * price}</p>
                 </div>
             </div>
         </div>
