@@ -75,6 +75,7 @@ const cartSlice = createSlice({
             })
             .addCase(getCart.rejected, (state, action) => {
                 state.cartLoading = false;
+                state.cart = [];
                 state.cartError = action.payload;
             })
             // Add or Update Item to Cart
