@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addOrUpdateItemToCart } from '../redux/slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 
 function onViewDetail(id){
  window.location.href= "/product-detail?id="+id;
@@ -20,12 +20,18 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
   const dispath = useDispatch();
   const navigate = useNavigate();
 
-  const handleAddToCartButton = (e) => {
-    e.stopPropagation();
-    if (user) {
-      dispath(addOrUpdateItemToCart({productId: product._id, quantity: 1}))
-    } else {
-      navigate('/login');
+  const handleAddToCartButton = async (e) => {
+    try {
+      e.stopPropagation();
+      if (user) {
+        await dispath(addOrUpdateItemToCart({productId: product._id, quantity: 1})).unwrap();
+        toast.success(`${product.name} added to cart.`);
+      } else {
+        navigate('/login');
+        toast.info("Please login to contine.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong, try again");
     }
   }
   return (

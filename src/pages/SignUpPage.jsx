@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { axiosInstance } from '../utils/axiosInstance';
+import { toast } from 'react-toastify';
 // import verifyOtpPage from './VerifyOtpPage';
 
 const SignUpPage = () => {
@@ -19,10 +20,11 @@ const SignUpPage = () => {
     });
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { error, loading, isAuthenticated, success } = useSelector((state) => state.user);
+    const { error, isAuthenticated, success } = useSelector((state) => state.user);
 
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         AOS.init({ duration: 1000 });
@@ -87,39 +89,50 @@ const SignUpPage = () => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        try {
+            setLoading(true)
+            e.preventDefault();
+            
+            const newTouched = Object.keys(formData).reduce((acc, key) => {
+                acc[key] = true;
+                return acc;
+            }, {});
 
-        const newTouched = Object.keys(formData).reduce((acc, key) => {
-            acc[key] = true;
-            return acc;
-        }, {});
+            setTouched(newTouched);
 
-        setTouched(newTouched);
+            const newErrors = Object.entries(formData).reduce((acc, [key, value]) => {
+                acc[key] = validateField(key, value);
+                return acc;
+            }, {});
 
-        const newErrors = Object.entries(formData).reduce((acc, [key, value]) => {
-            acc[key] = validateField(key, value);
-            return acc;
-        }, {});
-
-        setErrors(newErrors);
-        
-        const isValid = Object.values(newErrors).every(error => !error);
-
-        if (isValid) {
-            // dispatch(register(formData));
-            const response = await axiosInstance.post('/users/generateOTP', {email:formData.email, type: 'email'});
-
-            if (response.data.status === 'success') {
-                navigate('/verify-otp', {
-                    state: {
-                        name: formData.name,
-                        email: formData.email,
-                        phone: formData.phone,
-                        password: formData.password,
-                        otpToken: response.data.otpToken,
-                    }
-                })
+            setErrors(newErrors);
+            
+            const isValid = Object.values(newErrors).every(error => !error);
+            
+            if (isValid) {
+                // dispatch(register(formData));
+                const response = await axiosInstance.post('/users/generateOTP', {email:formData.email, type: 'email'});
+                
+                if (response.data.status === 'success') {
+                    toast.success("OTP sent successfully!");
+                    navigate('/verify-otp', {
+                        state: {
+                            name: formData.name,
+                            email: formData.email,
+                            phone: formData.phone,
+                            password: formData.password,
+                            otpToken: response.data.otpToken,
+                        }
+                    })
+                }
+            } else {
+                toast.error("Failed to send OTP. Please try again.");
             }
+        } catch (error) {
+            setLoading(false);
+            toast.error("An error occurred. Please try again.");
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -181,7 +194,11 @@ const SignUpPage = () => {
 
                     <button type="submit" 
                         className={`w-full py-3 px-6 text-white font-semibold rounded-lg transition-colors  ${loading ? 'bg-gray-400' : 'bg-primary hover:bg-primary-dark'}`} disabled={loading}>
-                            {loading ? 'Processing...' : 'Send OTP'}
+                            {loading ? (
+                                <div className="flex justify-center items-center">
+                                    <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            ) : 'Send OTP'}
                     </button>
                 </form>
             </div>

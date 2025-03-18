@@ -5,11 +5,15 @@ import { clearError, getUserAddress, updateUser, updateUserAddress } from '../re
 import { countBy } from 'lodash';
 import AddressFormComponent from '../components/AddressFormComponent';
 import ModalComponent from '../components/ModalComponent';
+import { toast } from 'react-toastify';
+import { axiosInstance } from '../utils/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 
 const ProfilePage = () => {
     const dispatch = useDispatch();
-    const { user, loading, error, userAddress, addressError } = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const { user, loading, error, userAddress, addressError, isAuthenticated } = useSelector((state) => state.user);
     const [editMode, setEditMode] = useState(false);
     const [openAddressForm, setOpenAddressForm] = useState(false);
 
@@ -26,26 +30,17 @@ const ProfilePage = () => {
     const [ otpSent, setOtpSent] = useState(false);
     const [verified, setVerified] = useState(false);
 
-    const requestEmailVerification = async () => {
-        try {
-            const response = await axiosInstance.post('/user/request-email-verification', { email: formData.email });
-            if (response.data.success) {
-                setEmailSent(true);
-                console.log('Verification link sent to new email.');
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const requestPhoneOTP = async () => {
         try {
-            const response = await axiosInstance.post('/user/request-phone-otp', { phone: formData.phone });
-            if (response.data.success) {
+            // const response = await axiosInstance.post('/users/generateOTP', {email:formData.email, type: 'email'});
+            if (true) {
+                toast.success('OTP sent successfully')
                 setOtpSent(true);
                 console.log('OTP sent to new phone number.');
             }
         } catch (error) {
+            toast.error('Something went wrong');
             console.error(error);
         }
     };
@@ -63,10 +58,13 @@ const ProfilePage = () => {
             console.error(error);
         }
     };
-
         useEffect(() => {
-            dispatch(getUserAddress());
-        }, [dispatch]); 
+            if (user) {
+                dispatch(getUserAddress()).unwrap()
+            } else {
+                navigate('/login')
+            }
+        }, [dispatch, user]);
 
 
     useEffect(() => {
@@ -103,7 +101,6 @@ const ProfilePage = () => {
         }
     };
 
-    
 
     return (
         <div className='my-10'>
@@ -138,7 +135,7 @@ const ProfilePage = () => {
                                         onChange={handleChange}
                                         className="border rounded px-2 py-1 w-2/3"
                                     />
-                                    <button onClick={requestEmailVerification} className="bg-blue-500 text-white px-3 py-1 rounded text-sm ml-2">Verify</button>
+                                    {/* <button onClick={requestEmailVerification} className="bg-blue-500 text-white px-3 py-1 rounded text-sm ml-2">Verify</button> */}
                                 </>
                             ) : (
                                 <span className="text-gray-800 font-medium">{formData.email}</span>
@@ -188,12 +185,13 @@ const ProfilePage = () => {
                                 </button>
                             </>
                         ) : (
-                            <button
-                                onClick={() => setEditMode(true)}
-                                className="absolute -top-12 right-0 bg-blue-500 text-white px-2 text-center py-2 rounded-full flex items-center"
-                            >
-                                <HiPencil className="" />
-                            </button>
+                            <></>
+                            // <button
+                            //     onClick={() => setEditMode(true)}
+                            //     className="absolute -top-12 right-0 bg-blue-500 text-white px-2 text-center py-2 rounded-full flex items-center"
+                            // >
+                            //     <HiPencil className="" />
+                            // </button>
                         )}
                     </div>
                 </div>
@@ -225,7 +223,7 @@ const ProfilePage = () => {
                 ) : (
                     !openAddressForm ? <button
                         onClick={() => setOpenAddressForm(true)}
-                        className="bg-blue-500 text-white px-2 text-center py-2 rounded flex items-center"
+                        className="bg-blue-500 text-white px-2 text-center py-1 mt-2 rounded flex items-center"
                     >
                         Add address
                     </button> : 

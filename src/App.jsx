@@ -37,7 +37,9 @@ function App() {
   return (
     <Router>
       <Suspense fallback={<div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
-        <h1 className="font-semibold text-2xl">Loading...</h1>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
       </div>}>
         <HeaderComponent />
         <Routes>
