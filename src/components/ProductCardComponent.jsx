@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addOrUpdateItemToCart } from '../redux/slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { MdCurrencyRupee } from "react-icons/md";
 
 function onViewDetail(id){
  window.location.href= "/product-detail?id="+id;
@@ -35,29 +36,29 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
     }
   }
   return (
-    <div className={`group relative p-4 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white 
-                  max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto`}>
+    <div className={`group relative p-2 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white 
+                  ${small ? "w-44 md:w-60" : "w-80"} mx-auto`}>
         {/* Product image */}
         <div className='overflow-hidden rounded-lg'>
-            <img src={product?.image[0]} alt={product.name} className='w-full h-40 sm:h-48 md:h-56 lg:h-64 object-cover transition-transform duration-300 group-hover:scale-105' />
+            <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-36" : 'h-48'} object-cover transition-transform duration-300 group-hover:scale-105`} />
         </div>
 
         {/* Product details */}
-        <div className='mt-4'>
-            <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800">
-                {product.name}
+        <div className={`mt-4 ${small ? "w-44 md:w-60" : "w-80"}`}>
+            <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800 text-nowrap ">
+                {!small ? product.name : product.name.substring(0, 18)+"..."}
             </h3>
-            <span className='text-xs sm:text-sm md:text-base text-gray-600'>{product.description.substring(0, 200)+"..."}</span>
+            <span className='text-xs sm:text-sm md:text-base text-gray-600'>{product.description.substring(0, 100)+"..."}</span>
 
             {/* Price */}
             <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm sm:text-lg font-bold text-gray-900">
-              ${product.sellingPrice}
+            <span className="text-sm sm:text-lg font-bold text-gray-900 flex items-center">
+            <MdCurrencyRupee />{product.sellingPrice}
             </span>
-            <span className="text-xs sm:text-sm text-gray-500 line-through">
-              ${product.price}
+            <span className="text-xs text-gray-500 line-through flex items-center">
+            <MdCurrencyRupee />{product.price}
             </span>
-            <span className="text-xs sm:text-sm text-green-600 font-medium">
+            <span className="text-xs text-green-600 font-medium">
               ({(((product.price - product.sellingPrice)/ product.price) * 100).toFixed(2)}% OFF)
             </span>
             </div>

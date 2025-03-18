@@ -114,7 +114,6 @@ const SignUpPage = () => {
                 const response = await axiosInstance.post('/users/generateOTP', {email:formData.email, type: 'email'});
                 
                 if (response.data.status === 'success') {
-                    toast.success("OTP sent successfully!");
                     navigate('/verify-otp', {
                         state: {
                             name: formData.name,
@@ -124,9 +123,10 @@ const SignUpPage = () => {
                             otpToken: response.data.otpToken,
                         }
                     })
+                    toast.success("OTP sent successfully!");
                 }
             } else {
-                toast.error("Failed to send OTP. Please try again.");
+                toast.error("Somthing went wrong. Please try again.");
             }
         } catch (error) {
             setLoading(false);
