@@ -49,20 +49,22 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
         </div>
 
         {/* Product details */}
-        <div className={`mt-4 ${small ? "w-44 md:w-60" : "w-80"}`}>
+        <div className={`mt-4 ${small ? "w-44 md:w-60" : "w-80"} overflow-hidden`}>
             <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800 text-nowrap ">
                 {!small ? product.name : product.name.substring(0, 18)+"..."}
             </h3>
             <span className='text-xs sm:text-sm md:text-base text-gray-600'>{product.description.substring(0, 100)+"..."}</span>
 
             {/* Price */}
-            <div className="flex items-center gap-2 mt-2">
-            <span className="text-sm sm:text-lg font-bold text-gray-900 flex items-center">
-            <MdCurrencyRupee />{product.sellingPrice}
-            </span>
-            <span className="text-xs text-gray-500 line-through flex items-center">
-            <MdCurrencyRupee />{product.price}
-            </span>
+            <div className="flex items-start gap-2 text-wrap mt-2">
+            <div>
+              <span className="text-sm sm:text-lg font-bold text-gray-900 flex items-center">
+              <MdCurrencyRupee />{product.sellingPrice}
+              </span>
+              <span className="text-xs text-gray-500 line-through flex items-center">
+              <MdCurrencyRupee />{product.price}
+              </span>
+            </div>
             <span className="text-xs text-green-600 font-medium">
               ({(((product.price - product.sellingPrice)/ product.price) * 100).toFixed(2)}% OFF)
             </span>

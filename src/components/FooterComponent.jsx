@@ -35,7 +35,7 @@ const FooterComponent = () => {
                     <BiBadgeCheck className='text-3xl' /> Genuine & Authentic
                 </div>
                 <div className='flex items-center justify-center gap-2 bg-red-500 w-full p-2.5'>
-                    <MdOutlineSentimentVerySatisfied className='text-3xl' /> Customer Satisfied
+                    <MdOutlineSentimentVerySatisfied className='text-3xl' /> 100% Customer Satisfied
                 </div>
             </div>
         </div>

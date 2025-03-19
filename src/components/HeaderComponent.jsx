@@ -13,6 +13,7 @@ import { debounce } from 'lodash';
 import { FaSearch } from "react-icons/fa";
 import { getProducts } from '../redux/slice/productSlice';
 import ProfileSliderComponent from './ProfileSliderComponent';
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 
 
@@ -144,18 +145,18 @@ const HeaderComponent = () => {
       </div>
 
       {/* Navigation Link */}
-      <div className={`lg:flex lg:flex-grow gap-4 lg:pl-6 lg:items-end lg:pr-10 h-full lg:h-auto items-center lg:justify-center z-10 fixed lg:static top-0 left-0 w-full lg:w-auto bg-primary lg:bg-transparent flex-col lg:flex-row lg:flex-nowrap transition-all duration-300 ${menuOpen ? "flex" : "hidden" }`} role="navigation"
+      <div className={`lg:flex lg:flex-grow gap-4 lg:pl-6 lg:items-end lg:pr-10 h-full lg:h-auto items-center lg:justify-center z-20 fixed lg:static top-0 left-0 w-full lg:w-auto bg-primary lg:bg-transparent flex-col lg:flex-row lg:flex-nowrap transition-all duration-300 ${menuOpen ? "flex" : "hidden" }`} role="navigation"
   aria-expanded={menuOpen}>
-    {menuOpen && <div className='w-full '>
+    {menuOpen && <div className='w-full'>
     <HiX className='text-3xl cursor-pointer text-white ml-auto mt-4 mr-4' onClick={() => setMenuOpen(false)} />
     </div>}
     <NavLink to={`/`} className={({ isActive }) => isActive ? "text-secondary font-bold border-b-4 border-secondary mx-2" : "text-background"} onClick={closeAllPopups} >Home</NavLink>
     
     
     <div className='relative text-center'>
-      <button type='button' id='category-button' className={` ${isCategoryOpen ? "text-secondary font-bold mx-2" : "text-background"}`} onClick={toggleCategoryState}>Categories</button>
+      <button type='button' id='category-button' className={`flex items-center justify-center  gap-2 ${isCategoryOpen ? "text-secondary font-bold mx-2" : "text-background"}`} onClick={toggleCategoryState}>Categories {isCategoryOpen ? <IoIosArrowUp /> : <IoIosArrowDown />}</button>
 
-      <div className={`${isCategoryOpen ? 'block': 'hidden'}  lg:absolute lg:-left-2 lg:z-100 mt-4 lg:origin-center bg-primary text-nowrap text-start ${isCategoryOpen ? "opacity-100 scale-100": "opacity-0 scale-95 pointer-events-none"}`} role='category' >
+      <div className={`${isCategoryOpen ? 'block': 'hidden'} lg:absolute lg:-left-2 lg:z-100 mt-4 lg:origin-center bg-primary text-nowrap text-start ${isCategoryOpen ? "opacity-100 scale-100": "opacity-0 scale-95 pointer-events-none"}`} role='category' >
         {
           category.map((item, index) => {
             // TODO: When clicked on NavLink redirects to search page 

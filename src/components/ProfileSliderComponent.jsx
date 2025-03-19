@@ -24,8 +24,8 @@ const ProfileSliderComponent = ({handleToggle}) => {
       };
 
   return (
-    <div className='h-screen w-full inset-0 z-50 bg-transparent fixed' onClick={(handleToggle)}>
-        <div className='w-[300px] h-screen bg-white fixed right-0 top-0 shadow-lg p-4 transition-transform duration-300 flex flex-col justify-between overflow-y-auto' onClick={(e) => e.stopPropagation()} >
+    <div className=' h-screen w-full inset-0 z-50 bg-transparent fixed' onClick={(handleToggle)}>
+        <div className='w-[300px] h-full bg-white fixed right-0 top-0 shadow-lg p-4 transition-transform duration-300 flex flex-col justify-between overflow-y-auto' onClick={(e) => e.stopPropagation()} >
             <button className="absolute top-4 right-4 text-xl" onClick={handleToggle}>
                 <HiX />
             </button>
@@ -50,14 +50,14 @@ const ProfileSliderComponent = ({handleToggle}) => {
                 </div>
             </div>
                     {/* Logout Button */}
-            {/* <div className='relative'>  */}
+            <div className='absolute bottom-2 left-2 right-2'> 
                     <button
-                className="w-full m-auto text-center text-lg font-semibold text-white bg-red-600 hover:bg-red-700 px-4 py-3 rounded"
+                className=" w-full text-center text-lg font-semibold text-white bg-red-600 hover:bg-red-700 px-4 py-3 rounded"
                   onClick={handleLogout}
                 >
                 Logout
                 </button>
-            {/* </div> */}
+            </div>
         </div>
     </div>
   )
