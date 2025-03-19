@@ -32,11 +32,11 @@
       "📢 New Pheromone Traps Collection!",
       "🌍 Eco-Friendly Farming Products Now Available!"
     ]);
-    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 468);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 680);
 
     useEffect(() => {
       const handleResize = () => {
-        setIsSmallScreen(window.innerWidth < 468);
+        setIsSmallScreen(window.innerWidth < 680);
       };
   
       window.addEventListener('resize', handleResize);
@@ -144,7 +144,7 @@
                 </div>
               ) : (
                 <div className='flex justify-center'>
-                  <div className='grid grid-cols-2 md:grid-cols-3 md:gap-6 px-4 md:px-6 lg:px-8 w-full'>
+                  <div className='grid grid-cols-2 lg:grid-cols-3 gap-2'>
                     {newProducts.map((product, index) => (
                       <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
                         <ProductCardComponent product={product} small={isSmallScreen} />
