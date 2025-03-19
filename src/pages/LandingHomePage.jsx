@@ -32,7 +32,16 @@
       "📢 New Pheromone Traps Collection!",
       "🌍 Eco-Friendly Farming Products Now Available!"
     ]);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 468);
 
+    useEffect(() => {
+      const handleResize = () => {
+        setIsSmallScreen(window.innerWidth < 468);
+      };
+  
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
     
     useEffect(() => {
       AOS.init({ duration: 1000 });
@@ -93,33 +102,39 @@
           </div>
 
           {/* Category */}
-          <div className='w-full'>
+          <div className='text-center'>
             <div className='mt-4 mb-4 '>
-              <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>CATEGORIES</h2>
+              <h2 className=' text-2xl font-bold w-fit m-auto py-4 text-secondary'>CATEGORIES</h2>
             </div>
 
-            <div className='flex gap-6 justify-start px-6 overflow-x-auto scroll-smooth snap-x snap-mandatory m-auto'>
+            
               { categoryLoading ? (
                 <div className="w-full flex justify-center items-center">
                   <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-              ) : (category.length > 0 ? (category.map((cat, index) => (
-                <div key={index} className='flex flex-col items-center snap-start' onClick={() => { handleCategoryClick(cat)}}>
-                  <div className='relative h-24 w-24 rounded-full border-4 border-accent overflow-hidden text-center hover:shadow-lg'>
-                    {cat.image ? (<img src={cat?.image} alt={cat.name} className='w-full h-full object-cover transition-transform duration-300 hover:scale-110' />) : (<img src={'/no-image.jpg'} alt={cat.name} className='w-full h-full object-cover transition-transform duration-300 hover:scale-110' />)}
+                ) : (category.length > 0 ? (
+                  <div className='w-full'>
+                    <div className='flex justify-start overflow-scroll no-scrollbar gap-4 text-nowrap px-10 m-auto'>
+                      {[...category, ...category].map((cat, index) => (
+                      <div key={index} className='flex flex-col items-center w-fit' onClick={() => { handleCategoryClick(cat)}}>
+                        <div className='w-24 h-24 rounded-full border-4 border-accent text-center'>
+                          {cat.image ? (<img src={cat?.image} alt={cat.name} className='w-full h-full rounded-full object-cover transition-transform duration-300 hover:scale-110' />) : (<img src={'/no-image.jpg'} alt={cat.name} className='w-full h-full rounded-full object-cover transition-transform duration-300 hover:scale-110' />)}
+                        </div>
+                        <h6 className="mt-4 text-sm text-center font-semibold text-gray-800">
+                          {cat.name}
+                        </h6>
+                      </div>
+                    ))}
                   </div>
-                  <h6 className="mt-4 text-sm text-center font-semibold text-gray-800">
-                    {cat.name}
-                  </h6>
                 </div>
-              ))): (
+            ): (
                 <p className="text-center text-gray-600">No categories available.</p>
               ))}
-            </div>
+
           </div>
 
           {/* Products */}
-          <div className='items-center'>
+          <div className='items-center mb-4'>
             <div className='mt-4 mb-4'>
               <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>NEW PRODUCTS</h2>
             </div>
@@ -128,13 +143,14 @@
                   <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : (
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-6 gap-1 p-2 lg:p-6 justify-items-center'>
-                  {newProducts.map((product, index) => (
-                    <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
-                      <ProductCardComponent product={product} small={true} />
-                    </div>
-                    // <SmallProductCardComponent key={index} product={product} />
-                  ))}
+                <div className='flex justify-center'>
+                  <div className='grid grid-cols-2 md:grid-cols-3 md:gap-6 px-4 md:px-6 lg:px-8 w-full'>
+                    {newProducts.map((product, index) => (
+                      <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
+                        <ProductCardComponent product={product} small={isSmallScreen} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
