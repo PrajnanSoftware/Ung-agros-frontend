@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of us
 import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
 import { axiosInstance } from '../utils/axiosInstance';
 import { MdCurrencyRupee } from 'react-icons/md';
+import AOS from 'aos';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -36,7 +37,7 @@ const OrdersPage = () => {
 // console.log("HiHello",loading)
   if (loading) {
       return (
-          <div className="p-10">
+          <div className="p-10" >
             {/* <h2 className="text-xl font-semibold mb-4">My Orders</h2> */}
             <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
               <div className="flex justify-center items-center min-h-screen">
@@ -100,7 +101,7 @@ const OrdersPage = () => {
   // };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4" >
       {/* My Orders Label */}
       <h2 className="text-xl font-semibold mb-4">My Orders</h2>
 

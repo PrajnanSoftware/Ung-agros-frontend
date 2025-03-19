@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { TiTick } from "react-icons/ti";
 
+
 const PaymentSuccessPage = () => {
     const navigate = useNavigate();
     const [ countdown, setCountdown ] = useState(10);
+    
 
     useEffect(() => {
         const timer = setInterval(() => {

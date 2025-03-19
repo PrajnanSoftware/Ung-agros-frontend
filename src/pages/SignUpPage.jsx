@@ -4,9 +4,9 @@ import { clearError, register } from '../redux/slice/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
-import 'aos/dist/aos.css';
 import { axiosInstance } from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import { HiEye, HiEyeOff } from 'react-icons/hi';
 // import verifyOtpPage from './VerifyOtpPage';
 
 const SignUpPage = () => {
@@ -25,6 +25,9 @@ const SignUpPage = () => {
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    
 
     useEffect(() => {
         AOS.init({ duration: 1000 });
@@ -59,15 +62,18 @@ const SignUpPage = () => {
             case 'password':
                 if (!value) error = 'Password is required';
                 else if (value.length < 8) error = 'Password must be at least 8 characters';
+                else if (formData.confirm && value !== formData.confirm) {console.log(formData.confirm); error = "Passwords do not match";}
                 break;
             case 'confirm':
                 if (!value) error = 'Confirm Password is required';
-                else if (value.length < 8 && value !== formData.password) error = 'Passwords do not match';
+                else if (value.length < 8 ) error = 'Password must be at least 8 characters'; 
+                else if (value !== formData.password) error = 'Passwords do not match';
                 console.log(error)
                 break;
             default:
                 break;
         }
+        console.log(error)
         return error;
     }
 
@@ -76,7 +82,7 @@ const SignUpPage = () => {
         setFormData(prev => ({...prev, [name]: value}));
 
         if (touched[name]) {
-            setErrors(prev => ({...prev, [name]: validateField(name, value) }));
+            setErrors(prev => ({...prev, [name]: validateField(name, value)}));
         }
     };
 
@@ -90,25 +96,27 @@ const SignUpPage = () => {
 
     const handleSubmit = async (e) => {
         try {
+            console.log(formData)
+            console.log("hi")
             setLoading(true)
             e.preventDefault();
-            
-            const newTouched = Object.keys(formData).reduce((acc, key) => {
+            console.log("Hello")
+            const newTouched =  Object.keys(formData).reduce((acc, key) => {
                 acc[key] = true;
                 return acc;
             }, {});
-
+            console.log("Touched", newTouched);
             setTouched(newTouched);
 
-            const newErrors = Object.entries(formData).reduce((acc, [key, value]) => {
-                acc[key] = validateField(key, value);
+            const newErrors = Object.entries(newTouched).reduce((acc, [key, value]) => {
+                acc[key] = validateField(key, formData[key]);
                 return acc;
             }, {});
-
+            console.log("Error : ", newErrors)
             setErrors(newErrors);
             
             const isValid = Object.values(newErrors).every(error => !error);
-            
+            console.log("valid: ", isValid)
             if (isValid) {
                 // dispatch(register(formData));
                 const response = await axiosInstance.post('/users/generateOTP', {email:formData.email, type: 'email'});
@@ -141,7 +149,7 @@ const SignUpPage = () => {
         <div className='max-w-2xl mx-auto p-6 bg-white rounded-lg border shadow-md'>
             <div className='text-center pb-10'>
                 <img src={logo} alt="logo" width={75} height={75} className='m-auto' />
-                <h1 className='text-3xl font-bold text-primary'>Sign Up</h1>
+                <h1 className='text-3xl font-bold text-secondary'>Sign Up</h1>
             </div>
             <div>
                 <form onSubmit={handleSubmit}>
@@ -173,23 +181,29 @@ const SignUpPage = () => {
                             value={formData.phone} onChange={handleChange} required onBlur={handleBlur} disabled={loading}
                         />
                     </div>
-                    <div>
+                    <div className='relative'>
                         <label htmlFor="password" className='block text-dark mb-2'>
                             Password*
                         </label>
-                        <input type="password" name="password" id="password" 
+                        <input type={showPassword ? "text" : "password"} name="password" id="password" 
                             className={`w-full p-3 border border-dark rounded-lg mb-5 focus:outline-none focus:ring-2 ${ errors["password"] && touched["password"] ? 'border-red-500 focus:ring-red-500' : 'border-dark focus:ring-primary'}`}
                             value={formData.password} onChange={handleChange} required onBlur={handleBlur} disabled={loading}
                         />
+                        <button type="button" className="absolute right-2 top-12" onClick={() => setShowPassword(!showPassword)}>
+                            {showPassword ? <HiEyeOff className="w-5 h-5" /> : <HiEye className="w-5 h-5" />}
+                        </button>
                     </div>
-                    <div>
+                    <div className='relative'>
                         <label htmlFor="confirm" className='block text-dark mb-2'>
                             Confirm Password*
                         </label>
-                        <input type="password" name="confirm" id="confirm" 
+                        <input type={ showConfirm ? "text" : "password"} name="confirm" id="confirm" 
                             className={`w-full p-3 border border-dark rounded-lg mb-5 focus:outline-none focus:ring-2 ${ errors["confirm"] && touched["confirm"] ? 'border-red-500 focus:ring-red-500' : 'border-dark focus:ring-primary'}`}
                             value={formData.confirm} onChange={handleChange} required onBlur={handleBlur} disabled={loading}
                         />
+                        <button type="button" className="absolute right-2 top-12" onClick={() => setShowConfirm(prev => !prev)}>
+                            {showConfirm ? <HiEyeOff className="w-5 h-5" /> : <HiEye className="w-5 h-5" />}
+                        </button>
                     </div>
 
                     <button type="submit" 

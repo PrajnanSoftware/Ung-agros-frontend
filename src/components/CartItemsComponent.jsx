@@ -34,7 +34,9 @@ const CartItemsComponent = ({productId, name, imgUrl, price, quantity, avlQty })
         <div className='absolute top-1 right-1 hover:cursor-pointer hover:bg-red-600 rounded-full' onClick={handleRemoveItem}>
             <MdOutlineDeleteForever className='text-2xl text-dark' />
         </div>
-        <img src={imgUrl ? imgUrl : '/no-image.jpg'} alt="itemname" width={100} height={150}/>
+        <div className='w-32 h-32 overflow-hidden'>
+            <img src={imgUrl ? imgUrl : '/no-image.jpg'} alt={name} className='object-contain'/>
+        </div>
         <div className='flex flex-col ml-2 w-full justify-between h-full gap-4'>
             <div className=''>
                 <p className='overflow-hidden lg:overflow-visible text-ellipsis'>{name}</p>

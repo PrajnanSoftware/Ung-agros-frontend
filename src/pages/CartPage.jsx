@@ -8,6 +8,7 @@ import { getUserAddress } from '../redux/slice/userSlice';
 import ModalComponent from '../components/ModalComponent';
 import AddressFormComponent from '../components/AddressFormComponent';
 import { MdCurrencyRupee } from 'react-icons/md'; 
+import AOS from 'aos';
 
 const CartPage = () => {
     const dispatch = useDispatch();
@@ -19,6 +20,10 @@ const CartPage = () => {
     const [saving, setSaving] = useState(0);
     const [ addressError, setAddressError ] = useState(null);
     const [ addressLoading, setAddressLoading] = useState(false);
+
+    useEffect(() => {
+        AOS.init({ duration: 1000 });
+    }, []);
 
     useEffect( () => {
         if (cart.length !== 0) {
@@ -56,17 +61,17 @@ const CartPage = () => {
     const handleAddressToggle = () => setOpenAddressForm(prev => !prev) 
 
     if (cartLoading) 
-        return (<div className="flex justify-center items-center min-h-screen">
+        return (<div className="flex justify-center items-center min-h-screen" data-aos="fade-up">
             <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
         </div>);
 
     if (cartError) 
-        return (<div className='min-h-[calc(100vh-200px)] flex justify-center items-center'>
+        return (<div className='min-h-[calc(100vh-200px)] flex justify-center items-center' data-aos="fade-up">
             <p>Something went wrong</p>
         </div>);
 
   return (
-    <div className='p-10 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20'>
+    <div className='py-10 px-5 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20' data-aos="fade-up">
         <div className='flex-auto'>
             <h3 className='text-2xl font-bold'>My Cart</h3>
             <hr className='my-4'/>
@@ -77,7 +82,7 @@ const CartPage = () => {
                         <p>Deliver to: <span>{userAddress.fullName}</span></p>
                         <p>{`${userAddress?.buildingName}, ${userAddress?.street}, ${userAddress?.landmark}, ${userAddress?.city}, ${userAddress?.state}, ${userAddress?.country}, ${userAddress?.zipCode}`}</p>
                         </div>
-                        <button className='bg-blue-500  h-fit px-2 rounded-md' onClick={handleAddressToggle}>Edit</button>
+                        <button className='bg-blue-500 text-white h-fit px-2 rounded-md' onClick={handleAddressToggle}>Edit</button>
                         <ModalComponent isOpen={openAddressForm} handleClose={handleAddressToggle}>
                             <AddressFormComponent address={userAddress} togglePopup={handleAddressToggle}/>
                         </ModalComponent>
@@ -96,7 +101,7 @@ const CartPage = () => {
                 <div className='max-h-[calc(100vh - 100px)] overflow-y-auto'>
                 {
                     cart.map((item, index) => {
-                        return <CartItemsComponent key={index} productId={item.product._id} name={item.product.name} imgUrl={item && item[0]} price={item.product.sellingPrice} quantity={item.quantity} avlQty={item.product.quantity}/>
+                        return <CartItemsComponent key={index} productId={item.product._id} name={item.product.name} imgUrl={item.product.image && item.product.image[0]} price={item.product.sellingPrice} quantity={item.quantity} avlQty={item.product.quantity}/>
                     })
                 }
 
@@ -118,7 +123,7 @@ const CartPage = () => {
                 <p className='flex items-center'><MdCurrencyRupee /> {total}</p>
             </div>
             <div>
-                <button className={`bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || cartLoading || !userAddress ? "opacity-60 cursor-not-allowed " : ""}`} disabled={cart.length === 0 || cartLoading || !userAddress} onClick={handleCheckout}>
+                <button className={`text-white bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || cartLoading || !userAddress ? "opacity-60 cursor-not-allowed " : ""}`} disabled={cart.length === 0 || cartLoading || !userAddress} onClick={handleCheckout}>
                     {cartLoading ? "Loading..." : "Checkout" }
                 </button>
             </div>

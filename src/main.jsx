@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { Provider } from 'react-redux'
 import { store } from './redux/store.js'
 import { ToastContainer } from 'react-toastify';
+import 'aos/dist/aos.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -71,7 +71,7 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
  
         {/* Add to Cart Button */}
         {(product.quantity > 0) ? (
-          <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 transition duration-300 text-sm sm:text-base" onClick={handleAddToCartButton}>
+          <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 transition duration-300 text-sm sm:text-base" onClick={handleAddToCartButton} disabled={loading}>
           <svg
             className="w-5 h-5"
             fill="none"
