@@ -8,6 +8,7 @@ import ModalComponent from '../components/ModalComponent';
 import { toast } from 'react-toastify';
 import { axiosInstance } from '../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import AOS from 'aos';
 
 
 const ProfilePage = () => {
@@ -30,6 +31,9 @@ const ProfilePage = () => {
     const [ otpSent, setOtpSent] = useState(false);
     const [verified, setVerified] = useState(false);
 
+    useEffect(() => {
+        AOS.init({ duration: 1000 });
+    }, []);
 
     const requestPhoneOTP = async () => {
         try {
@@ -103,7 +107,7 @@ const ProfilePage = () => {
 
 
     return (
-        <div className='my-10'>
+        <div className='my-10' data-aos="fade-up">
             <div className={`max-w-lg mx-auto mt-10 bg-white rounded-lg p-6 ${editMode ? 'border-2 shadow-2xl' : 'border shadow-lg'}`}>
                 <h2 className="text-2xl font-semibold text-gray-700 text-center">My Profile</h2>
                 <div className='relative'>

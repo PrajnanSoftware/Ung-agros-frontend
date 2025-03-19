@@ -9,6 +9,7 @@ import { findProductById, findProductSuggestion, getProducts } from "../redux/sl
 import { addOrUpdateItemToCart } from "../redux/slice/cartSlice";
 import { MdCurrencyRupee } from "react-icons/md";
 
+
 const calculateDiscountedPrice = (price, discount) => {
   return (price - (price * discount) / 100).toFixed(2);
 };
@@ -32,7 +33,6 @@ export default function ProductDetailsPage() {
   // const [ product, setProduct] = useState({});
 
   // Auto-switch images every 30 seconds
-
   useEffect(() => {
     dispatch(findProductById(id));
     dispatch(findProductSuggestion(category))
@@ -66,13 +66,13 @@ export default function ProductDetailsPage() {
       </div>
     
     if (!productDetail) {
-      return <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+      return <div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center" >
         <h2 className="text-center text-red-500">Product not found</h2>;
       </div>
     }
 
   return (
-    <div >
+    <div>
       <div className="p-5 flex flex-col lg:flex-row lg:justify-between lg:items-start">
         <div className="w-full lg:w-[50vw] mb-4 lg:mb-0 lg:mr-8 lg:ml-auto relative">
           <div className="relative w-full h-[60vh] lg:h-[50vh] overflow-hidden rounded-lg">

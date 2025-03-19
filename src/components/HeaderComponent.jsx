@@ -32,7 +32,7 @@ const HeaderComponent = () => {
   const navigate = useNavigate();
   const { error, loading, isAuthenticated, success, user } = useSelector((state) => state.user);
   const { cart } = useSelector((state) => state.cart);
-  const { category } = useSelector((state) => state.category)
+  const { category } = useSelector((state) => state.category);
 
   useEffect(() => {
     if (location.pathname !== "/search-result") {

@@ -13,25 +13,29 @@ import { LiaShippingFastSolid } from "react-icons/lia";
 import { BiBadgeCheck } from "react-icons/bi";
 import { RiSecurePaymentLine } from "react-icons/ri";
 import { MdOutlineSentimentVerySatisfied } from "react-icons/md";
+import { useSelector } from 'react-redux';
 
 const FooterComponent = () => {
+    const { category } = useSelector((state) => state.category);
+
   return (
     <div className='bg-primary text-white  text-sm'>
-        <div className='bg-secondary w-full flex justify-around p-2 text-base gap-2'>
-            <div className='flex flex-col md:flex-row justify-around w-full gap-2'>
-                <div className='flex items-center gap-2'>
+        <div className='bg-secondary w-full flex justify-around text-base'>
+            <div className='flex flex-col md:flex-row justify-around w-full '>
+                <div className='flex items-center justify-center gap-2 bg-blue-500 w-full p-2'>
                     <LiaShippingFastSolid className='text-3xl'/> Fast & Secured Delivery
                 </div>
-                <div className='flex items-center gap-2'>
-                    <BiBadgeCheck className='text-3xl' /> Genuine & Authentic
-                </div>
-            </div>
-            <div className='flex flex-col md:flex-row justify-around w-full gap-2'>
-                <div className='flex items-center gap-2'>
+                <div className='flex items-center justify-center gap-2 bg-yellow-500 w-full p-2.5'>
                     <RiSecurePaymentLine className='text-3xl' /> 100% Safe & Secure Payment
                 </div>
-                <div className='flex items-center gap-2'>
-                    <MdOutlineSentimentVerySatisfied className='text-3xl' /> Satisfied
+
+            </div>
+            <div className='flex flex-col md:flex-row justify-around w-full'>
+            <div className='flex items-center justify-center gap-2 bg-secondary w-full p-2'>
+                    <BiBadgeCheck className='text-3xl' /> Genuine & Authentic
+                </div>
+                <div className='flex items-center justify-center gap-2 bg-red-500 w-full p-2.5'>
+                    <MdOutlineSentimentVerySatisfied className='text-3xl' /> Customer Satisfied
                 </div>
             </div>
         </div>
@@ -39,7 +43,7 @@ const FooterComponent = () => {
             {/* About Section */}
             <div className='lg:w-1/4 text-left'>
                 <h3 className='border-b-2 pb-2 font-bold'>ABOUT US</h3>
-                <img src={logo} alt="Ung Agro" className='mt-2 m-auto bg-white h-14 w-14 rounded-full'/>
+                <img src={logo} alt="UnG Agro" className='mt-2 m-auto bg-white h-14 w-14 rounded-full'/>
                 <p>We specialize in high-quality Agricultural Manual Tools and Machineries, Pheromone Traps, Home Garden products, and a variety of plants to support farmers, gardeners, and agriculture enthusiasts.</p>
             </div>
 
@@ -48,20 +52,25 @@ const FooterComponent = () => {
                 <h3 className='border-b-2 pb-2 font-bold'>QUICK LiNK</h3>
                 <ul className='mt-2 space-y-2h'>
                     {["About US", "Contact Us", "Privacy Policy", "Terms & Condition"].map((item, index) => (
-                        <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to='/' className="hover:underline" >{item}</NavLink></li>
+                        <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to={`/${item.replace(" ","-").toLowerCase()}`} className="hover:underline" >{item}</NavLink></li>
                     ))}
                 </ul>
             </div>
 
             {/* Our Category Section */}
-            <div className='lg:w-1/4 text-left'>
-                <h3 className='border-b-2 pb-2 font-bold'>OUR CATEGORY</h3>
-                <ul className='mt-2'>
-                    {["Agricultural Manual Tools", "Agricultural Machineries", "Pheromone Traps", "Kitchen Garden"].map((item, index) => (
-                        <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to='/' className="hover:underline" >{item}</NavLink></li>
-                    ))}
-                </ul>
-            </div>
+            {category && (
+                <div className='lg:w-1/4 text-left'>
+                    <h3 className='border-b-2 pb-2 font-bold'>OUR CATEGORY</h3>
+                    <ul className='mt-2'>
+                        {category.map((item, index) => {
+                            if (index < 4) {
+                                return <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to='/' className="hover:underline" >{item.name}</NavLink></li>
+                            } else {
+                                return
+                            }
+                        })}
+                    </ul>
+            </div>)}
 
             {/* Contact Section */}
             <div className='lg:w-1/4 text-left'>
@@ -69,15 +78,19 @@ const FooterComponent = () => {
                 <div className='space-y-2 mt-2'>
                     <div className='flex justify-start items-center gap-2'>
                         <MdOutlineEmail className='text-2xl' />
-                        <p>info@ungagros.com</p>
+                        <a href="mailto:info@ungagros.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                            info@ungagros.com
+                        </a>
                     </div>
                     <div className='flex justify-start items-center gap-2'>
                         <FiPhone className='text-2xl' />
-                        <p>+91 98765432XX</p>
+                        <p>+91 9986636773</p>
                     </div>
                     <div className='flex justify-start items-center gap-2'>
-                        <GrMapLocation className='text-2xl' />
-                        <p className='px-2'>Ung Agro, <br />#32, 1st Main, 2nd Cross, <br /> Muneshwara Layout, <br />Laggere Bengaluru -560058,<br /> Karnataka, India</p>
+                        <a href="https://maps.app.goo.gl/g9bQLsMEDMnKpuv48" target="_blank" rel="noopener noreferrer" className='flex justify-start items-center gap-2' >
+                            <GrMapLocation className='text-2xl' />
+                            <p className='px-2'>UnG Agro, <br />#32, 1st Main, 2nd Cross, <br /> Muneshwara Layout, <br />Laggere Bengaluru -560058,<br /> Karnataka, India</p>
+                        </a>
                     </div>
                 </div>
 
@@ -96,7 +109,7 @@ const FooterComponent = () => {
         {/* Copyright Section */}
         <div className='text-center p-2 bg-secondary text-white mt-6'>
             <FaRegCopyright className='inline mr-2' /> 
-            <p className='inline'>ung agros 2025, All rights reserved. Developed by <a href="https://www.prajnansoftwares.com/aboutus" target='_blank'>Prajnan Softwares</a></p>
+            <p className='inline'>UnG Agros 2025, All rights reserved. Developed by <a href="https://www.prajnansoftwares.com/aboutus" target='_blank'>Prajnan Softwares</a></p>
         </div>
     </div>
   )

@@ -20,6 +20,10 @@ const VerifyOtpPage = () => {
     const { name, email, phone, password, otpToken } = location.state || {};
     
     useEffect(() => {
+        AOS.init({ duration: 1000 });
+    }, []);
+
+    useEffect(() => {
         if (isAuthenticated) {
             toast.success('Login successful')
             navigate('/');
@@ -59,7 +63,7 @@ const VerifyOtpPage = () => {
     }
 
   return (
-    <div className='min-h-[calc(100vh-100px)] pt-0 p-10 flex justify-center items-center flex-col'>
+    <div className='min-h-[calc(100vh-100px)] pt-0 p-10 flex justify-center items-center flex-col' data-aos="fade-up">
         <div className='mb-10'>
             <img src={logo} alt="logo" width={75} height={75} className='m-auto' />
             <h1 className='text-3xl font-bold text-primary'>Verify your email</h1>

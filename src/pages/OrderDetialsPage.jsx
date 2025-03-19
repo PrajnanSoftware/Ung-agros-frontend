@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; // For navigation and retrieving query params
 import BillTemplateComponent from '../components/BillTemplateComponent';
 import { MdCurrencyRupee } from 'react-icons/md';
+import AOS from 'aos';
 
 // Mock API to fetch order and product details
 const fetchOrderDetails = async (orderId, orderType) => {
@@ -24,6 +25,10 @@ const fetchOrderDetails = async (orderId, orderType) => {
 };
 
 const OrderDetailsPage = () => {
+
+  useEffect(() => {
+    AOS.init({ duration: 1000 });
+  }, []);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,7 +53,14 @@ const OrderDetailsPage = () => {
 
 
   if (!order) {
-    return <p>No order details available.</p>;
+    return (
+      <div className='p-10' data-aos="fade-up">
+        <h2 className="text-xl font-semibold mb-4">My Orders</h2>
+        <div className='w-full min-h-[calc(100vh-200px)] flex items-center justify-center'>
+          <p className='text-xl'>No Orders data</p>
+        </div>
+    </div>
+    );
   }
 
   // Handle product click and redirect to product_details page
@@ -57,7 +69,7 @@ const OrderDetailsPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6" data-aos="fade-up">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column - Order Details */}
         <div className="bg-white p-6 rounded-lg shadow-md">

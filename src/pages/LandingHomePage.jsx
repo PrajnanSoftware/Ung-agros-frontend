@@ -5,7 +5,8 @@
   import { useDispatch, useSelector } from 'react-redux'
   import { useNavigate } from 'react-router-dom'
   import { getNewProducts, getProducts, getTopSellingProducts } from '../redux/slice/productSlice';
-  import { toast } from 'react-toastify';
+  import AOS from 'aos';
+
   // TODO: InProgress
 
   // const categories = [
@@ -32,6 +33,11 @@
       "🌍 Eco-Friendly Farming Products Now Available!"
     ]);
 
+    
+    useEffect(() => {
+      AOS.init({ duration: 1000 });
+    }, []);
+
     useEffect(() => {
       dispatch(getTopSellingProducts());
       dispatch(getNewProducts());
@@ -48,7 +54,7 @@
     }
 
     return (
-      <div>
+      <div data-aos='fade-up'>
           {/* Slider */}
           <div>
             <SliderComponent />
@@ -71,7 +77,7 @@
           {/* Top Selling */}
           <div>
             <div className='mt-4 mb-8'>
-              <h2 className='text-2xl font-bold w-fit m-auto py-4'>TOP SELLING PRODUCTS</h2>
+              <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>TOP SELLING PRODUCTS</h2>
             </div>
             <div className='p-6 flex gap-6 overflow-x-auto'>
               { topSellingProductLoading ? (
@@ -88,8 +94,8 @@
 
           {/* Category */}
           <div className='w-full'>
-            <div className='mt-4 mb-8 '>
-              <h2 className='text-2xl font-bold w-fit m-auto py-4'>CATEGORIES</h2>
+            <div className='mt-4 mb-4 '>
+              <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>CATEGORIES</h2>
             </div>
 
             <div className='flex gap-6 justify-start px-6 overflow-x-auto scroll-smooth snap-x snap-mandatory m-auto'>
@@ -114,8 +120,8 @@
 
           {/* Products */}
           <div className='items-center'>
-            <div className='mt-4 mb-8'>
-              <h2 className='text-2xl font-bold w-fit m-auto py-4'>NEW PRODUCTS</h2>
+            <div className='mt-4 mb-4'>
+              <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>NEW PRODUCTS</h2>
             </div>
               { newProductsLoading ? (
                 <div className="w-full flex justify-center items-center my-4">

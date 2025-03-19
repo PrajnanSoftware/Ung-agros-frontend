@@ -9,6 +9,7 @@ import PaymentFailurePage from './PaymentFailurePage';
 import { getCart } from '../redux/slice/cartSlice';
 import { toast } from 'react-toastify';
 import { MdCurrencyRupee } from 'react-icons/md';
+import AOS from 'aos';
 
 const CheckoutPage = () => {
     const { checkoutData, cart, cartLoading } = useSelector((state) => state.cart);
@@ -22,6 +23,10 @@ const CheckoutPage = () => {
     const [total, setTotal] = useState(0);
 
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        AOS.init({ duration: 1000 });
+    }, []);
 
     useEffect(() => {
 
@@ -50,7 +55,12 @@ const CheckoutPage = () => {
         try {
             setLoading(true);
             const isLoaded = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-            if (!isLoaded) return console.log("Razorpay SDK failed to load");
+            if (!isLoaded) {
+                toast.error("Failed to load Razorpay SDK");
+                setLoading(false);
+                console.log("Razorpay SDK failed to load");
+                return 
+            }
             
             const { data } = await axiosInstance.post('/payment/create-rp-order', {amount: total});
             
@@ -63,41 +73,48 @@ const CheckoutPage = () => {
                 description: "Order Payment",
                 order_id: data.data.id,
                 handler: async (response) => {
-                    console.log(response);
-                    const verifyRes = await axiosInstance.post('/payment/verify-rp-payment', response);
-                    console.log(verifyRes);
-                    if (verifyRes.data.success) {
-                        console.log("Payment Successful");
-                        toast.success('Payment successful');
-                        const order = await axiosInstance.post('/order', 
-                            {
-                                items: checkoutData.items,
-                                totalPrice: total,
-                                orderStatus: "Pending",
-                                paymentStatus: "Paid", 
-                                paymentInfo: {
-                                    razorpaySignature: verifyRes.data.data.razorpay_signature,
-                                    razorpayPaymentId: verifyRes.data.data.razorpay_payment_id,
-                                    razorpayOrderId: verifyRes.data.data.razorpay_order_id
-                                }, 
-                                billDetails: {
-                                    subTotal: amount,
-                                    sgst: sgst,
-                                    cgst: cgst,
-                                    total: total
-                                }
-                            });
-                    if (order.data.status === 'success') {
-                        toast.success('Order successful');
-                        navigate('/payment-success');
-                        dispatch(getCart());
-                    } else {
-                        toast.error('Payment failed');
-                        navigate('/payment-failure');
-                    }
-                    } else {
-                        toast.error('Order failed');
-                        navigate('/payment-failure');
+                    try {
+                        
+                    
+                        console.log(response);
+                        const verifyRes = await axiosInstance.post('/payment/verify-rp-payment', response);
+                        console.log(verifyRes);
+                        if (verifyRes.data.success) {
+                            console.log("Payment Successful");
+                            toast.success('Payment successful');
+                            const order = await axiosInstance.post('/order', 
+                                {
+                                    items: checkoutData.items,
+                                    totalPrice: total,
+                                    orderStatus: "Pending",
+                                    paymentStatus: "Paid", 
+                                    paymentInfo: {
+                                        razorpaySignature: verifyRes.data.data.razorpay_signature,
+                                        razorpayPaymentId: verifyRes.data.data.razorpay_payment_id,
+                                        razorpayOrderId: verifyRes.data.data.razorpay_order_id
+                                    }, 
+                                    billDetails: {
+                                        subTotal: amount,
+                                        sgst: sgst,
+                                        cgst: cgst,
+                                        total: total
+                                    }
+                                });
+                                setLoading(false);
+                            if (order.data.status === 'success') {
+                                toast.success('Order placed successful');
+                                navigate('/payment-success');
+                                dispatch(getCart());
+                            } else {
+                                toast.error('Order creation failed');
+                                navigate('/payment-failure');
+                            }
+                        } else {
+                            toast.error('Payment processing or order creation failed');
+                            navigate('/payment-failure');
+                        }
+                    } catch (error) {
+                        setLoading(false)
                     }
                 },
                 prefill: {
@@ -106,7 +123,7 @@ const CheckoutPage = () => {
                     contact: user.phone
                 },
                 theme: {
-                    color: "#3399cc",
+                    color: "#38B54A",
                 }
             };
 
@@ -115,18 +132,16 @@ const CheckoutPage = () => {
         } catch (error) {
             setLoading(false)
             console.error("Error:", error);   
-        } finally {
-            setLoading(false)
         }
     }
 
     if (cartLoading) {
-        return <div className="flex justify-center items-center min-h-screen">
+        return <div className="flex justify-center items-center min-h-screen" >
             <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
     }
     if (!checkoutData) 
-        return <div className='min-h-[calc(100vh-200px)] flex items-center justify-center'>
+        return <div className='min-h-[calc(100vh-200px)] flex items-center justify-center' >
              <div className='text-center flex flex-col'><h3>Something went wrong.</h3>  <p>Back to <a href="/cart" className='text-blue-700 underline'>Cart</a></p></div>;  
         </div>
 
@@ -182,7 +197,7 @@ const CheckoutPage = () => {
                                 <div className="flex justify-center items-center">
                                     <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                 </div>
-                            ) :(<p className='flex items-center justify-center'>Pay <span className='flex items-center justify-center ml-2'><MdCurrencyRupee />{total}</span></p>)
+                            ) :(<p className='flex items-center justify-center text-white'>Pay <span className='flex items-center justify-center ml-2'><MdCurrencyRupee />{total}</span></p>)
                         } 
                     </button>
                 </div>

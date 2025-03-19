@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ImCross } from "react-icons/im";
-
+    
 const PaymentFailurePage = () => {
     const navigate = useNavigate();
     const [ countdown, setCountdown ] = useState(10);
