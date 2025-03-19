@@ -8,7 +8,8 @@ import { getUserAddress } from '../redux/slice/userSlice';
 import ModalComponent from '../components/ModalComponent';
 import AddressFormComponent from '../components/AddressFormComponent';
 import { MdCurrencyRupee } from 'react-icons/md'; 
-import AOS from 'aos';
+import { toast } from 'react-toastify';
+
 
 const CartPage = () => {
     const dispatch = useDispatch();
@@ -20,10 +21,14 @@ const CartPage = () => {
     const [saving, setSaving] = useState(0);
     const [ addressError, setAddressError ] = useState(null);
     const [ addressLoading, setAddressLoading] = useState(false);
+    const [outOfStock, setOutOfStock] = useState([]);
+    const unavailable = [];
+
 
     useEffect(() => {
-        AOS.init({ duration: 1000 });
-    }, []);
+        const outOfStockItems = cart.filter(item => item.quantity > item.product.quantity).map(item => item.product.name);
+        setOutOfStock(outOfStockItems);
+    }, [cart]);
 
     useEffect( () => {
         if (cart.length !== 0) {
@@ -41,7 +46,7 @@ const CartPage = () => {
         } else {
             navigate('/login')
         }
-    }, [dispatch]);
+    }, [dispatch, user]);
 
 
     // useEffect(() => {
@@ -50,10 +55,16 @@ const CartPage = () => {
     //     }
     // }, [cartCheckoutError, cartLoading, cart, navigate]);
     // TODO: Handle Checkout 
-    const handleCheckout = () => {
-        if (userAddress) {
-            dispatch(checkoutCart());
-            navigate('/checkout');
+    const handleCheckout = async () => {
+        try {
+            
+            if (userAddress) {
+                const checoutResponse = await dispatch(checkoutCart()).unwrap();
+                console.log(checoutResponse)
+                navigate('/checkout');
+            }
+        } catch (error) {
+         toast.error(error.message)   
         }
         
     }
@@ -61,17 +72,17 @@ const CartPage = () => {
     const handleAddressToggle = () => setOpenAddressForm(prev => !prev) 
 
     if (cartLoading) 
-        return (<div className="flex justify-center items-center min-h-screen" data-aos="fade-up">
+        return (<div className="flex justify-center items-center min-h-screen" >
             <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
         </div>);
 
     if (cartError) 
-        return (<div className='min-h-[calc(100vh-200px)] flex justify-center items-center' data-aos="fade-up">
+        return (<div className='min-h-[calc(100vh-200px)] flex justify-center items-center' >
             <p>Something went wrong</p>
         </div>);
 
   return (
-    <div className='py-10 px-5 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20' data-aos="fade-up">
+    <div className='py-10 px-5 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20' >
         <div className='flex-auto'>
             <h3 className='text-2xl font-bold'>My Cart</h3>
             <hr className='my-4'/>
@@ -98,7 +109,7 @@ const CartPage = () => {
             <h4 className='font-semibold'>Products</h4>
             {
                 cart.length == 0 ? <div className='text-center py-4'>No Cart Items</div> :
-                <div className='max-h-[calc(100vh - 100px)] overflow-y-auto'>
+                <div className='max-h-[calc(100vh - 100px)] overflow-y-auto'> 
                 {
                     cart.map((item, index) => {
                         return <CartItemsComponent key={index} productId={item.product._id} name={item.product.name} imgUrl={item.product.image && item.product.image[0]} price={item.product.sellingPrice} quantity={item.quantity} avlQty={item.product.quantity}/>
@@ -123,7 +134,11 @@ const CartPage = () => {
                 <p className='flex items-center'><MdCurrencyRupee /> {total}</p>
             </div>
             <div>
-                <button className={`text-white bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || cartLoading || !userAddress ? "opacity-60 cursor-not-allowed " : ""}`} disabled={cart.length === 0 || cartLoading || !userAddress} onClick={handleCheckout}>
+                {(outOfStock.length > 0) && <p className='text-red-500 pl-2 pt-4 pb-0'>
+
+                    { outOfStock.map((item) => item).join(", ")}{" is Out of Stock, Please remove it to proceed."}
+                </p>}
+                <button className={`text-white bg-primary w-full p-2 rounded-lg my-2 ${cart.length === 0 || cartLoading || !userAddress || outOfStock.length !== 0 ? "opacity-60 cursor-not-allowed " : ""}`} disabled={ outOfStock.length !== 0 || cart.length === 0 || cartLoading || !userAddress} onClick={handleCheckout}>
                     {cartLoading ? "Loading..." : "Checkout" }
                 </button>
             </div>

@@ -35,7 +35,7 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
         toast.info("Please login to contine.");
       }
     } catch (error) {
-      toast.error("Something went wrong, try again");
+      toast.error("Not enough quantity");
     } finally {
       setLoading(false)
     }

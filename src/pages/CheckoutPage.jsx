@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import CartItemsComponent from '../components/CartItemsComponent';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../utils/axiosInstance';
-import axios from 'axios';
-import PaymentSuccessPage from './PaymentSuccessPage';
-import PaymentFailurePage from './PaymentFailurePage';
 import { getCart } from '../redux/slice/cartSlice';
 import { toast } from 'react-toastify';
 import { MdCurrencyRupee } from 'react-icons/md';
