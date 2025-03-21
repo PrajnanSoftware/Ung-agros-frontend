@@ -1,0 +1,17 @@
+/* ProductManagement.scss */
+.product-management {
+  padding: 20px;
+
+  .MuiTextField-root {
+    margin-bottom: 1rem;
+  }
+
+  .MuiDataGrid-root {
+    background-color: #fff;
+    border-radius: 10px;
+  }
+
+  .MuiButton-root {
+    text-transform: none;
+  }
+}
