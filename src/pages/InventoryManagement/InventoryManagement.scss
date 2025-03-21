@@ -1,0 +1,68 @@
+.inventory-management {
+  padding: 2rem;
+  background-color: #f5f7fa;
+
+  .MuiPaper-root {
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    h5 {
+      color: #1abc9c;
+      font-weight: 600;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+
+      .MuiTextField-root {
+        flex: 1 1 45%;
+        min-width: 250px;
+      }
+
+      .MuiButton-root {
+        height: 56px;
+      }
+    }
+  }
+
+  .search-bar {
+    margin-bottom: 1.5rem;
+
+    .MuiTextField-root {
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .MuiDataGrid-root {
+    border: none;
+    border-radius: 1rem;
+    background-color: #ffffff;
+
+    .MuiDataGrid-columnHeaderTitle {
+      color: #1abc9c;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .MuiDataGrid-cell {
+      cursor: pointer;
+      &:hover {
+        color: #16a085;
+      }
+    }
+
+    .MuiDataGrid-footerContainer {
+      border-top: 1px solid #e0e0e0;
+    }
+  }
+
+  .action-button {
+    color: #2980b9;
+    &:hover {
+      color: #1abc9c;
+    }
+  }
+} 

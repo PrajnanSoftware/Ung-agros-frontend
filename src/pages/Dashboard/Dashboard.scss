@@ -1,0 +1,24 @@
+.dashboard {
+  background-color: #f3f4f6;
+
+  .stat-card {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #ffffff, #e3f2fd);
+    transition: transform 0.3s;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .MuiIconButton-root {
+      background-color: #e0f7fa;
+      border-radius: 12px;
+    }
+  }
+
+  .chart-container {
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  }
+}
