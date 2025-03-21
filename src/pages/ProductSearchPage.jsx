@@ -57,7 +57,17 @@ const ProductSearchPage = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState([]);
   const { products, totalPages, currentPage, totalProducts, productsLoading, productError} = useSelector((state) => state.product);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 690);
 
+  useEffect(() => {
+        const handleResize = () => {
+          setIsSmallScreen(window.innerWidth < 690);
+        };
+    
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   useEffect(() => {
     console.log(category);
     dispatch(getProducts({name:query, category, page:1, limit:10}));
@@ -94,7 +104,7 @@ const ProductSearchPage = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-2">
 
       <div className='my-2'>
         <p>Showing {products.length} of {totalProducts} products</p>
@@ -102,13 +112,15 @@ const ProductSearchPage = () => {
 
 
       {/* Product Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 lg:gap-4 ">
+      <div className='flex justify-center'>
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 ">
         { products.map((product, index) => (
           <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
-            <ProductCardComponent product={product} small={true} />
+            <ProductCardComponent product={product} small={isSmallScreen} />
           </div>
         ))}
-      </div>
+      </div> 
+      </div> 
 
       {/* Load More Button */}
       {currentPage < totalPages && (

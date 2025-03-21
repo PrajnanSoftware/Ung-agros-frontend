@@ -53,7 +53,7 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
             <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800 text-nowrap ">
                 {!small ? product.name : product.name.substring(0, 18)+"..."}
             </h3>
-            <span className='text-xs sm:text-sm md:text-base text-gray-600'>{product.description.substring(0, 100)+"..."}</span>
+            <span className='text-xs sm:text-sm md:text-base text-gray-600 p-1'>{small ? product.description.substring(0, 20)+"..." : product.description.substring(0, 40)+"..."}</span>
 
             {/* Price */}
             <div className="flex items-start gap-2 text-wrap mt-2">
