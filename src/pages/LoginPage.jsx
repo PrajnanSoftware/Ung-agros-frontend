@@ -12,7 +12,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { error, loading, isAuthenticated } = useSelector((state) => state.user);
+    const { error, loading, isAuthenticated, user } = useSelector((state) => state.user);
     const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
@@ -20,8 +20,11 @@ const LoginPage = () => {
     }, []);
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && user?.role == 'customer') {
             navigate('/');
+        }
+        if (isAuthenticated && user?.role == 'admin') {
+            navigate('/dashboard');
         }
     }, [isAuthenticated, navigate]);
 
