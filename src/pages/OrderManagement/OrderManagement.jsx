@@ -33,6 +33,45 @@ export default function OrderManagement() {
     fetchOrders();
   }, []);
 
+  const renderStatusDropdown = (params) => {
+    const order = params.row;
+    const currentStatus = order.status;
+
+    let availableStatuses = [];
+    if (currentStatus === "Pending") availableStatuses = ["Processing", "Cancelled"];
+    else if (currentStatus === "Processing") availableStatuses = ["Shipped", "Cancelled"];
+    else if (currentStatus === "Shipped") availableStatuses = ["Delivered"];
+    
+    return (
+      <select
+        value={currentStatus}
+        onChange={(e) => handleStatusUpdate(order._id, e.target.value)}
+        disabled={availableStatuses.length === 0}
+      >
+        <option value={currentStatus}>{currentStatus}</option>
+        {availableStatuses.map((status) => (
+          <option key={status} value={status}>
+            {status}
+          </option>
+        ))}
+      </select>
+    );
+  };
+  // Update Order Status
+  const handleStatusUpdate = async (id, newStatus) => {
+    try {
+      await axiosInstance.put(`/order/${id}`, { orderStatus: newStatus });
+
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === id ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   const handleDownloadInvoice = (order) => {
     const doc = new jsPDF();
     doc.setFontSize(16);
@@ -102,6 +141,7 @@ export default function OrderManagement() {
     { field: 'customerName', headerName: 'Customer Name', width: 180 },
     { field: 'customerPhone', headerName: 'Customer Phone', width: 150 },
     { field: 'customerAddress', headerName: 'Customer Address', width: 250 },
+    { field: "status", headerName: "Status", width: 150, renderCell: renderStatusDropdown },
     { field: 'amount', headerName: 'Amount (₹)', width: 120 },
     {
       field: 'actions',

@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {axiosInstance} from '../../utils/axiosInstance';
+import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 import './ProductManagement.scss';
 
 export default function ProductManagement() {
@@ -35,6 +36,44 @@ export default function ProductManagement() {
       uploadedImages.forEach((file) => URL.revokeObjectURL(URL.createObjectURL(file)));
     };
   }, [uploadedImages]);
+
+  const handleImageUpload = async (files) => {
+    if (!files || files.length === 0) return;
+  
+    setUploading(true);
+    let successfulUploads = [];
+  
+    try {
+      const uploadedUrls = await Promise.all(
+        Array.from(files).map(async (file) => {
+          try {
+            const url = await uploadToCloudinary(file);
+            if (!url) throw new Error("Invalid URL received");
+            successfulUploads.push(url); // Only store successful uploads
+            return url;
+          } catch (err) {
+            console.error("Image upload failed for:", file.name, err);
+            toast.error(`Failed to upload ${file.name}`);
+            return null; // Ensure failed uploads are not added
+          }
+        })
+      );
+  
+      // Filter out null values (failed uploads)
+      const validUrls = uploadedUrls.filter((url) => url !== null);
+      setImageUrls((prevUrls) => [...prevUrls, ...validUrls]);
+  
+      if (validUrls.length > 0) {
+        toast.success("Image(s) uploaded successfully");
+      }
+  
+    } catch (error) {
+      console.error("Image upload error:", error);
+      toast.error("Failed to upload images");
+    } finally {
+      setUploading(false);
+    }
+  };
   
 
   const fetchProducts = async () => {
@@ -82,13 +121,73 @@ export default function ProductManagement() {
     }
   };
 
+  const onSubmit = async (data) => {
+    if (!selectedCategory) {
+      toast.error("Please select a category");
+      return;
+    }
+  
+    if (imageUrls.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+  
+    try {
+      setLoading(true);
+  
+      const productData = {
+        name: data.name,
+        description: data.description,
+        price: data.mrp,
+        sellingPrice: data.sellingPrice,
+        quantity: data.stock,
+        category: selectedCategory,
+        image: imageUrls, // Cloudinary uploaded images
+      };
+  
+      if (editProductId) {
+        await axiosInstance.put(`/product/${editProductId}`, productData);
+        toast.success("Product updated successfully");
+      } else {
+        await axiosInstance.post("/product", productData);
+        toast.success("Product added successfully");
+      }
+  
+      setShowForm(false);
+      setEditProductId(null);
+      reset();
+      fetchProducts();
+      setImageUrls([]);
+    } catch (error) {
+      console.error("Error saving product:", error);
+      toast.error("Failed to save product");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   const handleEdit = (product) => {
     setEditProductId(product.id);
-    setSelectedCategory(product.category);
+
+    // Ensure the correct category is set
+    setSelectedCategory(product.category?.id || product.category);
+    
+    // Set form fields manually since react-hook-form doesn't auto-fill
+    reset({
+      name: product.name,
+      description: product.description,
+      mrp: product.mrp,
+      sellingPrice: product.sellingPrice,
+      stock: product.stock,
+    });
+  
+    // Ensure images are correctly set
     setImageUrls(product.image || []);
+  
     setShowForm(true);
   };
-
+  
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
