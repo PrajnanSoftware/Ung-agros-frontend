@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, TextField, Box, Typography, Paper, IconButton } from '@mui/material';
+import { Button, TextField, Box, Typography, Paper, IconButton, CircularProgress } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import {axiosInstance} from '../../utils/axiosInstance';
+import ImageIcon from '@mui/icons-material/Image';
+import { axiosInstance } from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { uploadToCloudinary } from '../../utils/uploadToCloudinary';
 
 export default function CategoryManagement() {
   const [categories, setCategories] = useState([]);
@@ -17,6 +19,7 @@ export default function CategoryManagement() {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [search, setSearch] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -39,21 +42,23 @@ export default function CategoryManagement() {
   };
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('description', data.description);
-    if (uploadedImage) formData.append('image', uploadedImage);
-
+    if (uploading) {
+      toast.warn("Please wait until the image upload completes.");
+      return;
+    }
+  
+    const categoryData = {
+      name: data.name,
+      description: data.description,
+      image: uploadedImage, 
+    };
+  
     try {
       if (editingCategory) {
-        await axiosInstance.put(`/category/${editingCategory.id}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await axiosInstance.put(`/category/${editingCategory.id}`, categoryData);
         toast.success('Category updated successfully');
       } else {
-        await axiosInstance.post('/category', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await axiosInstance.post('/category', categoryData);
         toast.success('Category added successfully');
       }
       fetchCategories();
@@ -62,8 +67,8 @@ export default function CategoryManagement() {
       setUploadedImage(null);
       setEditingCategory(null);
     } catch (error) {
-      console.error('Failed to save category:', error);
-      toast.error('Failed to save category');
+      console.error('Failed to save category:', error.response?.data || error);
+      toast.error(error.response?.message || 'Failed to save category');
     }
   };
 
@@ -83,12 +88,37 @@ export default function CategoryManagement() {
     setShowForm(true);
     setValue('name', category.name);
     setValue('description', category.description);
+    setUploadedImage(category.image); // Set the existing image if editing
   };
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     if (event.target.files && event.target.files.length > 0) {
-      setUploadedImage(event.target.files[0]);
+      const file = event.target.files[0];
+
+      setUploading(true); // Show loader
+      setUploadedImage(URL.createObjectURL(file)); // Show local preview before upload
+
+      try {
+        const uploadedImageUrl = await uploadToCloudinary(file);
+        if (uploadedImageUrl) {
+          setUploadedImage(uploadedImageUrl);
+          toast.success('Image uploaded successfully');
+        } else {
+          throw new Error('Invalid image URL received');
+        }
+      } catch (error) {
+        console.error('Image upload failed:', error);
+        setUploadedImage(null); // Remove preview if upload fails
+        toast.error('Failed to upload image, please try again.');
+      } finally {
+        setUploading(false); // Hide loader
+      }
     }
+  };
+
+  const handleRemoveImage = () => {
+    setUploadedImage(null);
+    toast.info('Image removed');
   };
 
   const filteredCategories = categories.filter(category =>
@@ -137,7 +167,7 @@ export default function CategoryManagement() {
         variant="contained"
         color="primary"
         startIcon={showForm ? <CloseIcon /> : <AddIcon />}
-        onClick={() => { setShowForm(!showForm); setEditingCategory(null); reset(); }}
+        onClick={() => { setShowForm(!showForm); setEditingCategory(null); reset(); setUploadedImage(null); }}
       >
         {showForm ? 'Close Form' : 'Add Category'}
       </Button>
@@ -150,18 +180,29 @@ export default function CategoryManagement() {
           <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <TextField {...register('name')} label="Name" variant="outlined" required fullWidth />
             <TextField {...register('description')} label="Description" variant="outlined" required fullWidth />
+            
             <Typography variant="subtitle1">Upload Category Image</Typography>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-            {uploadedImage && (
-              <img
-                src={URL.createObjectURL(uploadedImage)}
-                alt="Preview"
-                width={70}
-                height={70}
-                style={{ borderRadius: '5px' }}
-              />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+              {uploading && <CircularProgress size={24} />}
+            </Box>
+            
+            {uploadedImage && !uploading && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, marginTop: 1 }}>
+                <img
+                  src={uploadedImage}
+                  alt="Uploaded"
+                  width={70}
+                  height={70}
+                  style={{ borderRadius: '5px', objectFit: 'cover' }}
+                />
+                <IconButton color="error" onClick={handleRemoveImage}>
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
             )}
-            <Button type="submit" variant="contained" color="primary">
+
+            <Button type="submit" variant="contained" color="primary" disabled={uploading}>
               {editingCategory ? 'Update' : 'Submit'}
             </Button>
           </form>
