@@ -13,6 +13,18 @@ export const getCart = createAsyncThunk(
     }
 );
 
+export const updateItemCart = createAsyncThunk(
+    'cart/updateItem',
+    async (itemData, { rejectWithValue }) => { 
+        try {
+            const response = await axiosInstance.post('/cart', itemData);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
 export const addOrUpdateItemToCart = createAsyncThunk(
     'cart/addItem',
     async (itemData, { rejectWithValue }) => { 
@@ -89,6 +101,18 @@ const cartSlice = createSlice({
             })
             .addCase(addOrUpdateItemToCart.rejected, (state, action) => {
                 state.cartLoading = false;
+                state.cartAddError = action.payload;
+            })
+            .addCase(updateItemCart.pending, (state) => {
+                // state.cartLoading = true;
+                state.cartAddError = null;
+            })
+            .addCase(updateItemCart.fulfilled, (state, action) => {
+                // state.cartLoading = false;
+                state.cart = action.payload.savedCart.items;
+            })
+            .addCase(updateItemCart.rejected, (state, action) => {
+                // state.cartLoading = false;
                 state.cartAddError = action.payload;
             })
             // Delete Item from Cart

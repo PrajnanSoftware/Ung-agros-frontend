@@ -75,7 +75,7 @@ const VerifyOtpPage = () => {
             </label>
             <input type="text" name='otp' id='otp' 
                 className={`w-full p-3 border border-dark rounded-lg mb-5 focus:outline-none focus:ring-2 `}
-                value={otp} onChange={(e) => {setOtp(e.target.value)}} required disabled={loading}
+                value={otp} onChange={(e) => {setOtp(e.target.value)}} required disabled={loading} maxLength="6"
             />
             <button type="submit" 
                 className={`w-full py-3 px-6 text-white font-semibold rounded-lg transition-colors  ${loading ? 'bg-gray-400' : 'bg-primary hover:bg-primary-dark'}`} disabled={loading}>
