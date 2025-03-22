@@ -1,40 +1,43 @@
 import { lazy, Suspense, useEffect } from "react"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import HeaderComponent from "./components/HeaderComponent";
-import FooterComponent from "./components/FooterComponent";
-import AboutPage from "./pages/AboutPage";
-import ContactUsPage from "./pages/ContactUsPage";
-import NotFoundComponent from "./components/NotFoundComponent";
-import ProductDetailsPage from "./pages/ProductDetailsPage";
-import ProductSearchPage from "./pages/ProductSearchPage";
-import OrdersPage from "./pages/OrdersPage";
-import OrderDetailsPage from "./pages/OrderDetialsPage";
-import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-import CartPage from "./pages/CartPage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeAuth } from "./redux/slice/userSlice";
-import CheckoutPage from "./pages/CheckoutPage";
-import PaymentSuccessPage from "./pages/PaymentSuccessPage";
-import PaymentFailurePage from "./pages/PaymentFailurePage";
-import ProfilePage from "./pages/ProfilePage";
-import AddressPage from "./pages/AddressPage";
-import VerifyOtpPage from "./pages/VerifyOtpPage";
-import ScrollToTop from "./components/ScrollToTop";
 
-import DashboardLayout from './layout/DashboardLayout';
-import './styles/base.scss';
-import './styles/variables.scss';
-import Dashboard from './pages/Dashboard/Dashboard';
-import CategoriesManagement from './pages/Categories/CategoriesManagement';
-import OrderManagement from './pages/OrderManagement/OrderManagement';
-import ProductManagement from './pages/ProductManagement/ProductManagement';
-import SalesAnalytics from './pages/SalesAnalytics/SalesAnalytics';
-import InventoryManagement from './pages/InventoryManagement/InventoryManagement';
-import UserManagement from './pages/UserManagement/UserManagement';
-import AuthGuard from './components/AuthGuard/AuthGuard';
-import ProtectedRoute from "./components/ProtectedRoute";
-import UnauthorizedPage from "./pages/UnauthorizedPage";
+const HeaderComponent = lazy(() => import("./components/HeaderComponent"));
+const FooterComponent = lazy(() => import("./components/FooterComponent"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ContactUsPage = lazy(() => import("./pages/ContactUsPage"));
+const NotFoundComponent = lazy(() => import("./components/NotFoundComponent"));
+const ProductDetailsPage = lazy(() => import("./pages/ProductDetailsPage"));
+const ProductSearchPage = lazy(() => import("./pages/ProductSearchPage"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage"));
+const OrderDetailsPage = lazy(() => import("./pages/OrderDetialsPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SignUpPage = lazy(() => import("./pages/SignUpPage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
+const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccessPage"));
+const PaymentFailurePage = lazy(() => import("./pages/PaymentFailurePage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const AddressPage = lazy(() => import("./pages/AddressPage"));
+const VerifyOtpPage = lazy(() => import("./pages/VerifyOtpPage"));
+const ScrollToTop = lazy(() => import("./components/ScrollToTop"));
+const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
+
+lazy(() => import("./styles/base.scss"));
+lazy(() => import("./styles/variables.scss"));
+
+const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
+const CategoriesManagement = lazy(() => import("./pages/Categories/CategoriesManagement"));
+const OrderManagement = lazy(() => import("./pages/OrderManagement/OrderManagement"));
+const ProductManagement = lazy(() => import("./pages/ProductManagement/ProductManagement"));
+const SalesAnalytics = lazy(() => import("./pages/SalesAnalytics/SalesAnalytics"));
+const InventoryManagement = lazy(() => import("./pages/InventoryManagement/InventoryManagement"));
+const UserManagement = lazy(() => import("./pages/UserManagement/UserManagement"));
+const AuthGuard = lazy(() => import("./components/AuthGuard/AuthGuard"));
+const ProtectedRoute = lazy(() => import("./components/ProtectedRoute"));
+const UnauthorizedPage = lazy(() => import("./pages/UnauthorizedPage"));
+const NonAdminRoutes = lazy(() => import("./components/NonAdminRoutes"));
 
 
 
@@ -67,6 +70,7 @@ function App() {
 
   return (
     <Router>
+      
       <ScrollToTop />
       <Suspense fallback={<div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
         <div className="flex justify-center items-center min-h-screen">
@@ -78,32 +82,7 @@ function App() {
       {(!isAuthenticated || user?.role !== "admin") && <HeaderComponent />}
         <Routes>
 {/* Generic routes */}
-          <Route path="/" element={<LandingHome />}/>
-          <Route path="/login" element={<LoginPage />}/>
-          <Route path="/signup" element={<SignUpPage />}/>
-          <Route path="/search-result" element={<ProductSearchPage />}/>
-          <Route path="/verify-otp" element={<VerifyOtpPage />}/>
-          <Route path="/search-result/:category" element={<ProductSearchPage />}/>
-          <Route path="/product/:id/:category" element={<ProductDetailsPage />}/>
-          <Route path="/contact-us" element={<ContactUsPage />}/>
-          <Route path="/about-us" element={<AboutPage />}/>
-          <Route path="/unauthorized" element={<UnauthorizedPage />}/>
-
-
-{/* Customer Only Routes */}
-        <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
-          <Route path="/my-orders" element={<OrdersPage />}/>
-          <Route path="/order-details" element={<OrderDetailsPage />}/>
-          <Route path="/profile" element={<ProfilePage />}/>
-          <Route path="/address" element={<AddressPage />}/>
-          <Route path="/cart" element={<CartPage />}/>
-          <Route path="/checkout" element={<CheckoutPage />}/>
-          <Route path="/payment-success" element={<PaymentSuccessPage />} />
-          <Route path="/payment-failure" element={<PaymentFailurePage />}/>
-        </Route>
-
-{/* Admin only routes */}
-        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+<Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route path="/dashboard" element={<AuthGuard> <DashboardLayout /> </AuthGuard>}>
             <Route path="" element={<Dashboard />} />
             <Route path="overview" element={<Dashboard />} />
@@ -115,9 +94,37 @@ function App() {
             <Route path="users" element={<UserManagement />} />
           </Route>
         </Route>
+        <Route path="/login" element={<LoginPage />}/>
+
+        <Route element={<NonAdminRoutes />}>
+          <Route path="/" element={<LandingHome />}/>
+          <Route path="/signup" element={<SignUpPage />}/>
+          <Route path="/search-result" element={<ProductSearchPage />}/>
+          <Route path="/verify-otp" element={<VerifyOtpPage />}/>
+          <Route path="/search-result/:category" element={<ProductSearchPage />}/>
+          <Route path="/product/:id/:category" element={<ProductDetailsPage />}/>
+          <Route path="/contact-us" element={<ContactUsPage />}/>
+          <Route path="/about-us" element={<AboutPage />}/>
+
+
+{/* Customer Only Routes */}
+          <Route element={<ProtectedRoute allowedRoles={["customer"]} />}>
+            <Route path="/my-orders" element={<OrdersPage />}/>
+            <Route path="/order-details" element={<OrderDetailsPage />}/>
+            <Route path="/profile" element={<ProfilePage />}/>
+            <Route path="/address" element={<AddressPage />}/>
+            <Route path="/cart" element={<CartPage />}/>
+            <Route path="/checkout" element={<CheckoutPage />}/>
+            <Route path="/payment-success" element={<PaymentSuccessPage />} />
+            <Route path="/payment-failure" element={<PaymentFailurePage />}/>
+          </Route>
+        </Route>
+
+        <Route path="/unauthorized" element={<UnauthorizedPage />}/>
+{/* Admin only routes */}
           
-          <Route path="*" element={<NotFoundComponent/>}/>
-        </Routes>
+        <Route path="*" element={<NotFoundComponent/>}/>
+      </Routes>
         
         {(!isAuthenticated || user?.role !== "admin") && <FooterComponent />}
       </Suspense>

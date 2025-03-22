@@ -45,7 +45,7 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
                   ${small ? "w-44 md:w-60" : "w-80"} mx-auto`}>
         {/* Product image */}
         <div className='overflow-hidden rounded-lg'>
-            <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-36" : 'h-48'} object-cover transition-transform duration-300 group-hover:scale-105`} />
+            <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-36" : 'h-48'} object-contain transition-transform duration-300 group-hover:scale-105`} />
         </div>
 
         {/* Product details */}

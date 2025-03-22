@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CartItemsComponent from '../components/CartItemsComponent'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-import { checkoutCart } from '../redux/slice/cartSlice';
+import { checkoutCart, getCart } from '../redux/slice/cartSlice';
 import { axiosInstance } from '../utils/axiosInstance';
 import { getUserAddress } from '../redux/slice/userSlice';
 import ModalComponent from '../components/ModalComponent';
@@ -43,6 +43,7 @@ const CartPage = () => {
     useEffect(() => {
         if (user) {
             dispatch(getUserAddress());
+            dispatch(getCart());
         } else {
             navigate('/login')
         }

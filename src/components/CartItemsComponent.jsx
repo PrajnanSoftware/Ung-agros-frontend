@@ -1,28 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MdOutlineDeleteForever } from "react-icons/md";
 import { useDispatch, useSelector } from 'react-redux';
-import { addOrUpdateItemToCart, deleteItemFromCart } from '../redux/slice/cartSlice';
+import { deleteItemFromCart, updateItemCart } from '../redux/slice/cartSlice';
 import { MdCurrencyRupee } from 'react-icons/md';
 
 
 const CartItemsComponent = ({productId, name, imgUrl, price, quantity, avlQty }) => {
     const dispatch = useDispatch();
-    const { cartLoading, cartAddError, cartRemoveError } = useSelector((state) => state.cart);
+    const [loading, setLoading] = useState(false);
 
 
-    const handleQtyIncrease = () => {
+    const handleQtyIncrease = async () => {
+        setLoading(true);
         if (quantity < avlQty) {
             const qty = quantity + 1;
-            dispatch(addOrUpdateItemToCart({productId, quantity: 1}))
+            await dispatch(updateItemCart({productId, quantity: 1})).unwrap();
         }
+        setLoading(false);
     }
 
-    const handleQtyDescrease = () => {
-
+    const handleQtyDescrease = async () => {
+        setLoading(true);
         if (quantity > 1) {
             const qty = quantity - 1;
-            dispatch(addOrUpdateItemToCart({productId, quantity: -1}))
+            await dispatch(updateItemCart({productId, quantity: -1})).unwrap();
         }
+        setLoading(false);
     }
     
     const handleRemoveItem = () => {
@@ -42,11 +45,17 @@ const CartItemsComponent = ({productId, name, imgUrl, price, quantity, avlQty })
                 <p className='overflow-hidden lg:overflow-visible text-ellipsis'>{name}</p>
             </div>
             <div className='flex justify-between'>
-                <div className='flex px-1 order-1 lg:order-none w-fit items-center'>
-                    <button className={`px-2 py-1 bg-gray-200 hover:bg-gray-300 transition rounded-l  ${quantity <= 1 || cartLoading ? "opacity-50 cursor-not-allowed hover:bg-gray-200" : ""}`} onClick={handleQtyDescrease} disabled={quantity <= 1 || cartLoading}>-</button>
+                {
+                    loading ? (<div className="flex justify-center items-center">
+                        <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : (<div className='flex px-1 order-1 lg:order-none w-fit items-center'>{}
+                    <button className={`px-2 py-1 bg-gray-200 hover:bg-gray-300 transition rounded-l  ${quantity <= 1 || loading ? "opacity-50 cursor-not-allowed hover:bg-gray-200" : ""}`} onClick={handleQtyDescrease} disabled={quantity <= 1 || loading}>-</button>
                     <p className='px-2'>{quantity}</p>
-                    <button className= {`px-2 py-1 bg-blue-500 text-white hover:bg-blue-600 transition rounded-r  ${quantity >= avlQty || cartLoading  ? "opacity-50 cursor-not-allowed hover:bg-blue-500" : ""}`} onClick={handleQtyIncrease} disabled={quantity>=avlQty || cartLoading}>+</button>
-                </div>
+                    <button className= {`px-2 py-1 bg-blue-500 text-white hover:bg-blue-600 transition rounded-r  ${quantity >= avlQty || loading  ? "opacity-50 cursor-not-allowed hover:bg-blue-500" : ""}`} onClick={handleQtyIncrease} disabled={quantity>=avlQty || loading}>+</button>
+                </div>)
+                }
+
                 {/* { cartAddError && <p className='order-1'>{cartAddError.error.message}</p>} */}
                 <div className='order-1 lg:order-none text-right'>
                     <p className='flex items-center'><MdCurrencyRupee />{quantity * price}</p>

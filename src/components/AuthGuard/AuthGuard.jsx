@@ -19,7 +19,7 @@ const AuthGuard = ({ children }) => {
         setIsLoading(false); // Authentication successful
       } catch (error) {
         console.error("Authentication failed:", error);
-        navigate("/"); // Redirect to login if unauthorized
+        navigate("/login"); // Redirect to login if unauthorized
       }
     };
 
