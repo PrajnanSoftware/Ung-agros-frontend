@@ -27,6 +27,8 @@ const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
 import "./styles/base.scss";
 import "./styles/variables.scss";
 
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const CategoriesManagement = lazy(() => import("./pages/Categories/CategoriesManagement"));
 const OrderManagement = lazy(() => import("./pages/OrderManagement/OrderManagement"));
@@ -95,6 +97,8 @@ function App() {
           </Route>
         </Route>
         <Route path="/login" element={<LoginPage />}/>
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
         <Route element={<NonAdminRoutes />}>
           <Route path="/" element={<LandingHome />}/>
