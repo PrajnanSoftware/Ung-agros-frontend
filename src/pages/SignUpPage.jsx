@@ -184,6 +184,7 @@ const SignUpPage = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 disabled={loading}
+                                required
                             />
                             {errors.name && touched.name && (
                                 <div className="text-red-500 text-sm mb-4">{errors.name}</div>
@@ -204,6 +205,7 @@ const SignUpPage = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 disabled={loading}
+                                required
                             />
                             {errors.email && touched.email && (
                                 <div className="text-red-500 text-sm mb-4">{errors.email}</div>
@@ -225,6 +227,7 @@ const SignUpPage = () => {
                                 onBlur={handleBlur}
                                 disabled={loading}
                                 maxLength="10"
+                                required
                             />
                             {errors.phone && touched.phone && (
                                 <div className="text-red-500 text-sm mb-4">{errors.phone}</div>
@@ -245,6 +248,7 @@ const SignUpPage = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 disabled={loading}
+                                required
                             />
                             <button 
                                 type="button" 
@@ -272,6 +276,7 @@ const SignUpPage = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 disabled={loading}
+                                required
                             />
                             <button 
                                 type="button" 
