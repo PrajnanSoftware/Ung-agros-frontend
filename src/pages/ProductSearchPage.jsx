@@ -5,49 +5,6 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts } from '../redux/slice/productSlice';
 
-// const productsData = [
-//   { id: 1, name: 'Product 1', image: '/product/1.png', price: 20, rating: 4.5, discount: 5, reviews: 13 },
-//   { id: 2, name: 'Product 2', image: '/product/2.png', price: 30, rating: 4, discount: 99, reviews: 653 },
-//   { id: 3, name: 'Product 3', image: '/product/3.png', price: 25, rating: 3.5, discount: 18, reviews: 23 },
-//   { id: 4, name: 'Product 4', image: '/product/4.png', price: 18, rating: 4.2, discount: 10, reviews: 45 },
-//   { id: 5, name: 'Product 5', image: '/product/5.png', price: 35, rating: 4.7, discount: 20, reviews: 67 },
-//   { id: 6, name: 'Product 6', image: '/product/6.png', price: 22, rating: 3.8, discount: 15, reviews: 32 },
-//   { id: 7, name: 'Product 7', image: '/product/7.png', price: 40, rating: 4.3, discount: 8, reviews: 90 },
-//   { id: 8, name: 'Product 8', image: '/product/8.png', price: 19, rating: 3.9, discount: 7, reviews: 25 },
-//   { id: 9, name: 'Product 9', image: '/product/9.png', price: 28, rating: 4.6, discount: 12, reviews: 38 },
-//   { id: 10, name: 'Product 10', image: '/product/10.png', price: 24, rating: 3.7, discount: 18, reviews: 52 },
-//   { id: 11, name: 'Product 11', image: '/product/11.png', price: 33, rating: 4.1, discount: 25, reviews: 120 },
-//   { id: 12, name: 'Product 12', image: '/product/12.png', price: 29, rating: 4.4, discount: 17, reviews: 73 },
-//   { id: 6, name: 'Product 6', image: '/product/6.png', price: 22, rating: 3.8, discount: 15, reviews: 32 },
-//   { id: 7, name: 'Product 7', image: '/product/7.png', price: 40, rating: 4.3, discount: 8, reviews: 90 },
-//   { id: 8, name: 'Product 8', image: '/product/8.png', price: 19, rating: 3.9, discount: 7, reviews: 25 },
-//   { id: 9, name: 'Product 9', image: '/product/9.png', price: 28, rating: 4.6, discount: 12, reviews: 38 },
-//   { id: 10, name: 'Product 10', image: '/product/10.png', price: 24, rating: 3.7, discount: 18, reviews: 52 },
-//   { id: 11, name: 'Product 11', image: '/product/11.png', price: 33, rating: 4.1, discount: 25, reviews: 120 },
-//   { id: 12, name: 'Product 12', image: '/product/12.png', price: 29, rating: 4.4, discount: 17, reviews: 73 },
-//   { id: 6, name: 'Product 6', image: '/product/6.png', price: 22, rating: 3.8, discount: 15, reviews: 32 },
-//   { id: 7, name: 'Product 7', image: '/product/7.png', price: 40, rating: 4.3, discount: 8, reviews: 90 },
-//   { id: 8, name: 'Product 8', image: '/product/8.png', price: 19, rating: 3.9, discount: 7, reviews: 25 },
-//   { id: 9, name: 'Product 9', image: '/product/9.png', price: 28, rating: 4.6, discount: 12, reviews: 38 },
-//   { id: 10, name: 'Product 10', image: '/product/10.png', price: 24, rating: 3.7, discount: 18, reviews: 52 },
-//   { id: 11, name: 'Product 11', image: '/product/11.png', price: 33, rating: 4.1, discount: 25, reviews: 120 },
-//   { id: 12, name: 'Product 12', image: '/product/12.png', price: 29, rating: 4.4, discount: 17, reviews: 73 },
-//   { id: 6, name: 'Product 6', image: '/product/6.png', price: 22, rating: 3.8, discount: 15, reviews: 32 },
-//   { id: 7, name: 'Product 7', image: '/product/7.png', price: 40, rating: 4.3, discount: 8, reviews: 90 },
-//   { id: 8, name: 'Product 8', image: '/product/8.png', price: 19, rating: 3.9, discount: 7, reviews: 25 },
-//   { id: 9, name: 'Product 9', image: '/product/9.png', price: 28, rating: 4.6, discount: 12, reviews: 38 },
-//   { id: 10, name: 'Product 10', image: '/product/10.png', price: 24, rating: 3.7, discount: 18, reviews: 52 },
-//   { id: 11, name: 'Product 11', image: '/product/11.png', price: 33, rating: 4.1, discount: 25, reviews: 120 },
-//   { id: 12, name: 'Product 12', image: '/product/12.png', price: 29, rating: 4.4, discount: 17, reviews: 73 },
-//   { id: 6, name: 'Product 6', image: '/product/6.png', price: 22, rating: 3.8, discount: 15, reviews: 32 },
-//   { id: 7, name: 'Product 7', image: '/product/7.png', price: 40, rating: 4.3, discount: 8, reviews: 90 },
-//   { id: 8, name: 'Product 8', image: '/product/8.png', price: 19, rating: 3.9, discount: 7, reviews: 25 },
-//   { id: 9, name: 'Product 9', image: '/product/9.png', price: 28, rating: 4.6, discount: 12, reviews: 38 },
-//   { id: 10, name: 'Product 10', image: '/product/10.png', price: 24, rating: 3.7, discount: 18, reviews: 52 },
-//   { id: 11, name: 'Product 11', image: '/product/11.png', price: 33, rating: 4.1, discount: 25, reviews: 120 },
-//   { id: 12, name: 'Product 12', image: '/product/12.png', price: 29, rating: 4.4, discount: 17, reviews: 73 },
-  
-// ];
 
 const ProductSearchPage = () => {
   const [ searchParams ] = useSearchParams();
