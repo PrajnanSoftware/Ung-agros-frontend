@@ -32,17 +32,20 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   // const [ product, setProduct] = useState({});
 
+  useEffect(() => {
+    console.log(category)
+    dispatch(findProductById(id));
+    dispatch(findProductSuggestion(category));
+  }, [dispatch, id, category]);
   // Auto-switch images every 30 seconds
   useEffect(() => {
-    dispatch(findProductById(id));
-    dispatch(findProductSuggestion(category))
-    console.log(productDetail)
+    if (!productDetail?.image?.length) return;
+
     const timer = setInterval(() => {
-      console.log(productDetail)
       setCurrentImage((prevImage) => (prevImage + 1) % productDetail?.image?.length);
-    }, 30000);
+    }, 10000);
     return () => clearInterval(timer);
-  }, []);
+  }, [productDetail?.image?.length]);
 
     const handleAddToCartButton = (e) => {
       e.stopPropagation();
@@ -81,6 +84,24 @@ export default function ProductDetailsPage() {
               alt={productDetail.name}
               className="w-full h-full object-contain transition-all duration-500"
             />
+            <button
+                onClick={() => setCurrentImage((prev) => (prev - 1 + productDetail?.image?.length) % productDetail?.image?.length)}
+                className={`w-6 h-6 rounded-full focus:outline-none bg-gray-300 absolute top-1/2 left-1
+                `}
+              >
+                  <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+              </button>
+              <button
+                onClick={() => setCurrentImage((prev) => (prev + 1) % productDetail?.image?.length)}
+                className={`w-6 h-6 rounded-full focus:outline-none bg-gray-300 absolute top-1/2 right-1
+                 `}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
           </div>
 
           <div className="flex justify-center mt-4">
