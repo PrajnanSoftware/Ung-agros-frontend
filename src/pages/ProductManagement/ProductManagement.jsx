@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, TextField, Box, Typography, Paper, IconButton, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
@@ -24,6 +24,7 @@ export default function ProductManagement() {
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const formRef = useRef(null);
   // const [submitDisabled, setSubmitDisabled] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,24 @@ export default function ProductManagement() {
       uploadedImages.forEach((file) => URL.revokeObjectURL(URL.createObjectURL(file)));
     };
   }, [uploadedImages]);
+
+
+  const resetForm = () => {
+    reset({
+      name: '',
+      description: '',
+      mrp: '',
+      sellingPrice: '',
+      stock: '',
+    });
+    setEditProductId(null);
+    setSelectedCategory('');
+    setImageUrls([]);
+    setUploadedImages([]);
+    setShowForm(false);
+  };
+  
+  
 
   const handleImageUpload = async (files) => {
     if (!files || files.length === 0) return;
@@ -99,11 +118,7 @@ export default function ProductManagement() {
   const fetchCategories = async () => {
     try {
       const response = await axiosInstance.get("/category");
-      const formattedCategories = response.data.data.map((category) => ({
-        id: category._id,
-        name: category.name,
-      }));
-      setCategories(formattedCategories);
+      setCategories(response.data.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
       toast.error("Failed to fetch categories");
@@ -155,7 +170,7 @@ export default function ProductManagement() {
   
       setShowForm(false);
       setEditProductId(null);
-      reset();
+      resetForm();
       fetchProducts();
       setImageUrls([]);
     } catch (error) {
@@ -169,11 +184,12 @@ export default function ProductManagement() {
 
   const handleEdit = (product) => {
     setEditProductId(product.id);
-
-    // Ensure the correct category is set
-    setSelectedCategory(product.category?.id || product.category);
-    
-    // Set form fields manually since react-hook-form doesn't auto-fill
+  
+    // Find the category ID from the list of categories
+    const categoryId = categories.find((cat) => cat.name === product.category)?._id || product.category;
+    setSelectedCategory(categoryId);
+  
+    // Reset form fields with product data
     reset({
       name: product.name,
       description: product.description,
@@ -182,11 +198,10 @@ export default function ProductManagement() {
       stock: product.stock,
     });
   
-    // Ensure images are correctly set
     setImageUrls(product.image || []);
-  
     setShowForm(true);
   };
+  
   
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -246,17 +261,32 @@ export default function ProductManagement() {
     },
   ];
 
+  const handleToggleForm = () => {
+    if (showForm) {
+      resetForm();
+    } else {
+      setShowForm(true);
+      reset(); // Ensure the form is cleared when opening
+      setEditProductId(null);
+      setSelectedCategory('');
+      setImageUrls([]);
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  };
+  
   return (
     <Box className="product-management" sx={{ padding: 4, backgroundColor: '#f0f2f5', minHeight: '100vh' }}>
       <Button
-        variant="contained"
-        color="primary"
-        sx={{ marginBottom: 2 }}
-        startIcon={showForm ? <CloseIcon /> : <AddIcon />}
-        onClick={() => setShowForm(!showForm)}
-      >
-        {showForm ? 'Close Form' : 'Add Product'}
-      </Button>
+  variant="contained"
+  color="primary"
+  sx={{ marginBottom: 2 }}
+  startIcon={showForm ? <CloseIcon /> : <AddIcon />}
+  onClick={handleToggleForm}
+>
+  {showForm ? "Close Form" : "Add Product"}
+</Button>
 
       {showForm && (
         <Paper elevation={3} sx={{ padding: 3, marginY: 3 }}>
@@ -278,8 +308,8 @@ export default function ProductManagement() {
                 label="Select Category"
                 required
               >
-                {categories.map((category) => (
-                  <MenuItem key={category.id} value={category.id}>
+               {categories.map((category) => (
+                  <MenuItem key={category._id} value={category._id}>
                     {category.name}
                   </MenuItem>
                 ))}
