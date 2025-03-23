@@ -52,12 +52,13 @@ const CheckoutPage = () => {
             setLoading(true);
             const isLoaded = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
             if (!isLoaded) {
-                toast.error("Failed to load Razorpay SDK");
+                toast.error("Failed to load Razorpay");
                 setLoading(false);
                 console.log("Razorpay SDK failed to load");
                 return 
             }
             
+            console.log(isLoaded)
             const { data } = await axiosInstance.post('/payment/create-rp-order', {amount: total});
             
             console.log(data.data);
@@ -70,7 +71,7 @@ const CheckoutPage = () => {
                 order_id: data.data.id,
                 handler: async (response) => {
                     try {
-                        
+                        setLoading(true);
                     
                         console.log(response);
                         const verifyRes = await axiosInstance.post('/payment/verify-rp-payment', response);
@@ -96,7 +97,7 @@ const CheckoutPage = () => {
                                         total: total
                                     }
                                 });
-                                setLoading(false);
+                            setLoading(false);
                             if (order.data.status === 'success') {
                                 toast.success('Order placed successful');
                                 navigate('/payment-success');
@@ -110,6 +111,7 @@ const CheckoutPage = () => {
                             navigate('/payment-failure');
                         }
                     } catch (error) {
+                        console.log(error)
                         setLoading(false)
                     }
                 },
@@ -120,12 +122,19 @@ const CheckoutPage = () => {
                 },
                 theme: {
                     color: "#38B54A",
-                }
+                },
+                onClose: () => {
+                    console.log("OnClose executed")
+                    toast.info("Payment was not completed");
+                    setLoading(false);
+                },
             };
 
             const razor = new window.Razorpay(options);
             razor.open();
+            setLoading(false)
         } catch (error) {
+            toast.error('An error occurred during payment processing.');
             setLoading(false)
             console.error("Error:", error);   
         }
@@ -152,7 +161,7 @@ const CheckoutPage = () => {
                         const cartItem = cart.find((c) => c.product._id === item.product);
                         console.log("Hi", cartItem);
                         return (
-                            <div className='relative flex gap-4 items-center border p-2 rounded-lg m-2 pr-8'>
+                            <div key={index} className='relative flex gap-4 items-center border p-2 rounded-lg m-2 pr-8'>
                                     <img src={cartItem.product.image[0] ? cartItem.product.image[0] : '/no-image.jpg'} alt="itemname" width={100} height={150}/>
                                     <div className='flex flex-col ml-2 w-full justify-between h-full gap-4'>
                                         <div className=''>
