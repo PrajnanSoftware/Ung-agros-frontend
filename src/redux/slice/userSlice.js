@@ -118,6 +118,7 @@ const userSlice = createSlice({
         user: null,
         userAddress: null,
         loading: false,
+        initializeAuthLoading: false,
         error: null,
         userAddressError: null,
         success: false,
@@ -137,14 +138,14 @@ const userSlice = createSlice({
         builder
             // initialization
             .addCase(initializeAuth.pending, (state) => {
-                state.loading = true;
+                state.initializeAuthLoading = true;
             })
             .addCase(initializeAuth.fulfilled, (state) => {
-                state.loading = false;
+                state.initializeAuthLoading = false;
                 state.initialized = true;
             })
             .addCase(initializeAuth.rejected, (state) => {
-                state.loading = false;
+                state.initializeAuthLoading = false;
                 state.initialized = true;
             })
             // Register
