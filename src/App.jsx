@@ -1,10 +1,11 @@
-import { lazy, Suspense, useEffect } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeAuth } from "./redux/slice/userSlice";
+import ScrollToTop from "./components/ScrollToTop";
+import HeaderComponent from "./components/HeaderComponent";
+import FooterComponent from "./components/FooterComponent";
 
-const HeaderComponent = lazy(() => import("./components/HeaderComponent"));
-const FooterComponent = lazy(() => import("./components/FooterComponent"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactUsPage = lazy(() => import("./pages/ContactUsPage"));
 const NotFoundComponent = lazy(() => import("./components/NotFoundComponent"));
@@ -21,11 +22,10 @@ const PaymentFailurePage = lazy(() => import("./pages/PaymentFailurePage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const AddressPage = lazy(() => import("./pages/AddressPage"));
 const VerifyOtpPage = lazy(() => import("./pages/VerifyOtpPage"));
-const ScrollToTop = lazy(() => import("./components/ScrollToTop"));
 const DashboardLayout = lazy(() => import("./layout/DashboardLayout"));
 
-lazy(() => import("./styles/base.scss"));
-lazy(() => import("./styles/variables.scss"));
+import "./styles/base.scss";
+import "./styles/variables.scss";
 
 const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const CategoriesManagement = lazy(() => import("./pages/Categories/CategoriesManagement"));
@@ -46,7 +46,7 @@ const LandingHome = lazy(() => import("./pages/LandingHomePage"));
 // NOTE: Only use defined colors in tailwind.confog.js file
 function App() {
   const dispatch = useDispatch();
-  const { error, loading, isAuthenticated, success, user } = useSelector((state) => state.user);
+  const { error, initializeAuthLoading, isAuthenticated, success, user } = useSelector((state) => state.user);
 
   useEffect(() => {
     const initialize = async () => {
@@ -57,16 +57,16 @@ function App() {
       }
     };
   
-    initialize();  
+    initialize();
   }, [dispatch])
 
-  // if (loading) {
-  //   return (<div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
-  //             <div className="flex justify-center items-center min-h-screen">
-  //               <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-  //             </div>
-  //           </div>)
-  // }
+  if (initializeAuthLoading) {
+    return (<div className="min-h-[calc(100vh-100px)] w-full flex justify-center items-center">
+              <div className="flex justify-center items-center min-h-screen">
+                <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+    </div>)
+  }
 
   return (
     <Router>

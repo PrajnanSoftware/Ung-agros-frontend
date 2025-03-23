@@ -116,15 +116,24 @@ const OrdersPage = () => {
             {/* Mobile View - Small Image on Left */}
             <div className="flex items-center gap-4">
               {/* Image - Use cart icon for cart orders, product image for regular orders */}
-              <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-lg mb-4 md:mb-6">
+              <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-lg mb-4 md:mb-6">
                 {/* TODO: Order.items.length > 1 */}
+              {console.log(order)}
                 {order?.items?.length > 1 ? (
-                  <FaShoppingCart className="w-full h-full text-gray-600" /> // Show cart icon
+                  <div className='relative h-full w-full p-1 bg-gray-200 border border-black rounded'>
+                    <div className='absolute h-full w-full p-1 bg-gray-100 border border-black rounded'>
+                      <img
+                        src={order?.items?.[0]?.product?.image[0] || '/no-image.jpg'}
+                        alt={order?.items?.[0]?.product?.name}
+                        className="w-full h-full object-contain absolute border border-black rounded"
+                        />
+                    </div>
+                  </div>
                 ) : (
                   <img
-                    src={order?.items?.product?.image[0]}
-                    alt={order?.items?.product?.name}
-                    className="w-full h-full object-cover"
+                    src={order?.items?.[0]?.product?.image[0] || '/no-image.jpg'}
+                    alt={order?.items?.[0]?.product?.name}
+                    className="w-full h-full object-contain"
                   />
                 )}
               </div>
