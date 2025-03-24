@@ -30,19 +30,37 @@ export default function ProductDetailsPage() {
   const [show_more, setShowMore] = useState(false);
   const [show_details, setShowDetails] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 690);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 690);
+    };
+      
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   // const [ product, setProduct] = useState({});
 
-  // Auto-switch images every 30 seconds
   useEffect(() => {
+    console.log(category)
     dispatch(findProductById(id));
-    dispatch(findProductSuggestion(category))
-    console.log(productDetail)
+    dispatch(findProductSuggestion(category));
+  }, [dispatch, id, category]);
+  // Auto-switch images every 30 seconds
+
+  useEffect(() => {
+    if (!productDetail?.image?.length) return;
+
     const timer = setInterval(() => {
-      console.log(productDetail)
       setCurrentImage((prevImage) => (prevImage + 1) % productDetail?.image?.length);
-    }, 30000);
+    }, 10000);
     return () => clearInterval(timer);
-  }, []);
+  }, [productDetail?.image?.length]);
+
+  const handleClickNavigation = (product) => {
+    navigate(`/product/${productDetail._id}/${productDetail.category}`)
+  }
 
     const handleAddToCartButton = (e) => {
       e.stopPropagation();
@@ -81,6 +99,24 @@ export default function ProductDetailsPage() {
               alt={productDetail.name}
               className="w-full h-full object-contain transition-all duration-500"
             />
+            <button
+                onClick={() => setCurrentImage((prev) => (prev - 1 + productDetail?.image?.length) % productDetail?.image?.length)}
+                className={`w-6 h-6 rounded-full focus:outline-none bg-gray-300 absolute top-1/2 left-1
+                `}
+              >
+                  <svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+              </button>
+              <button
+                onClick={() => setCurrentImage((prev) => (prev + 1) % productDetail?.image?.length)}
+                className={`w-6 h-6 rounded-full focus:outline-none bg-gray-300 absolute top-1/2 right-1
+                 `}
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
           </div>
 
           <div className="flex justify-center mt-4">
@@ -118,15 +154,14 @@ export default function ProductDetailsPage() {
           </div>
 
           <div className="text-[16px] text-gray-600 mb-4">
-            {show_more
-              ? productDetail.description
+            {!(productDetail.description.length > 200) ? productDetail.description
               : `${productDetail.description.substring(0, 200)}...`}{" "}
-            <button
+            {productDetail.description.length > 200 && <button
               onClick={() => setShowMore(!show_more)}
               className="text-blue-500 ml-2 underline"
             >
               {show_more ? "Show Less" : "Show More"}
-            </button>
+            </button>}
           </div>
           { productDetail.quantity > 0 ? (
             <div className="text-green-500 text-[18px] font-medium mb-2">In Stock</div>
@@ -195,14 +230,18 @@ export default function ProductDetailsPage() {
 
       {/* Products You Might Like Section */}
       <div className="mt-4 p-5 " style={{ boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
-        <h3 className="text-lg font-semibold mb-4">Products You Might Like</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center lg:justify-items-start">
-          {productSuggestion.map((recProduct, index) => {
-            return (
-              <ProductCardComponent key={index} product={recProduct}/>
-            );
-          })}
-        </div>
+        <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>Products You Might Like</h2>
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 ">
+              {productSuggestion.map((product, index) => {
+                return (
+                  <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
+                    <ProductCardComponent product={product} small={isSmallScreen} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
       </div>
     </div>
   );
