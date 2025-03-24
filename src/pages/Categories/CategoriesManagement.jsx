@@ -206,7 +206,7 @@ export default function CategoryManagement() {
           <Typography variant="h5" sx={{ marginBottom: 2 }}>
             {editingCategory ? 'Edit Category' : 'Add New Category'}
           </Typography>
-          <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <form ref={formRef} onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <TextField {...register('name')} label="Name" variant="outlined" required fullWidth />
             <TextField {...register('description')} label="Description" variant="outlined" required fullWidth />
 

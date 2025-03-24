@@ -200,6 +200,12 @@ export default function ProductManagement() {
   
     setImageUrls(product.image || []);
     setShowForm(true);
+    // Ensure state updates before scrolling
+  setTimeout(() => {
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 300); 
   };
   
   
@@ -293,7 +299,7 @@ export default function ProductManagement() {
           <Typography variant="h5" sx={{ marginBottom: 2 }}>
             {editProductId ? 'Edit Product' : 'Add New Product'}
           </Typography>
-          <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <form ref={formRef} onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <TextField {...register('name')} label="Name" variant="outlined" required fullWidth />
             <TextField {...register('description')} label="Description" multiline rows={5} required fullWidth />
             <TextField {...register('mrp')} label="MRP" type="number" variant="outlined" required fullWidth />
