@@ -85,3 +85,33 @@
     }
   }
    */
+
+   /* Custom Scrollbar - Agriculture Theme */
+::-webkit-scrollbar {
+  width: 6px; /* Smaller scrollbar */
+  height: 6px; /* For horizontal scrollbars */
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  background: #eaf5e3; /* Light green background */
+  border-radius: 10px;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  background: #4caf50; /* Green thumb (matches agriculture) */
+  border-radius: 10px;
+  border: 2px solid #eaf5e3; /* Slight padding effect */
+}
+
+/* Hover Effect */
+::-webkit-scrollbar-thumb:hover {
+  background: #388e3c; /* Darker green on hover */
+}
+
+/* Firefox Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4caf50 #eaf5e3;
+}

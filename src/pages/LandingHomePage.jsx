@@ -114,7 +114,7 @@
                 </div>
                 ) : (category.length > 0 ? (
                   <div className='w-full'>
-                    <div className='flex justify-start overflow-scroll no-scrollbar gap-4 text-nowrap px-10 m-auto'>
+                    <div className='flex justify-start overflow-x-auto no-scrollbar gap-4 text-nowrap px-10 m-auto'>
                       {category.map((cat, index) => (
                       <div key={index} className='flex flex-col items-center w-fit' onClick={() => { handleCategoryClick(cat)}}>
                         <div className='w-24 h-24 rounded-full border-4 border-accent text-center'>

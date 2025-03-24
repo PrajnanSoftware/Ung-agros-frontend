@@ -98,6 +98,13 @@ const LoginPage = () => {
                         {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
                     </div>
 
+                    {/* Forgot Password */}
+                    <div className='text-right mb-4'>
+                        <button type="button" onClick={() => navigate('/forgot-password')} className='text-primary hover:underline'>
+                            Forgot Password?
+                        </button>
+                    </div>
+
                     {/* Submit Button */}
                     <button type="submit" 
                         className={`w-full py-3 px-6 text-white font-semibold rounded-lg transition-colors ${loading ? 'bg-gray-400' : 'bg-primary hover:bg-primary-dark'}`} 
