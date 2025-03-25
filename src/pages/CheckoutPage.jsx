@@ -13,29 +13,12 @@ const CheckoutPage = () => {
     
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [amount, setAmount] = useState(0); 
-    const [sgst, setSgst] = useState(0); 
-    const [cgst, setCgst] = useState(0); 
-    const [total, setTotal] = useState(0);
-
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         AOS.init({ duration: 1000 });
     }, []);
 
-    useEffect(() => {
-
-        console.log("use effect")
-        if (checkoutData) {
-            console.log("setting total")
-            const amountAfterTax = checkoutData.totalPrice;
-            setAmount(amountAfterTax)
-            setCgst(((amountAfterTax/100)*9).toFixed(2));
-            setSgst(((amountAfterTax/100)*9).toFixed(2));
-            setTotal((amountAfterTax+parseFloat(((amountAfterTax/100)*9).toFixed(2))+parseFloat(((amountAfterTax/100)*9).toFixed(2))).toFixed(2));
-        }
-    }, [checkoutData]);
 
     const loadScript = (src) => {
         return new Promise((resolve) => {
@@ -59,7 +42,7 @@ const CheckoutPage = () => {
             }
             
             console.log(isLoaded)
-            const { data } = await axiosInstance.post('/payment/create-rp-order', {amount: total});
+            const { data } = await axiosInstance.post('/payment/create-rp-order', {amount: checkoutData.totalPrice + checkoutData.totalTax});
             
             console.log(data.data);
             const options = {
@@ -82,7 +65,7 @@ const CheckoutPage = () => {
                             const order = await axiosInstance.post('/order', 
                                 {
                                     items: checkoutData.items,
-                                    totalPrice: total,
+                                    totalPrice: checkoutData.totalPrice + checkoutData.totalTax,
                                     orderStatus: "Pending",
                                     paymentStatus: "Paid", 
                                     paymentInfo: {
@@ -91,10 +74,9 @@ const CheckoutPage = () => {
                                         razorpayOrderId: verifyRes.data.data.razorpay_order_id
                                     }, 
                                     billDetails: {
-                                        subTotal: amount,
-                                        sgst: sgst,
-                                        cgst: cgst,
-                                        total: total
+                                        subTotal: checkoutData.totalPrice,
+                                        totalTax: checkoutData.totalTax,
+                                        total: checkoutData.totalPrice + checkoutData.totalTax
                                     }
                                 });
                             setLoading(false);
@@ -186,14 +168,14 @@ const CheckoutPage = () => {
                 <hr className='my-4'/>
                 <div className='grid grid-cols-3 gap-x-10 gap-y-2 text-nowrap px-4'>
                     <p className='col-span-2'>Subtotal</p>
-                    <p className='flex items-center'><MdCurrencyRupee />{amount}</p>
-                    <p className='col-span-2'>CGST</p>
-                    <p className='flex items-center'><MdCurrencyRupee />{cgst}</p>
-                    <p className='col-span-2'>SGST</p>
-                    <p className='flex items-center'><MdCurrencyRupee />{sgst}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalPrice}</p>
+                    <p className='col-span-2'>GST</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalTax}</p>
+                    {/* <p className='col-span-2'>SGST</p> */}
+                    {/* <p className='flex items-center'><MdCurrencyRupee />{sgst}</p> */}
                     <hr className='my-4 col-span-2'/>
                     <h4 className='col-span-2'>Total</h4>
-                    <p className='flex items-center'><MdCurrencyRupee />{total}</p>
+                    <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalPrice + checkoutData.totalTax}</p>
                 </div>
                 <div>
                     <button className={`w-full p-2 rounded-lg my-2 ${cart.length === 0 || !checkoutData || loading ? "opacity-60 cursor-not-allowed bg-gray-400" : "bg-primary hover:bg-primary-dark"}`} disabled={!checkoutData || cart.length === 0 || loading} onClick={handlePayment}>
@@ -202,7 +184,7 @@ const CheckoutPage = () => {
                                 <div className="flex justify-center items-center">
                                     <div className="w-6 h-6 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                                 </div>
-                            ) :(<p className='flex items-center justify-center text-white'>Pay <span className='flex items-center justify-center ml-2'><MdCurrencyRupee />{total}</span></p>)
+                            ) :(<p className='flex items-center justify-center text-white'>Pay <span className='flex items-center justify-center ml-2'><MdCurrencyRupee />{checkoutData.totalPrice + checkoutData.totalTax}</span></p>)
                         } 
                     </button>
                 </div>

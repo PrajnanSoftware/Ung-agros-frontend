@@ -135,8 +135,7 @@ const BillDocument = ({
   delivered_address,
   products,
   sub_total,
-  cgst,
-  sgst,
+  gst,
   grand_total,
   policy = ["once product is delivered it non returnable item.","product replacement and refund is applicable only for product which are destroyed during"],
 }) => {
@@ -201,13 +200,13 @@ const BillDocument = ({
           {/* CGST, SGST, and Grand Total Section */}
           <View style={pdfStyles.totalBox}>
           <View style={pdfStyles.totalTableRow}>
-            <Text style={pdfStyles.totalCellLabelFull}>CGST</Text>
-            <Text style={pdfStyles.totalCellValueFull}> {"\u20B9"} {cgst}</Text>
+            <Text style={pdfStyles.totalCellLabelFull}>GST</Text>
+            <Text style={pdfStyles.totalCellValueFull}> {"\u20B9"} {gst}</Text>
           </View>
-          <View style={pdfStyles.totalTableRow}>
+          {/* <View style={pdfStyles.totalTableRow}>
             <Text style={pdfStyles.totalCellLabelFull}>SGST</Text>
             <Text style={pdfStyles.totalCellValueFull}> {"\u20B9"} {sgst}</Text>
-          </View>
+          </View> */}
           <View style={pdfStyles.totalTableRow}>
             <Text style={[pdfStyles.totalCellLabelFull,{fontWeight: 'bold',borderTop:'1px solid #E5E7EB'}]}>Grand Total</Text>
             <Text style={[pdfStyles.totalCellValueFull,{borderTop:'1px solid #E5E7EB'}]}> {"\u20B9"} {grand_total}</Text>
