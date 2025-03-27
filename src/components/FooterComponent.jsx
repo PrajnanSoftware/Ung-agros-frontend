@@ -64,7 +64,7 @@ const FooterComponent = () => {
                     <ul className='mt-2'>
                         {category.map((item, index) => {
                             if (index < 4) {
-                                return <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to='/' className="hover:underline" >{item.name}</NavLink></li>
+                                return <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to={`/search-result/${item._id}`} className="hover:underline" >{item.name}</NavLink></li>
                             } else {
                                 return
                             }
@@ -78,7 +78,7 @@ const FooterComponent = () => {
                 <div className='space-y-2 mt-2'>
                     <div className='flex justify-start items-center gap-2'>
                         <MdOutlineEmail className='text-2xl' />
-                        <a href="mailto:info@ungagros.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                        <a href="mailto:info@ungagros.com" target="_blank" rel="noopener noreferrer" className="">
                             info@ungagros.com
                         </a>
                     </div>
@@ -89,7 +89,7 @@ const FooterComponent = () => {
                     <div className='flex justify-start items-center gap-2'>
                         <a href="https://maps.app.goo.gl/g9bQLsMEDMnKpuv48" target="_blank" rel="noopener noreferrer" className='flex justify-start items-center gap-2' >
                             <GrMapLocation className='text-2xl' />
-                            <p className='px-2'>UnG Agro, <br />#32, 1st Main, 2nd Cross, <br /> Muneshwara Layout, <br />Laggere Bengaluru -560058,<br /> Karnataka, India</p>
+                            <p className='px-2'>UnG Agro, <br />#32, 1st Main, 2nd Cross, <br /> Muneshwara Layout, <br />Laggere Bengaluru,<br /> Karnataka, India - 560058</p>
                         </a>
                     </div>
                 </div>
@@ -98,9 +98,15 @@ const FooterComponent = () => {
                 <div className='pt-4'>
                     <h3 className='border-b-2 pb-2 font-bold'>FOLLOW US</h3>
                     <div className='flex justify-start gap-4 text-2xl pt-2'>
-                        <AiOutlineFacebook className='cursor-pointer text-2xl mr-2' />
-                        <FaInstagram className='cursor-pointer text-2xl mr-2' />
-                        <AiOutlineYoutube className='cursor-pointer text-2xl mr-2' />
+                        <a href="https://www.facebook.com/profile.php?id=100091933407959" target="_blank" rel="noopener noreferrer" className='flex justify-start items-center gap-2' >
+                            <AiOutlineFacebook className='cursor-pointer text-2xl mr-2' />
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=100091933407959" target="_blank" rel="noopener noreferrer" className='flex justify-start items-center gap-2' >
+                            <FaInstagram className='cursor-pointer text-2xl mr-2' />
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=100091933407959" target="_blank" rel="noopener noreferrer" className='flex justify-start items-center gap-2' >
+                            <AiOutlineYoutube className='cursor-pointer text-2xl mr-2' />
+                        </a>
                     </div>
                 </div>
             </div>

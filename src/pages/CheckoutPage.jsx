@@ -133,15 +133,14 @@ const CheckoutPage = () => {
         </div>
 
   return (
-    <div className='p-4'>
+    <div className='p-4 m-4'>
         <h1 className='text-2xl font-bold'>Checkout</h1>
-        <div className='flex flex-col lg:flex-row'>
+        <div className='flex flex-col lg:flex-row gap-10'>
             <div className='flex-auto'>
                 <h3 className='text-xl font-semibold'>Order Summary</h3>
                 <div className='max-h-[calc(100vh-100px)] overflow-y-auto'>
                     {checkoutData.items.map((item, index) => {
                         const cartItem = cart.find((c) => c.product._id === item.product);
-                        console.log("Hi", cartItem);
                         return (
                             <div key={index} className='relative flex gap-4 items-center border p-2 rounded-lg m-2 pr-8'>
                                     <img src={cartItem.product.image[0] ? cartItem.product.image[0] : '/no-image.jpg'} alt="itemname" width={100} height={150}/>
@@ -150,8 +149,8 @@ const CheckoutPage = () => {
                                             <p className='overflow-hidden lg:overflow-visible text-ellipsis'>{cartItem.product.name}</p>
                                         </div>
                                         <div className='flex justify-between'>
-                                            <div className='flex px-1 order-1 lg:order-none w-fit items-center'>
-                                                <p className='px-2'>{item.quantity}</p>
+                                            <div className='flex order-1 lg:order-none w-fit items-center text-wrap'>
+                                                <p >Qty: {item.quantity}</p>
                                             </div>
                                             <div className='order-1 lg:order-none text-right'>
                                                 <p className='flex items-center'><MdCurrencyRupee />{item.totalProductPrice}</p>
@@ -163,19 +162,25 @@ const CheckoutPage = () => {
                     })}
                 </div>
             </div>
-            <div className=''>
+            <div className='flex-1'>
                 <h3 className='text-xl font-semibold' >Order Summary</h3>
                 <hr className='my-4'/>
-                <div className='grid grid-cols-3 gap-x-10 gap-y-2 text-nowrap px-4'>
-                    <p className='col-span-2'>Subtotal</p>
-                    <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalPrice}</p>
-                    <p className='col-span-2'>GST</p>
-                    <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalTax}</p>
+                <div >
+                    <div className='flex justify-between'>
+                        <p className='col-span-2'>Subtotal</p>
+                        <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalPrice}</p>
+                    </div>
+                    <div className='flex justify-between'>
+                        <p className='col-span-2'>GST</p>
+                        <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalTax}</p>
+                    </div>
                     {/* <p className='col-span-2'>SGST</p> */}
                     {/* <p className='flex items-center'><MdCurrencyRupee />{sgst}</p> */}
                     <hr className='my-4 col-span-2'/>
-                    <h4 className='col-span-2'>Total</h4>
-                    <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalPrice + checkoutData.totalTax}</p>
+                    <div className='flex justify-between'>
+                        <h4 className='col-span-2'>Total</h4>
+                        <p className='flex items-center'><MdCurrencyRupee />{checkoutData.totalPrice + checkoutData.totalTax}</p>
+                    </div>
                 </div>
                 <div>
                     <button className={`w-full p-2 rounded-lg my-2 ${cart.length === 0 || !checkoutData || loading ? "opacity-60 cursor-not-allowed bg-gray-400" : "bg-primary hover:bg-primary-dark"}`} disabled={!checkoutData || cart.length === 0 || loading} onClick={handlePayment}>

@@ -121,8 +121,8 @@ const pdfStyles = StyleSheet.create({
 // Create a PDF component
 const BillDocument = ({
   company_name,
-  company_contact= "+91 123456790",
-  company_address = "address",
+  company_contact= "+91 9986636773",
+  company_address = `\nUnG Agro, \n#32, 1st Main, 2nd Cross, \nMuneshwara Layout, Laggere, \nBengaluru, Karnataka, \nIndia - 560058`,
   customer_name,
   bill_date,
   invoice_no,
@@ -137,7 +137,7 @@ const BillDocument = ({
   sub_total,
   gst,
   grand_total,
-  policy = ["once product is delivered it non returnable item.","product replacement and refund is applicable only for product which are destroyed during"],
+  policy = ["Once a product is delivered, it is non-returnable."],
 }) => {
   const totalQuantity = products.reduce((acc, product) => acc + product.quantity, 0);
   console.log(products)
@@ -225,7 +225,7 @@ const BillDocument = ({
         <Text style={{ marginTop: 2, fontSize: 10 }}>Note:</Text>     
         <Text style={{ marginTop: 2, marginLeft: "20px",fontSize: 8 }}>This is a system generated bill through {company_name}</Text>
         {policy.map((policy_lines) => (
-        <Text key={policy_lines} style={{ marginTop: 10, marginLeft: "20px", fontSize: 8 }}>
+        <Text key={policy_lines} style={{ marginTop: 2, marginLeft: "20px", fontSize: 8 }}>
           {policy_lines}
         </Text>
       ))}
