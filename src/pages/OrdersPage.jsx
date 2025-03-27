@@ -110,7 +110,7 @@ const OrdersPage = () => {
         {orders.map((order) => (
           <div
             key={order._id}
-            className="bg-white shadow-md rounded-lg p-4 border cursor-pointer"
+            className="bg-white shadow-md rounded-lg p-4 border cursor-pointer text-wrap"
             onClick={() => handleOrderClick(order)} // Pass order_type to navigation
           >
             {/* Mobile View - Small Image on Left */}
@@ -151,7 +151,9 @@ const OrdersPage = () => {
                     order?.items[0]?.product?.name // Show order name for regular orders
                   )}
                 </h3>
-                <p className="text-sm text-gray-600 text-wrap">Ordered: {new Date(order.createdAt).toLocaleString()}</p>
+                <p className="text-sm text-gray-600 text-ellipsis">Ordered: 
+                {new Date(order.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}
+                </p>
 
                 {/* Quantity or Item Count based on order type */}
                 {order.items.length > 1 ? (

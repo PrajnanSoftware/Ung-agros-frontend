@@ -45,7 +45,7 @@ const ContactUsPage = () => {
                         <p><span className='pl-4 font-medium'>☎️ Call: </span>+91-9986636773 (Mon-Sat, 10 AM – 6 PM IST)</p>
                         <p>
                             <span className='pl-4 font-medium'>📧 Email: </span>
-                            <a href="mailto:support@ungagros.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                            <a href="mailto:support@ungagros.com" target="_blank" rel="noopener noreferrer" className="">
                             support@ungagros.com
                             </a>
                         </p>
@@ -53,7 +53,7 @@ const ContactUsPage = () => {
                         <li className='font-semibold'>Business Inquiries:</li>
                         <p>
                             <span className='pl-4 font-medium'>📩 Email: </span>
-                            <a href="mailto:partner@ungagros.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                            <a href="mailto:partner@ungagros.com" target="_blank" rel="noopener noreferrer" className="">
                             partner@ungagros.com
                             </a>
                         </p>

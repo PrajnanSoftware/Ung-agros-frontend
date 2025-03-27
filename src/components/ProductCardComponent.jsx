@@ -42,7 +42,7 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
   }
   return (
     <div className={`group relative p-2 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white 
-                  ${small ? "w-44 md:w-60" : "w-60"} mx-auto`}>
+                  ${small ? "w-36 md:w-60" : "w-60"}`}>
         {/* Product image */}
         <div className='overflow-hidden rounded-lg'>
             <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-36" : 'h-48'} object-contain transition-transform duration-300 group-hover:scale-105`} />

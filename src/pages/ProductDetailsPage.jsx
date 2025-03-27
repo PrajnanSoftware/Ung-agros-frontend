@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { findProductById, findProductSuggestion, getProducts } from "../redux/slice/productSlice";
 import { addOrUpdateItemToCart } from "../redux/slice/cartSlice";
 import { MdCurrencyRupee } from "react-icons/md";
+import { toast } from "react-toastify";
 
 
 const calculateDiscountedPrice = (price, discount) => {
@@ -59,15 +60,23 @@ export default function ProductDetailsPage() {
   }, [productDetail?.image?.length]);
 
   const handleClickNavigation = (product) => {
-    navigate(`/product/${productDetail._id}/${productDetail.category}`)
+    navigate(`/product/${product._id}/${product.category._id}`)
   }
 
-    const handleAddToCartButton = (e) => {
-      e.stopPropagation();
-      if (user) {
-        dispatch(addOrUpdateItemToCart({productId: productDetail._id, quantity: quantity}))
-      } else {
-        navigate('/login')
+    const handleAddToCartButton = async (e) => {
+      try {
+        
+        e.stopPropagation();
+        if (user) {
+          await dispatch(addOrUpdateItemToCart({productId: productDetail._id, quantity: quantity})).unwrap();
+          toast.success(`${productDetail.name} added to cart.`);
+        } else {
+          navigate('/login')
+          toast.info("Please login to contine.");
+        }
+      } catch (error) {
+        console.log(error)
+        toast.error(error.message);
       }
     }
 
@@ -155,7 +164,7 @@ export default function ProductDetailsPage() {
 
           <div className="text-[16px] text-gray-600 mb-4">
             {!(productDetail.description.length > 200) ? productDetail.description
-              : `${productDetail.description.substring(0, 200)}...`}{" "}
+              : show_more ? productDetail.description : `${productDetail.description.substring(0, 200)}...`}{" "}
             {productDetail.description.length > 200 && <button
               onClick={() => setShowMore(!show_more)}
               className="text-blue-500 ml-2 underline"

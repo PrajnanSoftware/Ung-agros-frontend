@@ -108,23 +108,34 @@ const OrderDetailsPage = () => {
             {/* Download Invoice Button - Hide if not generated */}
             {order.orderStatus === "Delivered" && (
               <>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded">
+                {/* <button className="bg-blue-500 text-white px-4 py-2 rounded">
                   Download Invoice
-                </button>
+                </button> */}
                 <BillTemplateComponent  
                   customer_name={order.shippingAddress.fullName}
                   bill_date={new Date(order.createdAt).toLocaleString()}
                   invoice_no={order.billDetails.invoiceNumber}
-                  gst_no={'add gst number here'}
+                  gst_no="29AJTPH3038F1Z0"
                   // address={''}
                   order_id={order._id}
                   order_date={new Date(order.createdAt).toLocaleString()}
                   // shipped_date={''}
-                  shipped_from={"Company Address"}
-                  delivered_address={'Customer Address'}
+                  shipped_from="
+                  UnG Agro, 
+                  #32, 1st Main,
+                  2nd Cross, Muneshwara Layout, 
+                  Laggere Bengaluru,
+                  Karnataka, India - 560058"
+                  delivered_address={`
+                  ${order.shippingAddress.fullName}
+                  ${order.shippingAddress.landmark && order.shippingAddress.landmark + ", "}${order.shippingAddress.street},
+                  ${order.shippingAddress.city},${order.shippingAddress.state}, 
+                  ${order.shippingAddress.country}  - ${order.shippingAddress.zipCode}
+                  Phone Number: ${order.shippingAddress.phoneNumber}  
+                  `}
                   products={order.items}
                   sub_total={order.billDetails.subTotal}
-                  gst={order.billDetails.gst}
+                  gst={order.billDetails.totalTax}
                   grand_total={order.billDetails.total}
                 />
               </>

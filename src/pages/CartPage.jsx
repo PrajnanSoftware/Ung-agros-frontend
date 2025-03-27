@@ -83,7 +83,7 @@ const CartPage = () => {
         </div>);
 
   return (
-    <div className='py-10 px-5 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20' >
+    <div className='py-10 px-10 flex flex-col lg:flex-row justify-center gap-10 lg: gap:20' >
         <div className='flex-auto'>
             <h3 className='text-2xl font-bold'>My Cart</h3>
             <hr className='my-4'/>
@@ -125,14 +125,23 @@ const CartPage = () => {
         <div className='flex-1'>
             <h3 className='text-2xl font-bold' >Price Details</h3>
             <hr className='my-4'/>
-            <div className='grid grid-cols-2 gap-x-52 lg:gap-x-60 gap-y-2 text-nowrap '>
+            <div className=''>
+                <div className='flex justify-between'>
                 <p>Subtotal</p>
                 <p className='flex items-center'><MdCurrencyRupee /> {total}</p>
+                </div>
+
+                <div className='flex justify-between'>
                 <p>Savings</p> 
                 <p className='flex items-center text-sm text-primary'><MdCurrencyRupee /> {saving}</p>
+                </div>
+
                 <hr className='my-4 col-span-2'/>
+                
+                <div className='flex justify-between'>    
                 <h4>Total</h4>
                 <p className='flex items-center'><MdCurrencyRupee /> {total}</p>
+                </div>
             </div>
             <div>
                 {(outOfStock.length > 0) && <p className='text-red-500 pl-2 pt-4 pb-0'>

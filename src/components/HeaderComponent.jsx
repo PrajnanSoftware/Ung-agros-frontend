@@ -131,7 +131,7 @@ const HeaderComponent = () => {
   return (
     <div className='h-32 lg:h-16 flex flex-wrap lg:flex-nowrap bg-primary items-center justify-between z-10'>
 
-      <div className='flex-1 basis-1/4 lg:basis-0 min-w-[90px] lg:hidden pl-4'>
+      <div className='flex-1 basis-1 lg:basis-0 lg:hidden pl-4'>
         { menuOpen ? (
           <HiX className=' text-3xl cursor-pointer text-white' onClick={() => setMenuOpen(false)} />
         ) : (
@@ -140,7 +140,7 @@ const HeaderComponent = () => {
       </div>
 
       {/* Logo */}
-      <div className='flex-1 basis-2/4 lg:basis-0 min-w-[90px] py-2 pl-6'>
+      <div className='flex-1 basis-1 lg:basis-0 py-2 pl-6'>
         <img src={logo} alt="Unq Agro" className='m-auto  bg-white h-14 w-14 rounded-full hover:cursor-pointer' onClick={() => navigate('/')}/>
       </div>
 
@@ -187,7 +187,7 @@ const HeaderComponent = () => {
       {/* Cart and Profile Icons */
         // TODO: add navigation to Cart and Profile page 
       }
-      <div className='flex gap-4 flex-1 basis-1/4 lg:basis-0 min-w-[90px] justify-end items-center py-2 pr-4'>
+      <div className='flex gap-4 flex-1 basis-1 lg:basis-0 justify-end items-center py-2 pr-4'>
         <div className='relative group z-10'>
           <NavLink to={`/cart`}>
             <IoCartOutline className='text-3xl cursor-pointer text-white' />
