@@ -124,9 +124,8 @@ const OrderDetailsPage = () => {
                   delivered_address={'Customer Address'}
                   products={order.items}
                   sub_total={order.billDetails.subTotal}
-                  cgst={order.billDetails.cgst}
-                  sgst={order.billDetails.sgst}
-                  grand_total={order.billDetails.gst}
+                  gst={order.billDetails.gst}
+                  grand_total={order.billDetails.total}
                 />
               </>
             )}
