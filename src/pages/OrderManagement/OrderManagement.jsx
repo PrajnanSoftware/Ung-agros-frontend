@@ -153,7 +153,7 @@ export default function OrderManagement() {
     // Invoice Details
     doc.setFontSize(12);
     doc.text(`Invoice Number: ${invoiceNumber || "N/A"}`, 20, 30);
-    doc.text(`Invoice Date: ${new Date(order.createdAt || Date.now()).toLocaleDateString()}`, 20, 40);
+    doc.text(`Invoice Date: ${order.date}`, 20, 40);
     doc.text(`Payment ID: ${razorpayPaymentId || "N/A"}`, 20, 50);
     doc.text(`Payment Status: ${order.paymentStatus || "N/A"}`, 20, 70);
   
@@ -206,6 +206,12 @@ export default function OrderManagement() {
           body { font-family: Arial, sans-serif; padding: 20px; }
           .invoice-container { max-width: 700px; margin: auto; padding: 20px; border: 1px solid #ccc; }
           .invoice-header { text-align: center; margin-bottom: 20px; }
+          .invoice-header h2 { margin-bottom: 5px; }
+          .invoice-header hr { border: 1px solid #ccc; }
+          
+          .invoice-info { text-align: left; margin-top: 10px; }
+          .invoice-info p { margin: 5px 0; }
+          
           .invoice-details, .invoice-items { width: 100%; border-collapse: collapse; margin-top: 10px; }
           .invoice-details th, .invoice-items th, .invoice-items td { border: 1px solid #ccc; padding: 10px; text-align: left; }
           .total-section { font-weight: bold; }
@@ -219,10 +225,14 @@ export default function OrderManagement() {
             <p>Email: support@ungagros.com | Phone: +91 9986636773</p>
             <hr/>
             <h3>INVOICE</h3>
-            <p>Invoice Number: <strong>${order.billDetails.invoiceNumber}</strong></p>
-            <p>Invoice Date: <strong>${new Date(order.createdAt).toLocaleDateString()}</strong></p>
-            <p>Payment ID: <strong>${order.paymentInfo.razorpayPaymentId}</strong></p>
-            <p>Payment Status: <strong>${order.paymentStatus}</strong></p>
+          </div>
+  
+          <!-- Left Aligned Invoice Information -->
+          <div class="invoice-info">
+            <p><strong>Invoice Number:</strong> ${order.billDetails.invoiceNumber}</p>
+            <p><strong>Invoice Date:</strong> ${order.date}</p>
+            <p><strong>Payment ID:</strong> ${order.paymentInfo.razorpayPaymentId}</p>
+            <p><strong>Payment Status:</strong> ${order.paymentStatus}</p>
           </div>
   
           <table class="invoice-details">
@@ -246,7 +256,6 @@ export default function OrderManagement() {
                 <td>${item.product}</td>
                 <td>${item.quantity}</td>
                 <td>₹${item.price}</td>
-                <td>₹${item.tax}</td>
                 <td>₹${item.totalProductPrice}</td>
               </tr>`
               )
@@ -278,6 +287,7 @@ export default function OrderManagement() {
   };
   
   
+  
 
   const columns = [
     { field: 'date', headerName: 'Date', width: 120 },
@@ -293,10 +303,16 @@ export default function OrderManagement() {
       width: 150,
       renderCell: (params) => (
         <div>
-          <IconButton color="primary" onClick={() => handleDownloadInvoice(params.row)}>
+          <IconButton color="primary" onClick={(event) => {
+        event.stopPropagation(); // Prevents row click event from interfering
+        handleDownloadInvoice(params.row);
+      }}>
             <PictureAsPdf />
           </IconButton>
-          <IconButton color="secondary" onClick={() => handlePrintInvoice(params.row)}>
+          <IconButton color="secondary" onClick={(event) => {
+        event.stopPropagation();
+        handlePrintInvoice(params.row);
+      }}>
             <Print />
           </IconButton>
         </div>
