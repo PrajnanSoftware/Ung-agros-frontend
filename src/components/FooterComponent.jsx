@@ -51,8 +51,8 @@ const FooterComponent = () => {
             <div className='lg:w-1/4 text-left'>
                 <h3 className='border-b-2 pb-2 font-bold'>QUICK LiNK</h3>
                 <ul className='mt-2 space-y-2h'>
-                    {["About US", "Contact Us", "Privacy Policy", "Terms & Condition"].map((item, index) => (
-                        <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to={`/${item.replace(" ","-").toLowerCase()}`} className="hover:underline" >{item}</NavLink></li>
+                    {["About US", "Contact Us", "Privacy Policy", "Terms and Condition"].map((item, index) => (
+                        <li key={index} className='flex justify-start items-center gap-2' ><IoIosArrowForward /><NavLink to={`/${item.replaceAll(" ","-").toLowerCase()}`} className="hover:underline" >{item}</NavLink></li>
                     ))}
                 </ul>
             </div>
