@@ -59,7 +59,7 @@ export default function ProductDetailsPage() {
   }, [productDetail?.image?.length]);
 
   const handleClickNavigation = (product) => {
-    navigate(`/product/${productDetail._id}/${productDetail.category}`)
+    navigate(`/product/${product._id}/${product.category._id}`)
   }
 
     const handleAddToCartButton = (e) => {
@@ -155,7 +155,7 @@ export default function ProductDetailsPage() {
 
           <div className="text-[16px] text-gray-600 mb-4">
             {!(productDetail.description.length > 200) ? productDetail.description
-              : `${productDetail.description.substring(0, 200)}...`}{" "}
+              : show_more ? productDetail.description : `${productDetail.description.substring(0, 200)}...`}{" "}
             {productDetail.description.length > 200 && <button
               onClick={() => setShowMore(!show_more)}
               className="text-blue-500 ml-2 underline"

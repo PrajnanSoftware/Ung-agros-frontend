@@ -117,7 +117,7 @@
                     <div className='flex justify-start overflow-x-auto no-scrollbar gap-4 text-nowrap px-10 m-auto'>
                       {category.map((cat, index) => (
                       <div key={index} className='flex flex-col items-center w-fit' onClick={() => { handleCategoryClick(cat)}}>
-                        <div className='w-24 h-24 rounded-full border-4 border-accent text-center'>
+                        <div className='w-24 h-24 overflow-hidden rounded-full border-4 border-accent text-center'>
                           {cat.image ? (<img src={cat?.image} alt={cat.name} className='w-full h-full rounded-full object-contain transition-transform duration-300 hover:scale-110' />) : (<img src={'/no-image.jpg'} alt={cat.name} className='w-full h-full rounded-full object-cover transition-transform duration-300 hover:scale-110' />)}
                         </div>
                         <h6 className="mt-4 text-sm text-center font-semibold text-gray-800">
