@@ -6,7 +6,7 @@ $sidebar-link-active: #1abc9c;
 $text-color: #fff;
 
 .topbar {
-  height: 60px;
+  height: 80px;
   width: 100vw;
   background-color: $topbar-bg;
   color: #ecf0f1;
@@ -26,6 +26,11 @@ $text-color: #fff;
     text-decoration: none;
     color: #ecf0f1;
     transition: color 0.3s;
+
+    img{
+      height: 80px;
+      width: 200px;
+    }
 
     &:hover {
       color: $sidebar-bg;
