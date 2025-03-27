@@ -2,6 +2,7 @@ import "./topbar.scss";
 import { FaBell, FaUser, FaTimes } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import {axiosInstance} from "../../utils/axiosInstance";
+import Logo from "../../assets/dashbardlogo-1.png";
 
 const Topbar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -47,10 +48,10 @@ const Topbar = () => {
   return (
     <div className="topbar">
       <a href="/dashboard/overview" className="logo">
-        Admin Dashboard
+        <img src={Logo} alt="Logo" />
       </a>
       <div className="actions">
-        <FaBell className="icon" onClick={toggleNotifications} />
+        <FaBell className="icon" />
         <FaUser className="icon" onClick={toggleProfile} />
       </div>
 

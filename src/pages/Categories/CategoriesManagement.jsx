@@ -33,6 +33,7 @@ export default function CategoryManagement() {
         id: category._id,
         name: category.name,
         description: category.description,
+        tax: category.tax,
         image: category.image || null,
       }));
       setCategories(formattedCategories);
@@ -51,6 +52,7 @@ export default function CategoryManagement() {
     const categoryData = {
       name: data.name,
       description: data.description,
+      tax: data.tax, 
       image: uploadedImage,
     };
 
@@ -90,6 +92,7 @@ export default function CategoryManagement() {
     setShowForm(true);
     setValue('name', category.name);
     setValue('description', category.description);
+    setValue('tax', category.tax); 
     setUploadedImage(category.image);
 
     setTimeout(() => {
@@ -158,6 +161,7 @@ export default function CategoryManagement() {
     { field: 'id', headerName: 'Category ID', width: 150 },
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'description', headerName: 'Description', width: 250 },
+    { field: 'tax', headerName: 'Tax (%)', width: 120 },
     {
       field: 'image',
       headerName: 'Image',
@@ -209,6 +213,7 @@ export default function CategoryManagement() {
           <form ref={formRef} onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <TextField {...register('name')} label="Name" variant="outlined" required fullWidth />
             <TextField {...register('description')} label="Description" variant="outlined" required fullWidth />
+            <TextField {...register('tax')} label="Tax (%)" variant="outlined" required fullWidth type="number" />
 
             <Typography variant="subtitle1">Upload Category Image</Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
