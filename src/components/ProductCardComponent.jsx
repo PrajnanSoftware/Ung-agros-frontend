@@ -45,18 +45,18 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
                   ${small ? "w-36 md:w-60" : "w-60"}`}>
         {/* Product image */}
         <div className='overflow-hidden rounded-lg'>
-            <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-36" : 'h-48'} object-contain transition-transform duration-300 group-hover:scale-105`} />
+            <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-32" : 'h-48'} object-contain transition-transform duration-300 group-hover:scale-105`} />
         </div>
 
         {/* Product details */}
-        <div className={`mt-4 ${small ? "w-44 md:w-60" : "w-60"} overflow-hidden`}>
+        <div className={`mt-2 ${small ? "w-44 md:w-60" : "w-60"} overflow-hidden`}>
             <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800 text-nowrap ">
                 {!small ? product.name : product.name.substring(0, 18)+"..."}
             </h3>
-            <span className='text-xs sm:text-sm md:text-base text-gray-600 p-2'>{small ? product.description.substring(0, 15)+"..." : product.description.substring(0, 25)+"..."}</span>
+            <span className='text-xs sm:text-sm md:text-base text-gray-600 '>{small ? product.description.substring(0, 15)+"..." : product.description.substring(0, 25)+"..."}</span>
 
             {/* Price */}
-            <div className="flex items-start gap-2 text-wrap mt-2">
+            <div className="flex items-start gap-2 text-wrap">
             <div>
               <span className="text-sm sm:text-lg font-bold text-gray-900 flex items-center">
               <MdCurrencyRupee />{product.sellingPrice}
@@ -73,7 +73,7 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
  
         {/* Add to Cart Button */}
         {(product.quantity > 0) ? (
-          <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 transition duration-300 text-sm sm:text-base" onClick={handleAddToCartButton} disabled={loading}>
+          <button className="mt-2 w-full bg-blue-600 text-white py-2 rounded-md flex items-center justify-center gap-2 hover:bg-blue-700 transition duration-300 text-sm sm:text-base" onClick={handleAddToCartButton} disabled={loading}>
           <svg
             className="w-5 h-5"
             fill="none"
