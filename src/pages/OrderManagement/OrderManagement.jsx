@@ -404,8 +404,8 @@ const handlePrintInvoice = (order) => {
             </TableHead>
             <TableBody>
               {selectedOrder.items?.map((item, index) => (
-  <TableRow key={index} onClick={() => fetchProductDetails(item.product)} style={{ cursor: "pointer" }}>
-    <TableCell>{item.product}</TableCell>
+  <TableRow key={index} onClick={() => fetchProductDetails(item.product._id)} style={{ cursor: "pointer" }}>
+    <TableCell>{item.product.name}</TableCell>
     <TableCell>{item.quantity}</TableCell>
     <TableCell>₹{item.price}</TableCell>
     <TableCell>₹{item.totalProductPrice}</TableCell>
