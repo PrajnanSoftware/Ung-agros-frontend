@@ -46,7 +46,8 @@ const CheckoutPage = () => {
             
             console.log(data.data);
             const options = {
-                key: "rzp_test_pxFBRXS7B6uJsX",
+                // key: "rzp_test_pxFBRXS7B6uJsX",
+                key: "rzp_live_qjGjzhyc9USBMg",
                 amount: data.data.amount,
                 currency: data.data.currency,
                 name: "Ung Agro",
