@@ -221,7 +221,7 @@ const handlePrintInvoice = (order) => {
   const invoiceHtml = `
     <html>
     <head>
-      <title>Invoice</title>
+      <title>${order.billDetails.invoiceNumber}</title>
       <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         .invoice-container { max-width: 700px; margin: auto; padding: 20px; border: 1px solid #ccc; }
@@ -404,8 +404,8 @@ const handlePrintInvoice = (order) => {
             </TableHead>
             <TableBody>
               {selectedOrder.items?.map((item, index) => (
-  <TableRow key={index} onClick={() => fetchProductDetails(item.product)} style={{ cursor: "pointer" }}>
-    <TableCell>{item.product}</TableCell>
+  <TableRow key={index} onClick={() => fetchProductDetails(item.product._id)} style={{ cursor: "pointer" }}>
+    <TableCell>{item.product.name}</TableCell>
     <TableCell>{item.quantity}</TableCell>
     <TableCell>₹{item.price}</TableCell>
     <TableCell>₹{item.totalProductPrice}</TableCell>
