@@ -238,7 +238,7 @@ export default function ProductDetailsPage() {
         {/* <ProductReview/> */}
 
       {/* Products You Might Like Section */}
-      <div className="mt-4 p-5 " style={{ boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
+      <div className="mt-4 py-5 p-2 " style={{ boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)" }}>
         <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>Products You Might Like</h2>
           <div className="flex justify-center">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 ">
