@@ -41,8 +41,8 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
     }
   }
   return (
-    <div className={`group relative p-2 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white 
-                  ${small ? "w-36 md:w-60" : "w-60"}`}>
+    <div className={`group relative p-2 border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white overflow-hidden
+                  ${small ? "w-full md:w-60" : "w-60"}`}>
         {/* Product image */}
         <div className='overflow-hidden rounded-lg'>
             <img src={product?.image[0]} alt={product.name} className={`w-full ${small ? "h-32" : 'h-48'} object-contain transition-transform duration-300 group-hover:scale-105`} />
@@ -50,10 +50,10 @@ const ProductCardComponent = ({ product ,showViewDetailBtn = false , showBuyNowB
 
         {/* Product details */}
         <div className={`mt-2 ${small ? "w-44 md:w-60" : "w-60"} overflow-hidden`}>
-            <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800 text-nowrap ">
-                {!small ? product.name : product.name.substring(0, 18)+"..."}
+            <h3 className="text-md sm:text-lg md:text-xl font-semibold text-gray-800 text-nowrap text-ellipsis ">
+                {!small ? product.name.substring(0, 20)+ ((product.name.length > 20 ) ? "..." : "") : product.name.substring(0, 14)+((product.name.length > 14 ) ? "..." : "")}
             </h3>
-            <span className='text-xs sm:text-sm md:text-base text-gray-600 '>{small ? product.description.substring(0, 15)+"..." : product.description.substring(0, 25)+"..."}</span>
+            <span className='text-xs sm:text-sm md:text-base text-gray-600 '>{small ? product.description.substring(0, 15)+((product.description.length > 15 ) ? "..." : "") : product.description.substring(0, 25)+((product.description.length > 25 ) ? "..." : "")}</span>
 
             {/* Price */}
             <div className="flex items-start gap-2 text-wrap">

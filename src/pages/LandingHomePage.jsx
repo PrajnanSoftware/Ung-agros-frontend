@@ -86,7 +86,7 @@
           {/* Top Selling */}
           <div>
             <div className='mt-4 mb-8'>
-              <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary'>TOP SELLING PRODUCTS</h2>
+              <h2 className='text-2xl font-bold w-fit m-auto py-4 text-secondary text-center'>TOP SELLING PRODUCTS</h2>
             </div>
             <div className='p-6 flex gap-6 overflow-x-auto'>
               { topSellingProductLoading ? (
@@ -113,7 +113,8 @@
                   <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
                 ) : (category.length > 0 ? (
-                  <div className='w-full'>
+                  <div className='w-full overflow-auto'>
+                    <div  className='w-fit m-auto'>
                     <div className='flex justify-start overflow-x-auto no-scrollbar gap-4 text-nowrap px-10 m-auto pb-4'>
                       {category.map((cat, index) => (
                       <div key={index} className='flex flex-col items-center w-fit' onClick={() => { handleCategoryClick(cat)}}>
@@ -126,6 +127,7 @@
                       </div>
                     ))}
                   </div>
+                    </div>
                 </div>
             ): (
                 <p className="text-center text-gray-600">No categories available.</p>
@@ -144,7 +146,7 @@
                 </div>
               ) : (
                 <div className='flex justify-center'>
-                  <div className='grid grid-cols-2 lg:grid-cols-4 gap-2'>
+                  <div className='grid grid-cols-2 lg:grid-cols-4 gap-2 m-2'>
                     {newProducts.map((product, index) => (
                       <div key={index} onClick={() => {handleClickNavigation(product)}} className='cursor-pointer'>
                         <ProductCardComponent product={product} small={isSmallScreen} />
