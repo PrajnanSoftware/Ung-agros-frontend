@@ -162,7 +162,7 @@ export default function ProductDetailsPage() {
             </div>
           </div>
 
-          <div className="text-[16px] text-gray-600 mb-4">
+          <div className="text-[16px] text-gray-600 mb-4 whitespace-pre-wrap break-words">
             {!(productDetail.description.length > 200) ? productDetail.description
               : show_more ? productDetail.description : `${productDetail.description.substring(0, 200)}...`}{" "}
             {productDetail.description.length > 200 && <button
